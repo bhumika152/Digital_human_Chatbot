@@ -10,7 +10,7 @@ The architecture is intentionally clean and extensible so that individual agents
 
 ### 1. Conversational Intelligence
 
-* Accepts user queries from Web / Mobile UI
+* Accepts user queries from Web UI
 * Maintains conversation context per session
 * Produces coherent, state‑aware responses
 
@@ -29,15 +29,8 @@ The architecture is intentionally clean and extensible so that individual agents
 * Backed by **PostgreSQL**
 * Accessed only when the Decision Agent deems it necessary
 
-### 4. Short‑Term State Management
 
-* Uses **Redis** for fast session state and temporary context
-* Handles:
-
-  * Session lookup
-  * Read/write short‑term conversational state
-
-### 5. Chat History Persistence
+### 4. Chat History Persistence
 
 * Stores full chat history in PostgreSQL
 * Allows:
@@ -45,19 +38,19 @@ The architecture is intentionally clean and extensible so that individual agents
   * Context replay
   * History‑aware responses
 
-### 6. RAG (Retrieval Augmented Generation)
+### 5. RAG (Retrieval Augmented Generation)
 
 * Uses **pgvector** for semantic search
 * Retrieves relevant documents when knowledge grounding is required
 
-### 7. Prompt Engineering Pipeline
+### 6. Prompt Engineering Pipeline
 
 * Memory Formatter
 * History Formatter
 * RAG Formatter
 * Unified **Prompt Builder**
 
-### 8. Extensible Agent Architecture
+### 7. Extensible Agent Architecture
 
 * Each responsibility lives in its own module
 * Easy to plug in:
