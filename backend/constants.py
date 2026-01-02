@@ -1,0 +1,101 @@
+# from models import UserConfig
+# DEFAULT_USER_CONFIG = {
+#     "enable_memory":True,
+#     "enable_multichat": True,
+#     "enable_chat_history": True,
+#     "enable_rag": True,
+#     "enable_tool": True,
+#     "max_sessions": 5,
+#     "max_tokens": 2048,
+# }
+
+
+# USER_CONFIG_CACHE = {}
+
+# def get_user_config(db, user_id: int):
+#     # 1️⃣ Return from cache if exists
+#     if user_id in USER_CONFIG_CACHE:
+#         return USER_CONFIG_CACHE[user_id]
+
+#     # 2️⃣ Fetch from DB
+#     config = (
+#         db.query(UserConfig)
+#         .filter(UserConfig.user_id == user_id)
+#         .first()
+#     )
+
+#     # 3️⃣ If not found → create default config object
+#     if not config:
+#         config = UserConfig(
+#             user_id=user_id,
+#             enable_memory=True,
+#             enable_multichat=True,
+#             enable_chat_history=True,
+#             enable_rag=True,
+#             enable_tool=True,
+#             max_sessions=5,
+#             max_tokens=2048,
+#         )
+#         db.add(config)
+#         db.commit()
+#         db.refresh(config)
+
+#     # 4️⃣ Save in cache
+#     USER_CONFIG_CACHE[user_id] = config
+#     return config
+
+# constants.py
+
+from models import UserConfig
+
+DEFAULT_USER_CONFIG = {
+    "enable_memory": True,
+    "enable_multichat": True,
+    "enable_chat_history": True,
+    "enable_rag": True,
+    "enable_tool": True,
+    "max_sessions": 5,
+    "max_tokens": 2048,
+}
+
+USER_CONFIG_CACHE = {}
+
+
+def get_user_config(db, user_id: int) -> dict:
+    # 1️⃣ Return from cache (DICT ONLY)
+    if user_id in USER_CONFIG_CACHE:
+        return USER_CONFIG_CACHE[user_id]
+
+    # 2️⃣ Fetch from DB
+    config = (
+        db.query(UserConfig)
+        .filter(UserConfig.user_id == user_id)
+        .first()
+    )
+
+    # 3️⃣ Create default row if not exists
+    if not config:
+        config = UserConfig(
+            user_id=user_id,
+            **DEFAULT_USER_CONFIG
+        )
+        db.add(config)
+        db.commit()
+        db.refresh(config)
+
+    # 4️⃣ ORM ➜ DICT (CRITICAL STEP)
+    config_dict = {
+        "enable_memory": bool(config.enable_memory),
+        "enable_multichat": bool(config.enable_multichat),
+        "enable_chat_history": bool(config.enable_chat_history),
+        "enable_rag": bool(config.enable_rag),
+        "enable_tool": bool(config.enable_tool),
+        "max_sessions": int(config.max_sessions),
+        "max_tokens": int(config.max_tokens),
+    }
+
+    # 5️⃣ Cache SAFE dict
+    USER_CONFIG_CACHE[user_id] = config_dict
+
+    return config_dict
+

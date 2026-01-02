@@ -1,0 +1,194 @@
+from fastapi import APIRouter, HTTPException, Depends
+from fastapi.security import OAuth2PasswordBearer
+from sqlalchemy.orm import Session
+from jose import jwt, JWTError
+from datetime import datetime, timedelta,timezone
+import bcrypt
+import secrets
+
+from database import SessionLocal
+from models import User, UserConfig, MemoryStore
+from schemas import SignupRequest, LoginRequest, TokenResponse
+from utils import create_access_token, SECRET_KEY, ALGORITHM
+
+router = APIRouter(prefix="/auth", tags=["auth"])
+
+# --------------------
+# DB Dependency
+# --------------------
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+# --------------------
+# AUTH Dependency
+# --------------------
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+
+def get_current_user(token: str = Depends(oauth2_scheme)) -> int:
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return int(payload["user_id"])
+    except (JWTError, KeyError, ValueError):
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+# --------------------
+# SIGNUP
+# --------------------
+@router.post("/signup")
+def signup(data: SignupRequest, db: Session = Depends(get_db)):
+
+    # 1️⃣ Check existing user
+    if db.query(User).filter(User.email == data.email).first():
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    # 2️⃣ Hash password
+    hashed = bcrypt.hashpw(
+        data.password.encode(),
+        bcrypt.gensalt()
+    ).decode()
+
+    # 3️⃣ Create user
+    user = User(
+        email=data.email,
+        password_hash=hashed
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+    # 4️⃣ Create user config using frontend values
+    config = UserConfig(
+        user_id=user.user_id,
+        enable_memory=data.enable_memory,
+        enable_multichat=data.enable_multichat,
+        enable_chat_history=data.enable_chat_history,
+        enable_rag=data.enable_rag,
+        enable_tool=data.enable_tool,
+    )
+
+    db.add(config)
+    db.commit()
+
+    return {
+        "message": "User created successfully",
+        "user_id": user.user_id
+    }
+
+
+@router.get("/signup")
+def signup_help():
+    return {"message": "Use POST /auth/signup"}
+
+# --------------------
+# LOGIN
+# --------------------
+# @router.post("/login", response_model=TokenResponse)
+# def login(data: LoginRequest, db: Session = Depends(get_db)):
+#     user = db.query(User).filter(User.email == data.email).first()
+#     if not user:
+#         raise HTTPException(status_code=401, detail="Invalid credentials")
+
+#     if not bcrypt.checkpw(
+#         data.password.encode(),
+#         user.password_hash.encode()
+#     ):
+#         raise HTTPException(status_code=401, detail="Invalid credentials")
+
+#     token = create_access_token({"user_id": str(user.user_id)})
+#     return {"access_token": token, "token_type": "bearer"}
+@router.post("/login", response_model=TokenResponse)
+def login(data: LoginRequest, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == data.email).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    if not bcrypt.checkpw(
+        data.password.encode(),
+        user.password_hash.encode()
+    ):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    # ✅ UPDATE LAST LOGIN
+    user.last_login = datetime.now(timezone.utc)
+    db.commit()
+
+    token = create_access_token({"user_id": str(user.user_id)})
+
+    return {
+        "access_token": token,
+        "token_type": "bearer"
+    }
+@router.get("/login")
+def login_help():
+    return {"message": "Use POST /auth/login"}
+
+# --------------------
+# FORGOT PASSWORD
+# --------------------
+@router.post("/forgot-password")
+def forgot_password(email: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == email).first()
+
+    # Do not reveal user existence
+    if not user:
+        return {"message": "If email exists, reset link sent"}
+
+    token = secrets.token_urlsafe(32)
+    user.reset_token = token
+    user.reset_token_expiry = datetime.utcnow() + timedelta(minutes=30)
+    db.commit()
+
+    reset_link = f"http://localhost:3000/reset-password/{token}"
+
+    # Replace with real email service
+    print("RESET PASSWORD LINK:", reset_link)
+
+    return {"message": "Reset email sent"}
+
+# --------------------
+# RESET PASSWORD
+# --------------------
+@router.post("/reset-password")
+def reset_password(token: str, new_password: str, db: Session = Depends(get_db)):
+    user = (
+        db.query(User)
+        .filter(
+            User.reset_token == token,
+            User.reset_token_expiry > datetime.utcnow()
+        )
+        .first()
+    )
+
+    if not user:
+        raise HTTPException(status_code=400, detail="Invalid or expired token")
+
+    hashed = bcrypt.hashpw(
+        new_password.encode(),
+        bcrypt.gensalt()
+    ).decode()
+
+    user.password_hash = hashed
+    user.reset_token = None
+    user.reset_token_expiry = None
+    db.commit()
+
+    return {"message": "Password reset successful"}
+
+# --------------------
+# MEMORY DEBUG
+# --------------------
+@router.get("/debug")
+def debug_memory(
+    user_id: int = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    return (
+        db.query(MemoryStore)
+        .filter(MemoryStore.user_id == user_id)
+        .order_by(MemoryStore.created_at.desc())
+        .all()
+    )
