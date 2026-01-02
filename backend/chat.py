@@ -6,7 +6,8 @@ from database import SessionLocal
 from models import ChatSession, ChatMessage
 from models import UserConfig 
 from auth import get_current_user
-from agent.decision_agent import decision_agent
+from digital_human.services import run_digital_human_chat
+
 from constants import get_user_config
 from services.memory_service import cleanup_expired_memories
 
@@ -137,6 +138,25 @@ def chat(
         f"🧵 Chat session active | user_id={user_id} | session_id={session.session_id}"
     )
 
+    # Load chat history from database BEFORE adding current message
+    previous_messages = (
+        db.query(ChatMessage)
+        .filter(ChatMessage.session_id == session.session_id)
+        .order_by(ChatMessage.created_at.asc())
+        .all()
+    )
+    
+    # Format chat history for digital_human (List[Dict[str, str]])
+    chat_history = [
+        {"role": msg.role, "content": msg.content}
+        for msg in previous_messages
+    ]
+    
+    logger.info(
+        f"📚 Chat history loaded | user_id={user_id} | messages_count={len(chat_history)}"
+    )
+
+    # Add user message to database
     db.add(
         ChatMessage(
             session_id=session.session_id,
@@ -146,32 +166,33 @@ def chat(
     )
 
     logger.info(
-        f"🧠 Decision agent invoked | user_id={user_id} | session_id={session.session_id}"
+        f"🧠 Digital Human invoked | user_id={user_id} | session_id={session.session_id}"
     )
 
-    # agent_result = decision_agent(
-    #     db=db,
-    #     user_id=user_id,
-    #     chat_payload=type(
-    #         "ChatPayload",
-    #         (),
-    #         {"message": type("Msg", (), {"content": user_text})()},
-    #     )(),
-    #     user_config=user_config,
-    # )
-    agent_result = decision_agent(
+    # Call digital_human service
+    try:
+        agent_result = run_digital_human_chat(
+            user_input=user_text,
+            chat_history=chat_history,
+            token_budget=4000,
+        )
+    except Exception as e:
+        logger.error(
+            f"❌ Digital Human error | user_id={user_id} | error={str(e)}",
+            exc_info=True
+        )
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error processing message: {str(e)}"
+        )
 
-        db=db,
-        user_id=user_id,
-        message=user_text,
-        conversation_id=session_id,
-        user_config=user_config,
-    )
+
 
 
     logger.info(
-        f"🤖 Agent response ready | memory_written={agent_result.get('memory_written')} | rag_used={agent_result.get('rag_used')}"
+        f"🤖 Agent response ready | memory_intent={agent_result.get('memory_intent')} | rag_used={agent_result.get('rag_used')}"
     )
+
 
     db.add(
         ChatMessage(
@@ -180,6 +201,7 @@ def chat(
             content=agent_result["response"],
         )
     )
+    
 
     db.commit()
 
@@ -187,9 +209,16 @@ def chat(
         f"✅ Chat persisted | user_id={user_id} | session_id={session.session_id}"
     )
 
+    # return {
+    #     "session_id": str(session.session_id),
+    #     "response": agent_result["response"],
+    #     "memory_written": agent_result.get("memory_written", False),
+    #     "rag_used": agent_result.get("rag_used", False),
+    # }
     return {
         "session_id": str(session.session_id),
         "response": agent_result["response"],
-        "memory_written": agent_result.get("memory_written", False),
+        "memory_intent": agent_result.get("memory_intent"),
         "rag_used": agent_result.get("rag_used", False),
     }
+
