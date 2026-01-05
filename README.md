@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+🤖 Chatbot Project – Digital Human Architecture
+This project is a full‑stack AI chatbot system built with a modular, agent‑based backend and a modern frontend. It is designed to simulate a Digital Human that can reason, retrieve memory, use RAG (Retrieval Augmented Generation), and maintain conversational context.
 
-## Getting Started
+The architecture is intentionally clean and extensible so that individual agents (decision, memory, RAG, etc.) can evolve independently.
 
-First, run the development server:
 
-```bash
+🛠 Tech Stack
+Backend
+Python 3.10 – 3.11 only
+FastAPI
+SQLAlchemy
+PostgreSQL
+pgvector
+Redis
+Uvicorn
+Frontend
+Next.js / React
+TypeScript
+Modern UI stack
+🚀 Running the Project (Local Setup)
+⚠️ Important: Python 3.10 or 3.11 only. Do NOT use Python 3.12+
+
+🔧 Backend Setup
+1️⃣ Go to backend directory
+cd backend
+2️⃣ Delete existing virtual environment (if present)
+# Windows
+rmdir /s /q venv
+3️⃣ Create fresh virtual environment
+python -m venv venv
+4️⃣ Activate virtual environment
+# Windows
+venv\Scripts\activate
+5️⃣ Install dependencies
+pip install -r requirements.txt
+6️⃣ Run backend server
+uvicorn main:app --reload --port 8000
+Backend will run at:
+
+http://127.0.0.1:8000
+🎨 Frontend Setup
+1️⃣ Go to frontend directory
+cd frontend
+2️⃣ Install dependencies (only first time or when packages change)
+npm install
+3️⃣ Start frontend dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-for backend -> uvicorn main:app --reload --port 8000
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Frontend will run at:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+http://localhost:3000
+📁 Project Structure (Simplified)
+chatbot-project-main/
+├── backend/
+│   ├── main.py
+│   ├── chat.py
+│   ├── auth.py
+│   ├── digital_human/
+│   │   ├── graph/
+│   │   │   └── state.py
+│   │   └── ...
+│   ├── requirements.txt
+│   └── venv/
+│
+├── frontend/
+│   ├── app/
+│   ├── package.json
+│   └── ...
+│
+└── README.md
+🔒 Environment Notes
+Ensure PostgreSQL, Redis, and pgvector are running
+Environment variables should be configured before production use
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Create .env file
+SECRET_KEY= --
+DATABASE_URL=--
+OPENAI_API_KEY = --
