@@ -29,30 +29,44 @@ TypeScript
 Modern UI stack
 
 # 🚀 Running the Project (Local Setup)
+STEP-BY-STEP COMMANDS
 
-⚠️ Important
-Use Python 3.10 or 3.11 only.
-Do NOT use Python 3.12+, as several dependencies are not yet compatible.
+1️⃣ Go to backend folder
 
-🔧 Backend Setup
-1️⃣ Navigate to the backend directory
 cd backend
 
-2️⃣ Delete existing virtual environment (if present)
-# Windows
-rmdir /s /q venv
 
-3️⃣ Create a fresh virtual environment
-python -m venv venv
 
-4️⃣ Activate the virtual environment
-# Windows
+2️⃣ Create virtual environment (ONCE)
+
+py -3.10 -m venv venv
+
+✔ Python 3.10.x only (3.10.9 / 3.10.13 both fine)
+
+
+
+3️⃣ Activate venv
+
 venv\Scripts\activate
 
-5️⃣ Install dependencies
+python --version# Python 3.10.x 
+
+
+
+4️⃣ Install backend dependencies (ONCE)
+
 pip install -r requirements.txt
 
-6️⃣ Run the backend server
+
+
+5️⃣ Install Digital Human SDK (editable mode – ONCE)
+
+pip install -e ../digital_human_sdk
+
+
+
+6️⃣ Run backend server
+
 uvicorn main:app --reload --port 8000
 
 
