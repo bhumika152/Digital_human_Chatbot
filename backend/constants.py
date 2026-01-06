@@ -49,11 +49,11 @@
 from models import UserConfig
 
 DEFAULT_USER_CONFIG = {
-    "enable_memory": True,
-    "enable_multichat": True,
-    "enable_chat_history": True,
-    "enable_rag": True,
-    "enable_tool": True,
+    "enable_memory": False,
+    "enable_multichat": False,
+    "enable_chat_history": False,
+    "enable_rag": False,
+    "enable_tool": False,
     "max_sessions": 5,
     "max_tokens": 2048,
 }
