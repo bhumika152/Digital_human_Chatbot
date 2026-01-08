@@ -9,7 +9,18 @@ interface AuthPageProps {
 }
 
 export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess, initialMode = 'login' }) => {
-  const [mode, setMode] = useState<AuthMode>(initialMode);
+  // Capture token from URL immediately
+  const [token] = useState<string | null>(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('token');
+  });
+
+  // Initialize mode: If token exists, force 'reset-password' mode immediately
+  const [mode, setMode] = useState<AuthMode>(() => {
+    if (token) return 'reset-password';
+    return initialMode;
+  });
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -17,17 +28,13 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess, initialMode =
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  
-  // Initialize token from URL immediately
-  const [token, setToken] = useState<string | null>(() => {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('token');
-  });
 
-  // Ensure mode stays in sync if the prop changes
+  // Sync mode only if initialMode prop changes (e.g. user manually toggles login/signup elsewhere)
   useEffect(() => {
-    setMode(initialMode);
-  }, [initialMode]);
+    if (!token) {
+      setMode(initialMode);
+    }
+  }, [initialMode, token]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,11 +60,11 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess, initialMode =
         const response = await authService.resetPassword(token, password);
         setSuccessMessage(response.message || 'Password reset successfully! Redirecting to login...');
         
-        // After success, wait 2 seconds then go to login
+        // After success, switch to login mode after 2 seconds
         setTimeout(() => {
           setMode('login');
           setSuccessMessage(null);
-          // Remove token from URL for cleanliness
+          // Clean up the URL token
           window.history.replaceState({}, document.title, window.location.pathname);
         }, 2000);
       }

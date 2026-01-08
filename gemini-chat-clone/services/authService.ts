@@ -64,18 +64,25 @@ export const authService = {
   /**
    * Submits the new password using the token provided in the email link.
    */
-  async resetPassword(token: string, password: string): Promise<{ message: string }> {
-    const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token, password }),
-    });
+  async resetPassword(
+  token: string,
+  password: string
+): Promise<{ message: string }> {
+  const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      token: token,
+      new_password: password, // ✅ FIX
+    }),
+  });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || 'Failed to reset password');
-    }
-
-    return response.json();
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.detail || 'Failed to reset password');
   }
+
+  return response.json();
+}
+
 };

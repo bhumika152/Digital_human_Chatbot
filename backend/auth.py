@@ -6,7 +6,7 @@ from datetime import datetime, timedelta,timezone
 import bcrypt
 import secrets
 from schemas import ForgotPasswordRequest, ResetPasswordRequest
-
+import secrets
 from database import SessionLocal
 from models import User, UserConfig, MemoryStore
 from schemas import SignupRequest, LoginRequest, TokenResponse
@@ -138,17 +138,26 @@ def forgot_password(
     user = db.query(User).filter(User.email == payload.email).first()
 
     if not user:
-        return {"message": "If email exists, reset link sent"}
+        raise HTTPException(status_code=404, detail="User not found")
 
-    token = secrets.token_urlsafe(32)
-    user.reset_token = token
+    # 🔑 1. Generate reset token
+    reset_token = secrets.token_urlsafe(32)
+
+    # ⏰ 2. Save token + expiry
+    user.reset_token = reset_token
     user.reset_token_expiry = datetime.utcnow() + timedelta(minutes=30)
+
     db.commit()
 
-    reset_link = f"http://localhost:3000/reset-password/{token}"
+    # 🔗 3. Generate correct reset link
+    reset_link = f"http://localhost:3000/?token={reset_token}"
+
+    # 📩 4. For now just print (email later)
     print("RESET PASSWORD LINK:", reset_link)
 
-    return {"message": "Reset email sent"}
+    return {
+        "message": "Reset password link sent to your email"
+    }
 
 # --------------------
 # RESET PASSWORD
@@ -178,10 +187,13 @@ def reset_password(
     user.password_hash = hashed
     user.reset_token = None
     user.reset_token_expiry = None
+
     db.commit()
 
-    return {"message": "Password reset successful"}
-    router.push("/login"); 
+    return {
+        "message": "Password reset successful"
+    }
+
 
 
 # --------------------
