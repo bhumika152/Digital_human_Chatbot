@@ -1,16 +1,25 @@
-from digital_human_sdk.app.intelligence.contracts.tool_request import ToolRequest
+from .implementations import (
+    weather_tool,
+    browser_search_tool,
+    bing_search_tool,
+    math_tool,
+)
 
+TOOL_REGISTRY = {
+    "weather": weather_tool,
+    "calculator": math_tool,
+    "web_search": bing_search_tool,
+    "browser": browser_search_tool,
+}
 
 class ToolExecutor:
-    """Minimal stub so the SDK can run without backend tool plumbing."""
+    def execute(self, tool: str, arguments: dict):
+        if tool == "none":
+            return None
 
-    @staticmethod
-    def execute(request: ToolRequest):
-        # In this SDK-only run, we don't actually call external tools.
-        return {
-            "status": "noop",
-            "tool_requested": request.tool_name,
-            "arguments": request.arguments,
-            "message": "Tool execution not implemented in SDK sandbox.",
-        }
+        fn = TOOL_REGISTRY.get(tool)
 
+        if not fn:
+            return {"error": f"Unknown tool: {tool}"}
+
+        return fn(arguments)
