@@ -1,44 +1,3 @@
-# from sqlalchemy import Column, String, Boolean, DateTime, Text, Float, Integer, ForeignKey, func
-# from sqlalchemy.dialects.postgresql import UUID
-# from database import Base
-# import uuid
-
-
-# class User(Base):
-#     __tablename__ = "users"
-
-#     user_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-#     email = Column(String, unique=True, index=True, nullable=False)
-#     password_hash = Column(String, nullable=False)
-#     is_active = Column(Boolean, default=True, nullable=False)
-#     created_at = Column(DateTime(timezone=True), server_default=func.now())
-
-
-# class ChatSession(Base):
-#     __tablename__ = "chat_sessions"
-#     session_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-#     user_id = Column(UUID(as_uuid=True), ForeignKey("users.user_id"))
-#     is_active = Column(Boolean, default=True)
-#     created_at = Column(DateTime, server_default=func.now())
-
-
-# class ChatMessage(Base):
-#     __tablename__ = "chat_messages"
-#     message_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-#     session_id = Column(UUID(as_uuid=True), ForeignKey("chat_sessions.session_id"))
-#     role = Column(String)
-#     content = Column(Text)
-#     created_at = Column(DateTime, server_default=func.now())
-
-
-# class MemoryStore(Base):
-#     __tablename__ = "memory_store"
-#     memory_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-#     user_id = Column(UUID(as_uuid=True), ForeignKey("users.user_id"))
-#     memory_type = Column(String)
-#     memory_content = Column(Text)
-#     confidence_score = Column(Float)
-#     version = Column(Integer)
 
 from sqlalchemy import (
     Column,
@@ -130,24 +89,34 @@ class ChatSession(Base):
     user = relationship("User", back_populates="sessions")
     messages = relationship("ChatMessage", back_populates="session", cascade="all, delete")
 
-
 # =========================
 # CHAT MESSAGES
 # =========================
 class ChatMessage(Base):
     __tablename__ = "chat_messages"
 
-    request_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    message_id = Column(
+        BigInteger,
+        primary_key=True,
+        autoincrement=True
+    )
+
     session_id = Column(
         UUID(as_uuid=True),
         ForeignKey("chat_sessions.session_id", ondelete="CASCADE"),
-        index=True
+        index=True,
+        nullable=False
     )
 
     role = Column(String, nullable=False)
     content = Column(Text)
     token_count = Column(Integer)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    created_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False
+    )
 
     session = relationship("ChatSession", back_populates="messages")
 
@@ -165,14 +134,12 @@ class ChatMessage(Base):
 class MemoryStore(Base):
     __tablename__ = "memory_store"
 
-    # 🔑 Primary Key
     memory_id = Column(
-        UUID(as_uuid=True),
+        BigInteger,
         primary_key=True,
-        default=uuid.uuid4
+        autoincrement=True
     )
 
-    # 🔗 User relation
     user_id = Column(
         BigInteger,
         ForeignKey("users.user_id", ondelete="CASCADE"),
@@ -180,54 +147,39 @@ class MemoryStore(Base):
         nullable=False
     )
 
-    # 🧠 Memory content
     memory_type = Column(String, nullable=False)
     memory_content = Column(Text, nullable=False)
     confidence_score = Column(Float)
 
-    # ✅ Soft delete flag (user "forget")
     is_active = Column(Boolean, default=True, nullable=False)
 
-    # ⏳ Auto cleanup support
     expires_at = Column(DateTime(timezone=True), nullable=True)
 
-    # 🕒 Metadata
     created_at = Column(
         DateTime(timezone=True),
         server_default=func.now(),
         nullable=False
     )
 
-    # 🔁 ORM relationship
     user = relationship("User", back_populates="memories")
 
-
 # =========================
-# VECTOR DATABASE (RAG)
+# VECTOR DB RAG
 # =========================
-# class VectorDBRAG(Base):
-#     __tablename__ = "vector_db_rag"
-
-#     document_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-#     user_id = Column(BigInteger, ForeignKey("users.user_id", ondelete="CASCADE"), index=True)
-
-#     embedding = Column(Vector(1536))
-#     metadata = Column(JSONB)
-
-#     user = relationship("User", back_populates="vectors")
 class VectorDBRAG(Base):
     __tablename__ = "vector_db_rag"
 
     document_id = Column(
-        UUID(as_uuid=True),
+        BigInteger,
         primary_key=True,
-        default=uuid.uuid4
+        autoincrement=True
     )
 
     user_id = Column(
         BigInteger,
         ForeignKey("users.user_id", ondelete="CASCADE"),
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     embedding = Column(ARRAY(Float), nullable=False)
@@ -235,3 +187,4 @@ class VectorDBRAG(Base):
     meta_data = Column("metadata", JSONB)
 
     user = relationship("User", back_populates="vectors")
+
