@@ -1,9 +1,160 @@
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { User, Chat, Message } from '../types';
+// import React, { useState, useEffect, useCallback } from 'react';
+// import { User, ChatSession, Message } from '../types';
+// import { Sidebar } from './Sidebar';
+// import { ChatWindow } from './ChatWindow';
+// import { geminiService } from '../services/geminiService';
+// import { chatService } from '../services/chatService';
+
+// interface ChatPageProps {
+//   user: User | null;
+//   onLogout: () => void;
+// }
+
+// export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
+//   const [sessions, setSessions] = useState<ChatSession[]>([]);
+//   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+//   const [messages, setMessages] = useState<Message[]>([]);
+//   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+//   const [isTyping, setIsTyping] = useState(false);
+
+//   // Load chat history (sessions) from DB when user is logged in
+//   useEffect(() => {
+//     if (user?.user_id) {
+//       chatService.getSessions(user.user_id)
+//         .then(setSessions)
+//         .catch(err => console.error("Error loading sessions:", err));
+//     }
+//   }, [user?.user_id]);
+
+//   // Load messages from DB when a specific session is selected
+//   useEffect(() => {
+//     if (currentSessionId) {
+//       chatService.getMessages(currentSessionId)
+//         .then(setMessages)
+//         .catch(err => console.error("Error loading messages:", err));
+//     } else {
+//       setMessages([]);
+//     }
+//   }, [currentSessionId]);
+
+//   const handleNewChat = async () => {
+//     if (!user) return;
+//     try {
+//       const newSession = await chatService.createSession(user.user_id, 'New Chat');
+//       setSessions(prev => [newSession, ...prev]);
+//       setCurrentSessionId(newSession.session_id);
+//     } catch (err) {
+//       console.error("Failed to create new chat:", err);
+//     }
+//   };
+
+//   const handleSendMessage = async (content: string) => {
+//     if (!content.trim() || !user) return;
+
+//     let sessionId = currentSessionId;
+
+//     // Auto-create session if it's a new chat
+//     if (!sessionId) {
+//       try {
+//         const title = content.substring(0, 30) + (content.length > 30 ? '...' : '');
+//         const newSession = await chatService.createSession(user.user_id, title);
+//         setSessions(prev => [newSession, ...prev]);
+//         sessionId = newSession.session_id;
+//         setCurrentSessionId(sessionId);
+//       } catch (err) {
+//         return console.error("Failed to initiate session:", err);
+//       }
+//     }
+
+//     // 1. Save User Message to DB
+//     try {
+//       const savedUserMsg = await chatService.saveMessage(sessionId, 'user', content);
+//       setMessages(prev => [...prev, savedUserMsg]);
+//     } catch (err) {
+//       return console.error("Failed to save user message:", err);
+//     }
+
+//     setIsTyping(true);
+
+//     // Prepare Gemini History
+//     const history: { role: 'user' | 'model'; parts: { text: string }[] }[] = messages.map(m => ({
+//       role: m.role === 'user' ? 'user' : 'model',
+//       parts: [{ text: m.content }]
+//     }));
+
+//     // Create UI placeholder for streaming response
+//     const tempId = 'temp-' + Date.now();
+//     const tempMsg: Message = {
+//       request_id: tempId,
+//       session_id: sessionId,
+//       role: 'assistant',
+//       content: '',
+//       created_at: new Date().toISOString()
+//     };
+//     setMessages(prev => [...prev, tempMsg]);
+
+//     try {
+//       let fullResponse = "";
+//       await geminiService.streamChat(content, history, (chunk) => {
+//         fullResponse += chunk;
+//         setMessages(prev => prev.map(m => 
+//           m.request_id === tempId ? { ...m, content: fullResponse } : m
+//         ));
+//       });
+
+//       // 2. Save Assistant Message to DB after streaming is done
+//       const savedAiMsg = await chatService.saveMessage(sessionId, 'assistant', fullResponse);
+      
+//       // Update local state with real DB object (containing real request_id)
+//       setMessages(prev => prev.map(m => 
+//         m.request_id === tempId ? savedAiMsg : m
+//       ));
+
+//     } catch (err) {
+//       setMessages(prev => prev.map(m => 
+//         m.request_id === tempId ? { ...m, content: "Error connecting to AI." } : m
+//       ));
+//     } finally {
+//       setIsTyping(false);
+//     }
+//   };
+
+//   const handleDeleteChat = (id: string) => {
+//     // Implement delete API call if needed
+//     setSessions(prev => prev.filter(s => s.session_id !== id));
+//     if (currentSessionId === id) setCurrentSessionId(null);
+//   };
+  
+
+//   return (
+//     <div className="flex h-screen overflow-hidden">
+//       <Sidebar
+//         chats={sessions.map(s => ({ id: s.session_id, title: s.session_title }))}
+//         currentChatId={currentSessionId}
+//         onSelectChat={setCurrentSessionId}
+//         onNewChat={handleNewChat}
+//         onDeleteChat={handleDeleteChat}
+//         isOpen={isSidebarOpen}
+//         toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+//         onLogout={onLogout}
+//         user={user}
+//       />
+
+//       <ChatWindow
+//         chat={currentSessionId ? { id: currentSessionId, messages } : undefined}
+//         onSendMessage={handleSendMessage}
+//         isTyping={isTyping}
+//         isSidebarOpen={isSidebarOpen}
+//       />
+//     </div>
+//   );
+// };
+import React, { useState } from 'react';
+import { User, Message } from '../types';
 import { Sidebar } from './Sidebar';
 import { ChatWindow } from './ChatWindow';
-import { geminiService } from '../services/geminiService';
+import { chatService } from '../services/chatService';
 
 interface ChatPageProps {
   user: User | null;
@@ -11,138 +162,105 @@ interface ChatPageProps {
 }
 
 export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
-  const [chats, setChats] = useState<Chat[]>([]);
-  const [currentChatId, setCurrentChatId] = useState<string | null>(null);
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
 
-  // Load chats from localStorage on mount
-  useEffect(() => {
-    if (user) {
-      const savedChats = localStorage.getItem(`chats_${user.id}`);
-      if (savedChats) {
-        setChats(JSON.parse(savedChats));
-      }
-    }
-  }, [user]);
-
-  // Persist chats to localStorage whenever they change
-  useEffect(() => {
-    if (user && chats.length > 0) {
-      localStorage.setItem(`chats_${user.id}`, JSON.stringify(chats));
-    }
-  }, [chats, user]);
-
-  const activeChat = chats.find(c => c.id === currentChatId);
-
+  /* ----------------------------
+     NEW CHAT
+  ---------------------------- */
   const handleNewChat = () => {
-    const newChat: Chat = {
-      id: Date.now().toString(),
-      title: 'New Chat',
-      messages: [],
-      updatedAt: Date.now(),
-    };
-    setChats(prev => [newChat, ...prev]);
-    setCurrentChatId(newChat.id);
+    setCurrentSessionId(null);
+    setMessages([]);
   };
 
+  /* ----------------------------
+     SEND MESSAGE (CORE LOGIC)
+  ---------------------------- */
   const handleSendMessage = async (content: string) => {
-    if (!content.trim()) return;
+    if (!content.trim() || !user) return;
 
-    let chatId = currentChatId;
-    let currentMessages: Message[] = [];
+    const token = localStorage.getItem('access_token');
+    if (!token) return alert("Please login again");
 
-    // Auto-create chat if none selected
-    if (!chatId) {
-      const newChat: Chat = {
-        id: Date.now().toString(),
-        title: content.substring(0, 30) + (content.length > 30 ? '...' : ''),
-        messages: [],
-        updatedAt: Date.now(),
-      };
-      setChats(prev => [newChat, ...prev]);
-      setCurrentChatId(newChat.id);
-      chatId = newChat.id;
-    } else {
-      currentMessages = activeChat?.messages || [];
-    }
-
-    const userMessage: Message = {
-      id: Date.now().toString(),
+    // 1️⃣ Show user message instantly
+    const userMsg: Message = {
+      request_id: 'user-' + Date.now(),
+      session_id: currentSessionId ?? '',
       role: 'user',
       content,
-      timestamp: Date.now(),
+      created_at: new Date().toISOString(),
     };
 
-    // Update UI immediately with user message
-    setChats(prev => prev.map(c => 
-      c.id === chatId ? { ...c, messages: [...c.messages, userMessage], updatedAt: Date.now() } : c
-    ));
-
+    setMessages(prev => [...prev, userMsg]);
     setIsTyping(true);
 
-    // Fix: Explicitly type history to match the Gemini service expected role types ('user' | 'model')
-    const history: { role: 'user' | 'model'; parts: { text: string }[] }[] = currentMessages.map(m => ({
-      role: m.role === 'user' ? 'user' : 'model',
-      parts: [{ text: m.content }]
-    }));
-
-    // Create placeholder for assistant message
-    const assistantMessageId = (Date.now() + 1).toString();
-    const assistantMessage: Message = {
-      id: assistantMessageId,
-      role: 'assistant',
-      content: '',
-      timestamp: Date.now(),
-    };
-
-    setChats(prev => prev.map(c => 
-      c.id === chatId ? { ...c, messages: [...c.messages, assistantMessage] } : c
-    ));
+    // 2️⃣ Assistant placeholder
+    const assistantTempId = 'assistant-' + Date.now();
+    setMessages(prev => [
+      ...prev,
+      {
+        request_id: assistantTempId,
+        session_id: currentSessionId ?? '',
+        role: 'assistant',
+        content: '',
+        created_at: new Date().toISOString(),
+      },
+    ]);
 
     try {
-      let fullAssistantResponse = "";
-      await geminiService.streamChat(content, history, (chunk) => {
-        fullAssistantResponse += chunk;
-        setChats(prev => prev.map(c => 
-          c.id === chatId ? {
-            ...c,
-            messages: c.messages.map(m => m.id === assistantMessageId ? { ...m, content: fullAssistantResponse } : m)
-          } : c
-        ));
-      });
+      let fullResponse = "";
 
-      // Update chat title if it's the first exchange
-      if (currentMessages.length === 0) {
-        setChats(prev => prev.map(c => 
-          c.id === chatId ? { ...c, title: content.substring(0, 40) + (content.length > 40 ? '...' : '') } : c
-        ));
-      }
+      await chatService.sendChatMessageStreaming(
+        token,
+        currentSessionId, // null = new chat
+        content,
+        (chunk) => {
+          fullResponse += chunk;
+
+          setMessages(prev =>
+            prev.map(m =>
+              m.request_id === assistantTempId
+                ? { ...m, content: fullResponse }
+                : m
+            )
+          );
+        }
+      );
+
+      // 🔑 IMPORTANT:
+      // backend automatically creates session if needed
+      // but frontend ko session_id abhi nahi milta
+      // isliye first chat ke baad sidebar logic baad me add karenge
 
     } catch (err) {
-      setChats(prev => prev.map(c => 
-        c.id === chatId ? {
-          ...c,
-          messages: c.messages.map(m => m.id === assistantMessageId ? { ...m, content: "Sorry, I encountered an error. Please try again." } : m)
-        } : c
-      ));
+      setMessages(prev =>
+        prev.map(m =>
+          m.request_id === assistantTempId
+            ? { ...m, content: "❌ Error connecting to backend" }
+            : m
+        )
+      );
     } finally {
       setIsTyping(false);
     }
   };
 
-  const handleDeleteChat = (id: string) => {
-    setChats(prev => prev.filter(c => c.id !== id));
-    if (currentChatId === id) setCurrentChatId(null);
+  /* ----------------------------
+     DELETE CHAT (UI ONLY)
+  ---------------------------- */
+  const handleDeleteChat = () => {
+    setCurrentSessionId(null);
+    setMessages([]);
   };
 
   return (
     <div className="flex h-screen overflow-hidden">
-      {/* Sidebar */}
       <Sidebar
-        chats={chats}
-        currentChatId={currentChatId}
-        onSelectChat={setCurrentChatId}
+        chats={[]}               // ⏳ sessions API baad me
+        currentChatId={currentSessionId}
+        onSelectChat={() => {}}
         onNewChat={handleNewChat}
         onDeleteChat={handleDeleteChat}
         isOpen={isSidebarOpen}
@@ -151,9 +269,12 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
         user={user}
       />
 
-      {/* Main Chat Area */}
       <ChatWindow
-        chat={activeChat}
+        chat={
+          currentSessionId
+            ? { id: currentSessionId, messages }
+            : { id: 'new', messages }
+        }
         onSendMessage={handleSendMessage}
         isTyping={isTyping}
         isSidebarOpen={isSidebarOpen}

@@ -1,9 +1,9 @@
 
 import React from 'react';
-import { Chat, User } from '../types';
+import { User } from '../types';
 
 interface SidebarProps {
-  chats: Chat[];
+  chats: { id: string, title: string }[];
   currentChatId: string | null;
   onSelectChat: (id: string) => void;
   onNewChat: () => void;
@@ -28,7 +28,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <aside className={`bg-[#171717] transition-all duration-300 flex flex-col h-full border-r border-[#303030] ${isOpen ? 'w-64' : 'w-0'}`}>
       <div className={`flex flex-col h-full overflow-hidden ${!isOpen && 'opacity-0'}`}>
-        {/* Top Header */}
         <div className="p-3">
           <button
             onClick={onNewChat}
@@ -43,10 +42,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </button>
         </div>
 
-        {/* Chat History List */}
         <div className="flex-1 overflow-y-auto no-scrollbar p-3 space-y-2">
           <div className="text-xs font-semibold text-[#b4b4b4] px-3 py-2 uppercase tracking-wider">
-            Recent Chats
+            History
           </div>
           {chats.length === 0 ? (
             <div className="px-3 py-10 text-center text-sm text-[#676767]">
@@ -78,14 +76,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           )}
         </div>
 
-        {/* User Info & Footer */}
         <div className="p-3 mt-auto border-t border-[#303030]">
           <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#212121] transition cursor-default">
             <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-sm">
-              {user?.username?.[0].toUpperCase()}
+              {user?.username?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || '?'}
             </div>
             <div className="flex-1 overflow-hidden">
-              <div className="text-sm font-medium truncate">{user?.username}</div>
+              <div className="text-sm font-medium truncate">{user?.username || 'User'}</div>
               <div className="text-xs text-[#b4b4b4] truncate">{user?.email}</div>
             </div>
           </div>

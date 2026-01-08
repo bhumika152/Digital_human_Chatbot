@@ -1,8 +1,8 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { AuthPage } from './components/AuthPage';
 import { ChatPage } from './components/ChatPage';
-import { User, AppView, Chat } from './types';
+// Fix: Removed non-existent 'Chat' export from './types'
+import { User, AppView } from './types';
 
 /**
  * App component manages the global state: Authentication and App View.

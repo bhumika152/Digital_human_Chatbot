@@ -1,18 +1,9 @@
-
-import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 
 /**
  * Initializes the Gemini API client and provides methods for streaming chat responses.
  */
 export class GeminiService {
-  private ai: GoogleGenAI;
-
-  constructor() {
-    // API_KEY is provided by the environment
-    // Fix: Using process.env.API_KEY directly as required by the coding guidelines
-    this.ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
-  }
-
   /**
    * Generates a streaming response for a chat conversation.
    * @param prompt The user's input message.
@@ -24,9 +15,14 @@ export class GeminiService {
     history: { role: 'user' | 'model'; parts: { text: string }[] }[],
     onChunk: (text: string) => void
   ) {
+    // Fix: Create a new GoogleGenAI instance right before the API call to ensure it uses the most up-to-date configuration
+    // Fix: Use process.env.API_KEY directly as required by the coding guidelines
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
     try {
       // Use gemini-3-flash-preview for fast, chat-optimized responses
-      const responseStream = await this.ai.models.generateContentStream({
+      // Fix: Query ai.models.generateContentStream with both the model name and prompt/contents
+      const responseStream = await ai.models.generateContentStream({
         model: 'gemini-3-flash-preview',
         contents: [
           ...history,
@@ -41,7 +37,7 @@ export class GeminiService {
 
       let fullText = "";
       for await (const chunk of responseStream) {
-        // Fix: Use the .text property directly as per Gemini API guidelines
+        // Fix: Use the .text property directly (not a method) as per Gemini API guidelines
         const chunkText = chunk.text;
         if (chunkText) {
           fullText += chunkText;

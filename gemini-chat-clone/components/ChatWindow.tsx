@@ -1,15 +1,15 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Chat, Message } from '../types';
+import { Message } from '../types';
 
 interface ChatWindowProps {
-  chat: Chat | undefined;
+  chat: { id: string, messages: Message[] } | undefined;
   onSendMessage: (content: string) => void;
   isTyping: boolean;
   isSidebarOpen: boolean;
 }
 
-export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isTyping, isSidebarOpen }) => {
+export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isTyping }) => {
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -37,7 +37,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isT
 
   return (
     <main className="flex-1 flex flex-col bg-[#0d0d0d] h-full relative overflow-hidden">
-      {/* Messages List */}
       <div className="flex-1 overflow-y-auto no-scrollbar scroll-smooth">
         {!chat || chat.messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center p-8">
@@ -67,7 +66,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isT
         ) : (
           <div className="w-full max-w-3xl mx-auto py-8 px-4 space-y-8">
             {chat.messages.map((message) => (
-              <div key={message.id} className={`flex gap-4 ${message.role === 'assistant' ? 'bg-transparent' : 'bg-transparent'}`}>
+              <div key={message.request_id} className="flex gap-4">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
                   message.role === 'user' ? 'bg-indigo-600' : 'bg-emerald-600'
                 }`}>
@@ -83,10 +82,10 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isT
                 </div>
                 <div className="flex-1 space-y-1 overflow-hidden">
                   <div className="font-bold text-sm uppercase tracking-wide text-[#b4b4b4]">
-                    {message.role === 'user' ? 'You' : 'Gemini'}
+                    {message.role === 'user' ? 'You' : 'Assistant'}
                   </div>
                   <div className="text-base text-[#ececec] whitespace-pre-wrap leading-relaxed">
-                    {message.content || (isTyping && message.id === chat.messages[chat.messages.length - 1].id ? (
+                    {message.content || (isTyping && message.request_id.startsWith('temp') ? (
                       <span className="flex gap-1 h-6 items-center">
                         <span className="w-1 h-1 bg-white rounded-full animate-bounce"></span>
                         <span className="w-1 h-1 bg-white rounded-full animate-bounce [animation-delay:0.2s]"></span>
@@ -102,7 +101,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isT
         )}
       </div>
 
-      {/* Input Area */}
       <div className="p-4 bg-gradient-to-t from-[#0d0d0d] via-[#0d0d0d] to-transparent">
         <form onSubmit={handleSubmit} className="max-w-3xl mx-auto relative group">
           <textarea
@@ -110,7 +108,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isT
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Message Gemini..."
+            placeholder="Message..."
             className="w-full bg-[#171717] text-[#ececec] border border-[#303030] rounded-2xl pl-4 pr-14 py-4 focus:outline-none focus:ring-1 focus:ring-[#676767] resize-none overflow-hidden max-h-48 transition"
             style={{ height: 'auto' }}
           />
@@ -126,9 +124,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isT
             </svg>
           </button>
         </form>
-        <p className="max-w-3xl mx-auto text-center text-xs text-[#676767] mt-3">
-          Gemini can make mistakes. Consider checking important information.
-        </p>
       </div>
     </main>
   );

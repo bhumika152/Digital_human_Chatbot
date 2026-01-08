@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { AuthMode, User } from '../types';
+import { authService } from '../services/authService';
 
 interface AuthPageProps {
   onAuthSuccess: (user: User) => void;
@@ -12,22 +13,40 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess }) => {
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsLoading(true);
+  setError(null);
 
-    // Simulated auth delay
-    setTimeout(() => {
-      const mockUser: User = {
-        id: Math.random().toString(36).substr(2, 9),
-        email,
-        username: username || email.split('@')[0],
-      };
-      onAuthSuccess(mockUser);
-      setIsLoading(false);
-    }, 1000);
-  };
+  try {
+    if (mode === 'login') {
+      // ✅ LOGIN FLOW
+      await authService.login(email, password);
+
+           // dummy user, app ko sirf signal chahiye
+         onAuthSuccess({ user_id: 0, email });
+
+    } else {
+      // ✅ SIGNUP FLOW
+      await authService.signup(username, email, password);
+
+      alert("Signup successful! Please login.");
+
+      // 👇 signup ke baad LOGIN mode pe lao
+      setMode('login');
+
+      // optional: clear password
+      setPassword('');
+    }
+  } catch (err: any) {
+    setError(err.message || 'Authentication failed');
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-[#0d0d0d]">
@@ -43,9 +62,15 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess }) => {
         <h1 className="text-3xl font-bold text-center mb-2">
           {mode === 'login' ? 'Welcome back' : 'Create an account'}
         </h1>
-        <p className="text-[#b4b4b4] text-center mb-8">
+        <p className="text-[#b4b4b4] text-center mb-6">
           {mode === 'login' ? 'Log in with your details to continue' : 'Sign up to start chatting with Gemini'}
         </p>
+
+        {error && (
+          <div className="mb-6 p-3 bg-red-500/10 border border-red-500/50 rounded-lg text-red-500 text-sm text-center">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {mode === 'signup' && (
@@ -100,7 +125,10 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess }) => {
             {mode === 'login' ? "Don't have an account?" : "Already have an account?"}
           </span>
           <button
-            onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
+            onClick={() => {
+              setMode(mode === 'login' ? 'signup' : 'login');
+              setError(null);
+            }}
             className="ml-2 text-white font-medium hover:underline"
           >
             {mode === 'login' ? 'Sign up' : 'Log in'}
