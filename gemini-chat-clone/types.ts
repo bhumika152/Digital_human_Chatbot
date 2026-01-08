@@ -24,5 +24,5 @@ export interface User {
   created_at: string;
 }
 
-export type AuthMode = 'login' | 'signup';
+export type AuthMode = 'login' | 'signup' | 'forgot-password'| 'reset-password';
 export type AppView = 'auth' | 'chat';

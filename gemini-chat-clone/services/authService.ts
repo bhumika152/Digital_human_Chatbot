@@ -1,76 +1,34 @@
 
-// import { User } from '../types';
-
-// // FastAPI default port is 8000. Update this to your production URL later.
-// const API_BASE_URL = 'http://localhost:8000'; 
-
-// /**
-//  * AuthService handles login and registration with a FastAPI backend.
-//  */
-// export const authService = {
-//   async login(email: string, password: string): Promise<User> {
-//     const response = await fetch(`${API_BASE_URL}/auth/login`, {
-//       method: 'POST',
-//       headers: { 'Content-Type': 'application/json' },
-//       body: JSON.stringify({ email, password }),
-//     });
-
-//     if (!response.ok) {
-//       const errorData = await response.json();
-//       // FastAPI usually returns errors in a { "detail": "message" } format
-//       throw new Error(errorData.detail || 'Login failed');
-//     }
-
-//     return response.json();
-//   },
-
-//   async signup(username: string, email: string, password: string): Promise<User> {
-//     const response = await fetch(`${API_BASE_URL}/auth/signup`, {
-//       method: 'POST',
-//       headers: { 'Content-Type': 'application/json' },
-//       body: JSON.stringify({ username, email, password }),
-//     });
-
-//     if (!response.ok) {
-//       const errorData = await response.json();
-//       throw new Error(errorData.detail || 'Signup failed');
-//     }
-
-//     return response.json();
-//   }
-// };
 import { User } from '../types';
 
-// FastAPI backend URL
+// FastAPI default port is 8000. Update this to your production URL later.
 const API_BASE_URL = 'http://localhost:8000'; 
 
 /**
- * AuthService handles login and registration with FastAPI backend.
+ * AuthService handles login, registration, and password recovery with a FastAPI backend.
  */
 export const authService = {
+  async login(email: string, password: string){
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await response.json();   // 👈 data yahin bana
 
-  // 🔐 LOGIN
-  async login(email: string, password: string): Promise<void> {
-  const response = await fetch(`${API_BASE_URL}/auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
-  });
+    console.log("LOGIN RESPONSE:", data); 
 
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.detail || 'Login failed');
-  }
-
-  const data = await response.json();
-
-  // 🔑 SAVE TOKEN
-  localStorage.setItem('access_token', data.access_token);
-},
+    if (!response.ok) {
+      throw new Error(data.detail || 'Login failed');
+    }
+        localStorage.setItem("access_token", data.access_token);
 
 
-  // 📝 SIGNUP
-  async signup(username: string, email: string, password: string) {
+    return data;
+  
+  },
+
+  async signup(username: string, email: string, password: string): Promise<User> {
     const response = await fetch(`${API_BASE_URL}/auth/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -82,7 +40,42 @@ export const authService = {
       throw new Error(errorData.detail || 'Signup failed');
     }
 
-    // ❌ Signup me token save NAHI karna
+    return response.json();
+  },
+
+  /**
+   * Sends a password reset request to the FastAPI backend.
+   */
+  async forgotPassword(email: string): Promise<{ message: string }> {
+    const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || 'Failed to send reset request');
+    }
+
+    return response.json();
+  },
+
+  /**
+   * Submits the new password using the token provided in the email link.
+   */
+  async resetPassword(token: string, password: string): Promise<{ message: string }> {
+    const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, password }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || 'Failed to reset password');
+    }
+
     return response.json();
   }
 };
