@@ -2,15 +2,17 @@ from digital_human_sdk.app.intelligence.contracts.tool_request import ToolReques
 
 
 class ToolExecutor:
-    """Minimal stub so the SDK can run without backend tool plumbing."""
 
     @staticmethod
-    def execute(request: ToolRequest):
-        # In this SDK-only run, we don't actually call external tools.
-        return {
-            "status": "noop",
-            "tool_requested": request.tool_name,
-            "arguments": request.arguments,
-            "message": "Tool execution not implemented in SDK sandbox.",
-        }
+    def execute(tool_request):
+        if tool_request.tool_name == "calculator":
+            try:
+                expr = tool_request.arguments.get("expression", "")
+                if not all(c in "0123456789+-*/(). " for c in expr):
+                    raise ValueError("Invalid chars")
+                return {"result": eval(expr)}
+            except Exception:
+                return {"error": "Tool execution failed"}
+
+        return {"error": "Tool not allowed"}
 
