@@ -17,8 +17,42 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
 
+    // 👇 👇 👇 YAHI ADD KARNA HAI
+  const PAGE_SIZE = 20;
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(true); 
+
+//    // ✅👇 YAHAN ADD KARO (TEMP TEST)
+//   useEffect(() => {
+//   const fakeMessages = Array.from({ length: 40 }, (_, i) => ({
+//     request_id: `fake-${i}`,
+//     session_id: 'test',
+//     role: i % 2 === 0 ? 'user' : 'assistant',
+//     content: `Fake message ${i}`,
+//     created_at: new Date().toISOString(),
+//   }));
+
+//   // 🔥 ONLY LAST 20 LOAD FIRST
+//   setMessages(fakeMessages.slice(20));
+//   setOffset(20);
+//   setHasMore(true);
+// }, []);
+
+// // ✅ 3. 🔥 YAHI ADD KARNA HAI (TESTING FUNCTION)
+//   const loadMoreMessages = async () => {
+//     const older = Array.from({ length: 20 }, (_, i) => ({
+//       request_id: `old-${i}`,
+//       session_id: 'test',
+//       role: i % 2 === 0 ? 'user' : 'assistant',
+//       content: `OLDER message ${i}`,
+//       created_at: new Date().toISOString(),
+//     }));
+
+//     setMessages(prev => [...older, ...prev]);
+//     // setHasMore(false); // 👈 ek hi baar load
+//   };
   /* ----------------------------
-     LOAD SIDEBAR SESSIONS
+     LOAD SIDEBAR SESSIONS  
   ---------------------------- */
   useEffect(() => {
     if (!user) return;
@@ -28,6 +62,53 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
       .then(setSessions)
       .catch(err => console.error('Failed to load sessions', err));
   }, [user]);
+
+  /* ----------------------------
+   LOAD CHAT HISTORY ON SIDEBAR CLICK
+  ---------------------------- */
+useEffect(() => {
+  if (!currentSessionId) return;
+
+  const loadMessages = async () => {
+    try {
+      const history = await chatService.getMessages(
+        currentSessionId,
+        PAGE_SIZE,
+        0
+      );
+
+      setMessages(history);
+      setOffset(history.length);                 // 🔥 REQUIRED
+      setHasMore(history.length === PAGE_SIZE);  // 🔥 REQUIRED
+    } catch (err) {
+      console.error('Failed to load chat history', err);
+    }
+  };
+
+  loadMessages();
+}, [currentSessionId]);
+
+/* ----------------------------
+   LOAD OLDER MESSAGES (PAGINATION)
+---------------------------- */
+const loadMoreMessages = async () => {
+  if (!currentSessionId) return;
+
+  try {
+    const olderMessages = await chatService.getMessages(
+      currentSessionId,
+      PAGE_SIZE,
+      offset
+    );
+
+    setMessages(prev => [...olderMessages, ...prev]); // ⬆️ prepend
+    setOffset(prev => prev + olderMessages.length);
+    // hasMore ko yahan touch hi nahi karna
+  } catch (err) {
+    console.error('Failed to load older messages', err);
+  }
+};
+
 
   /* ----------------------------
      NEW CHAT
@@ -176,6 +257,8 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
         onSendMessage={handleSendMessage}
         isTyping={isTyping}
         isSidebarOpen={isSidebarOpen}
+        hasMore={hasMore}                 // 👈 MUST
+        onLoadMore={loadMoreMessages}     // 👈 MUST
       />
     </div>
   );

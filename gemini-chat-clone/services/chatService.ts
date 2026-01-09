@@ -42,23 +42,27 @@ export const chatService = {
   },
 
   /* ============================
-     💬 GET MESSAGES OF SESSION
-     ============================ */
-  async getMessages(sessionId: string): Promise<Message[]> {
-    const response = await fetch(
-      `${API_BASE_URL}/chat/sessions/${sessionId}/messages`,
-      {
-        method: 'GET',
-        headers: authHeaders(),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error('Failed to load messages');
+   💬 GET MESSAGES OF SESSION (PAGINATION)
+   ============================ */
+async getMessages(
+  sessionId: string,
+  limit: number = 20,
+  offset: number = 0
+): Promise<Message[]> {
+  const response = await fetch(
+    `${API_BASE_URL}/chat/sessions/${sessionId}/messages?limit=${limit}&offset=${offset}`,
+    {
+      method: 'GET',
+      headers: authHeaders(),
     }
+  );
 
-    return response.json();
-  },
+  if (!response.ok) {
+    throw new Error('Failed to load messages');
+  }
+
+  return response.json();
+},
 
   /* ============================
      🤖 SEND MESSAGE (STREAMING)
@@ -133,3 +137,4 @@ export const chatService = {
   }
 }
 };
+

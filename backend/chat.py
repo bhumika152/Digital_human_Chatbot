@@ -235,6 +235,8 @@ def create_chat_session(
 @router.get("/sessions/{session_id}/messages")
 def get_chat_messages(
     session_id: str,
+    limit: int = 20,
+    offset: int = 0,
     user_id: int = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
@@ -253,7 +255,9 @@ def get_chat_messages(
     messages = (
         db.query(ChatMessage)
         .filter(ChatMessage.session_id == session_id)
-        .order_by(ChatMessage.created_at.asc())
+        .order_by(ChatMessage.created_at.desc())  # 🔥 newest first
+        .offset(offset)
+        .limit(limit)
         .all()
     )
 
@@ -264,9 +268,8 @@ def get_chat_messages(
             "content": m.content,
             "created_at": m.created_at,
         }
-        for m in messages
+        for m in reversed(messages)  # 🔥 UI me oldest → newest
     ]
-
 
 # ==========================================================
 # DELETE CHAT SESSION

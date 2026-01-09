@@ -7,9 +7,12 @@ interface ChatWindowProps {
   onSendMessage: (content: string) => void;
   isTyping: boolean;
   isSidebarOpen: boolean;
+  
+ hasMore: boolean;        // ✅ REQUIRED
+  onLoadMore: () => void;  // ✅ REQUIRED
 }
 
-export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isTyping }) => {
+export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isTyping,isSidebarOpen,hasMore,onLoadMore }) => {
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -65,39 +68,58 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isT
           </div>
         ) : (
           <div className="w-full max-w-3xl mx-auto py-8 px-4 space-y-8">
-            {chat.messages.map((message) => (
-              <div key={message.request_id} className="flex gap-4">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                  message.role === 'user' ? 'bg-indigo-600' : 'bg-emerald-600'
-                }`}>
-                  {message.role === 'user' ? (
-                    <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                    </svg>
-                  )}
-                </div>
-                <div className="flex-1 space-y-1 overflow-hidden">
-                  <div className="font-bold text-sm uppercase tracking-wide text-[#b4b4b4]">
-                    {message.role === 'user' ? 'You' : 'Assistant'}
-                  </div>
-                  <div className="text-base text-[#ececec] whitespace-pre-wrap leading-relaxed">
-                    {message.content || (isTyping && message.request_id.startsWith('temp') ? (
-                      <span className="flex gap-1 h-6 items-center">
-                        <span className="w-1 h-1 bg-white rounded-full animate-bounce"></span>
-                        <span className="w-1 h-1 bg-white rounded-full animate-bounce [animation-delay:0.2s]"></span>
-                        <span className="w-1 h-1 bg-white rounded-full animate-bounce [animation-delay:0.4s]"></span>
-                      </span>
-                    ) : null)}
-                  </div>
-                </div>
-              </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
+
+  {/* 🔥 LOAD OLDER MESSAGES BUTTON (TOP) */}
+  {hasMore && (
+    <div className="flex justify-center mb-4">
+      <button
+        onClick={onLoadMore}
+        className="text-xs text-[#b4b4b4] hover:text-white px-3 py-1 rounded-lg border border-[#303030] hover:bg-[#171717] transition"
+      >
+        Load older messages
+      </button>
+    </div>
+  )}
+
+  {/* 💬 CHAT MESSAGES */}
+  {chat.messages.map((message) => (
+    <div key={message.request_id} className="flex gap-4">
+      <div
+        className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+          message.role === 'user' ? 'bg-indigo-600' : 'bg-emerald-600'
+        }`}
+      >
+        {message.role === 'user' ? (
+          <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        ) : (
+          <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+          </svg>
+        )}
+      </div>
+
+      <div className="flex-1 space-y-1 overflow-hidden">
+        <div className="font-bold text-sm uppercase tracking-wide text-[#b4b4b4]">
+          {message.role === 'user' ? 'You' : 'Assistant'}
+        </div>
+        <div className="text-base text-[#ececec] whitespace-pre-wrap leading-relaxed">
+          {message.content || (isTyping && message.request_id.startsWith('temp') ? (
+            <span className="flex gap-1 h-6 items-center">
+              <span className="w-1 h-1 bg-white rounded-full animate-bounce"></span>
+              <span className="w-1 h-1 bg-white rounded-full animate-bounce [animation-delay:0.2s]"></span>
+              <span className="w-1 h-1 bg-white rounded-full animate-bounce [animation-delay:0.4s]"></span>
+            </span>
+          ) : null)}
+        </div>
+      </div>
+    </div>
+  ))}
+
+  <div ref={messagesEndRef} />
+</div>
+
         )}
       </div>
 
