@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
-import uuid
 import logging
 
 from database import SessionLocal
@@ -27,7 +26,7 @@ logging.basicConfig(
 
 
 # ==========================================================
-# DB Dependency (SHORT LIVED)
+# DB Dependency
 # ==========================================================
 def get_db():
     db = SessionLocal()
@@ -54,17 +53,15 @@ def chat(
     # LOAD USER CONFIG
     # --------------------
     user_config = get_user_config(db, user_id)
-    logger.info(f"⚙️ User config loaded | user_id={user_id}")
 
     # --------------------
     # VALIDATE PAYLOAD
     # --------------------
-    session_id = payload.get("conversation_id")
     raw_message = payload.get("message")
+    session_id = payload.get("conversation_id")
 
     if not raw_message:
-        logger.error("❌ Missing message in payload")
-        raise HTTPException(status_code=400, detail="Invalid payload")
+        raise HTTPException(status_code=400, detail="Message missing")
 
     user_text = (
         raw_message.get("content", "")
@@ -73,32 +70,33 @@ def chat(
     )
 
     if not user_text.strip():
-        logger.error("❌ Empty message received")
         raise HTTPException(status_code=400, detail="Empty message")
 
     # --------------------
-    # SESSION HANDLING
+    # SESSION HANDLING (FIXED)
     # --------------------
-    if not session_id:
-        session_id = str(uuid.uuid4())
-        logger.info(f"🆕 New session created | session_id={session_id}")
-
-    session = (
-        db.query(ChatSession)
-        .filter(ChatSession.session_id == session_id)
-        .filter(ChatSession.user_id == user_id)
-        .first()
-    )
-
-    if not session:
+    if session_id:
+        session = (
+            db.query(ChatSession)
+            .filter(
+                ChatSession.session_id == session_id,
+                ChatSession.user_id == user_id
+            )
+            .first()
+        )
+        if not session:
+            raise HTTPException(status_code=404, detail="Session not found")
+    else:
         session = ChatSession(
-            session_id=session_id,
             user_id=user_id,
-            session_title=user_text[:50],
+            session_title=user_text[:50]
         )
         db.add(session)
         db.commit()
-        logger.info(f"📌 Session stored | session_id={session_id}")
+        db.refresh(session)
+        session_id = str(session.session_id)
+
+        logger.info(f"🆕 New session created | {session_id}")
 
     # --------------------
     # LOAD CHAT HISTORY
@@ -115,10 +113,6 @@ def chat(
         for msg in previous_messages
     ]
 
-    logger.info(
-        f"📜 Loaded chat history | messages={len(chat_history)}"
-    )
-
     # --------------------
     # SAVE USER MESSAGE
     # --------------------
@@ -130,17 +124,12 @@ def chat(
         )
     )
     db.commit()
-    logger.info("💾 User message saved")
 
     # ==========================================================
     # STREAM RESPONSE
     # ==========================================================
     async def stream_response():
         full_response = ""
-
-        logger.info(
-            f"🤖 Digital Human stream started | session_id={session_id}"
-        )
 
         async for event in run_digital_human_chat(
             user_input=user_text,
@@ -149,24 +138,14 @@ def chat(
         ):
             event_type = event.get("type")
 
-            # --------------------
-            # TOKEN STREAM
-            # --------------------
             if event_type == "token":
                 token = event.get("value", "")
                 full_response += token
                 yield token
 
-            # --------------------
-            # MEMORY EVENT
-            # --------------------
             elif event_type == "memory_event":
                 memory_action = event.get("payload", {})
-                logger.info(
-                    f"🧠 Memory event received | action={memory_action.get('action')} | key={memory_action.get('key')}"
-                )
 
-                # 🔒 SHORT-LIVED DB SESSION
                 db_inner = SessionLocal()
                 try:
                     apply_memory_action(
@@ -175,18 +154,12 @@ def chat(
                         action=memory_action,
                     )
                     db_inner.commit()
-                    logger.info("✅ Memory action applied successfully")
-
-                except Exception as e:
+                except Exception:
                     db_inner.rollback()
-                    logger.error(f"❌ Memory action failed | error={e}")
-
                 finally:
                     db_inner.close()
 
-        # --------------------
         # SAVE ASSISTANT MESSAGE
-        # --------------------
         db_final = SessionLocal()
         try:
             db_final.add(
@@ -197,17 +170,126 @@ def chat(
                 )
             )
             db_final.commit()
-            logger.info(
-                f"💾 Assistant message saved | chars={len(full_response)}"
-            )
         finally:
             db_final.close()
-
-        logger.info(
-            f"✅ Chat completed | session_id={session_id}"
-        )
 
     return StreamingResponse(
         stream_response(),
         media_type="text/plain",
+        headers={
+            "X-Session-Id": session_id
+        }
     )
+
+
+# ==========================================================
+# GET ALL SESSIONS (SIDEBAR)
+# ==========================================================
+@router.get("/sessions")
+def get_chat_sessions(
+    user_id: int = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    sessions = (
+        db.query(ChatSession)
+        .filter(ChatSession.user_id == user_id)
+        .order_by(ChatSession.created_at.desc())
+        .all()
+    )
+
+    return [
+        {
+            "session_id": str(s.session_id),
+            "session_title": s.session_title or "New Chat",
+            "created_at": s.created_at,
+        }
+        for s in sessions
+    ]
+
+
+# ==========================================================
+# CREATE NEW CHAT SESSION
+# ==========================================================
+@router.post("/sessions")
+def create_chat_session(
+    user_id: int = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    session = ChatSession(
+        user_id=user_id,
+        session_title="New Chat"
+    )
+    db.add(session)
+    db.commit()
+    db.refresh(session)
+
+    return {
+        "session_id": str(session.session_id),
+        "session_title": session.session_title
+    }
+
+
+# ==========================================================
+# GET MESSAGES OF A SESSION
+# ==========================================================
+@router.get("/sessions/{session_id}/messages")
+def get_chat_messages(
+    session_id: str,
+    user_id: int = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    session = (
+        db.query(ChatSession)
+        .filter(
+            ChatSession.session_id == session_id,
+            ChatSession.user_id == user_id
+        )
+        .first()
+    )
+
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    messages = (
+        db.query(ChatMessage)
+        .filter(ChatMessage.session_id == session_id)
+        .order_by(ChatMessage.created_at.asc())
+        .all()
+    )
+
+    return [
+        {
+            "request_id": str(m.request_id),
+            "role": m.role,
+            "content": m.content,
+            "created_at": m.created_at,
+        }
+        for m in messages
+    ]
+
+
+# ==========================================================
+# DELETE CHAT SESSION
+# ==========================================================
+@router.delete("/sessions/{session_id}")
+def delete_chat_session(
+    session_id: str,
+    user_id: int = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    session = (
+        db.query(ChatSession)
+        .filter(
+            ChatSession.session_id == session_id,
+            ChatSession.user_id == user_id
+        )
+        .first()
+    )
+
+    if not session:
+        raise HTTPException(status_code=404, detail="Chat session not found")
+
+    db.delete(session)
+    db.commit()
+
+    return {"message": "Chat deleted successfully"}

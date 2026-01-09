@@ -2,62 +2,82 @@ import { ChatSession, Message } from '../types';
 
 const API_BASE_URL = 'http://localhost:8000';
 
-/**
- * ChatService connects to FastAPI endpoints
- */
+// 🔐 helper for auth headers
+const authHeaders = () => ({
+  'Content-Type': 'application/json',
+  Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+});
+
 export const chatService = {
-
-  /* ------------------------------
-     ❌ OLD APIs (backend me nahi)
-     tum baad me hata sakti ho
-  ------------------------------ */
-
-  async getSessions(userId: string): Promise<ChatSession[]> {
-    const response = await fetch(`${API_BASE_URL}/api/sessions?user_id=${userId}`);
-    return response.json();
-  },
-
-  async createSession(userId: string, title: string): Promise<ChatSession> {
-    const response = await fetch(`${API_BASE_URL}/api/sessions`, {
+  /* ============================
+     🆕 CREATE NEW CHAT SESSION
+     ============================ */
+  async createSession(): Promise<ChatSession> {
+    const response = await fetch(`${API_BASE_URL}/chat/sessions`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ user_id: userId, session_title: title }),
+      headers: authHeaders(),
     });
+
+    if (!response.ok) {
+      throw new Error('Failed to create session');
+    }
+
     return response.json();
   },
 
+  /* ============================
+     📂 SIDEBAR: GET ALL SESSIONS
+     ============================ */
+  async getSessions(): Promise<ChatSession[]> {
+    const response = await fetch(`${API_BASE_URL}/chat/sessions`, {
+      method: 'GET',
+      headers: authHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to load chat sessions');
+    }
+
+    return response.json();
+  },
+
+  /* ============================
+     💬 GET MESSAGES OF SESSION
+     ============================ */
   async getMessages(sessionId: string): Promise<Message[]> {
-    const response = await fetch(`${API_BASE_URL}/api/messages?session_id=${sessionId}`);
+    const response = await fetch(
+      `${API_BASE_URL}/chat/sessions/${sessionId}/messages`,
+      {
+        method: 'GET',
+        headers: authHeaders(),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to load messages');
+    }
+
     return response.json();
   },
 
-  async saveMessage(sessionId: string, role: string, content: string): Promise<Message> {
-    const response = await fetch(`${API_BASE_URL}/api/messages`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ session_id: sessionId, role, content }),
-    });
-    return response.json();
-  },
-
-  /* =====================================================
-     ✅ REAL CHAT API (STREAMING) – IMPORTANT PART
-  ===================================================== */
-
+  /* ============================
+     🤖 SEND MESSAGE (STREAMING)
+     ============================ */
   async sendChatMessageStreaming(
     token: string,
     conversationId: string | null,
     message: string,
-    onChunk: (chunk: string) => void
+    onChunk: (chunk: string) => void,
+    onSessionId?: (sessionId: string) => void
   ) {
     const response = await fetch(`${API_BASE_URL}/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`, // 🔐 JWT token
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        conversation_id: conversationId,   // null = new chat
+        conversation_id: conversationId, // null only for FIRST message
         message: {
           role: 'user',
           content: message,
@@ -65,20 +85,42 @@ export const chatService = {
       }),
     });
 
-    if (!response.body) {
-      throw new Error('Streaming not supported by browser');
+    // 🔑 READ SESSION ID FROM HEADER (FIRST MESSAGE ONLY)
+    const newSessionId = response.headers.get('X-Session-Id');
+    console.log('HEADER SESSION:', newSessionId);
+
+    if (!conversationId && newSessionId && onSessionId) {
+      onSessionId(newSessionId);
     }
 
-    // 🔁 STREAM READER
+    if (!response.body) {
+      throw new Error('Streaming not supported');
+    }
+
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
 
     while (true) {
       const { value, done } = await reader.read();
       if (done) break;
-
-      const chunk = decoder.decode(value);
-      onChunk(chunk); // 👈 har token yahan milta hai
+      onChunk(decoder.decode(value));
     }
-  }
+  },
+
+  /* ============================
+     🗑️ DELETE CHAT SESSION
+     ============================ */
+  async deleteSession(sessionId: string): Promise<void> {
+    const response = await fetch(
+      `${API_BASE_URL}/chat/sessions/${sessionId}`,
+      {
+        method: 'DELETE',
+        headers: authHeaders(),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to delete chat session');
+    }
+  },
 };

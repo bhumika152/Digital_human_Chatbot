@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { User, Message } from '../types';
+import React, { useState, useEffect } from 'react';
+import { User, Message, ChatSession } from '../types';
 import { Sidebar } from './Sidebar';
 import { ChatWindow } from './ChatWindow';
 import { chatService } from '../services/chatService';
@@ -10,29 +10,60 @@ interface ChatPageProps {
 }
 
 export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
+  // 🔑 SINGLE SOURCE OF TRUTH
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
 
   /* ----------------------------
-     NEW CHAT
+     LOAD SIDEBAR SESSIONS
   ---------------------------- */
-  const handleNewChat = () => {
-    setCurrentSessionId(null);
-    setMessages([]);
-  };
+  useEffect(() => {
+    if (!user) return;
+
+    chatService
+      .getSessions()
+      .then(setSessions)
+      .catch(err => console.error('Failed to load sessions', err));
+  }, [user]);
 
   /* ----------------------------
-     SEND MESSAGE (CORE LOGIC)
+     NEW CHAT
+  ---------------------------- */
+  const handleNewChat = async () => {
+  try {
+    // 🔥 BACKEND ME NEW SESSION CREATE
+    const newSession = await chatService.createSession();
+
+    // 🔑 SET NEW SESSION ID
+    setCurrentSessionId(newSession.session_id);
+
+    // 🧹 clear UI
+    setMessages([]);
+
+    // 🔄 refresh sidebar
+    const updatedSessions = await chatService.getSessions();
+    setSessions(updatedSessions);
+  } catch (err) {
+    console.error("Failed to create new chat", err);
+  }
+};
+
+  /* ----------------------------
+     SEND MESSAGE (CORE FIX)
   ---------------------------- */
   const handleSendMessage = async (content: string) => {
     if (!content.trim() || !user) return;
 
     const token = localStorage.getItem('access_token');
-    if (!token) return alert("Please login again");
+    if (!token) {
+      alert('Please login again');
+      return;
+    }
 
-    // 1️⃣ Show user message instantly
+    // 👤 show user message instantly
     const userMsg: Message = {
       request_id: 'user-' + Date.now(),
       session_id: currentSessionId ?? '',
@@ -44,7 +75,7 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
     setMessages(prev => [...prev, userMsg]);
     setIsTyping(true);
 
-    // 2️⃣ Assistant placeholder
+    // 🤖 assistant placeholder
     const assistantTempId = 'assistant-' + Date.now();
     setMessages(prev => [
       ...prev,
@@ -58,11 +89,11 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
     ]);
 
     try {
-      let fullResponse = "";
+      let fullResponse = '';
 
       await chatService.sendChatMessageStreaming(
         token,
-        currentSessionId, // null = new chat
+        currentSessionId, // 🔥 SAME session id reuse hoti hai
         content,
         (chunk) => {
           fullResponse += chunk;
@@ -74,19 +105,23 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
                 : m
             )
           );
-        }
+        },
+        (newSessionId) => {
+          // 🔑 ONLY FIRST MESSAGE ME SAVE HOGA
+          setCurrentSessionId(prev => prev ?? newSessionId);
+          }
+        
       );
 
-      // 🔑 IMPORTANT:
-      // backend automatically creates session if needed
-      // but frontend ko session_id abhi nahi milta
-      // isliye first chat ke baad sidebar logic baad me add karenge
+      // 🔄 refresh sidebar
+      const updatedSessions = await chatService.getSessions();
+      setSessions(updatedSessions);
 
     } catch (err) {
       setMessages(prev =>
         prev.map(m =>
           m.request_id === assistantTempId
-            ? { ...m, content: "❌ Error connecting to backend" }
+            ? { ...m, content: '❌ Error connecting to backend' }
             : m
         )
       );
@@ -96,19 +131,35 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
   };
 
   /* ----------------------------
-     DELETE CHAT (UI ONLY)
+     DELETE CHAT
   ---------------------------- */
-  const handleDeleteChat = () => {
-    setCurrentSessionId(null);
-    setMessages([]);
+  const handleDeleteChat = async (sessionId: string) => {
+    if (!window.confirm('Delete this chat?')) return;
+
+    try {
+      await chatService.deleteSession(sessionId);
+
+      setSessions(prev => prev.filter(s => s.session_id !== sessionId));
+
+      if (currentSessionId === sessionId) {
+        setCurrentSessionId(null);
+        setMessages([]);
+      }
+    } catch (err) {
+      console.error('Delete failed', err);
+      alert('Unable to delete chat');
+    }
   };
 
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar
-        chats={[]}               // ⏳ sessions API baad me
+        chats={sessions.map(s => ({
+          id: s.session_id,
+          title: s.session_title,
+        }))}
         currentChatId={currentSessionId}
-        onSelectChat={() => {}}
+        onSelectChat={(id) => setCurrentSessionId(id)}
         onNewChat={handleNewChat}
         onDeleteChat={handleDeleteChat}
         isOpen={isSidebarOpen}
@@ -118,11 +169,10 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
       />
 
       <ChatWindow
-        chat={
-          currentSessionId
-            ? { id: currentSessionId, messages }
-            : { id: 'new', messages }
-        }
+        chat={{
+          id: currentSessionId ?? 'new',
+          messages,
+        }}
         onSendMessage={handleSendMessage}
         isTyping={isTyping}
         isSidebarOpen={isSidebarOpen}
