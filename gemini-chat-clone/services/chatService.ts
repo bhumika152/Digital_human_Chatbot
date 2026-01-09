@@ -111,16 +111,25 @@ export const chatService = {
      🗑️ DELETE CHAT SESSION
      ============================ */
   async deleteSession(sessionId: string): Promise<void> {
-    const response = await fetch(
-      `${API_BASE_URL}/chat/sessions/${sessionId}`,
-      {
-        method: 'DELETE',
-        headers: authHeaders(),
-      }
-    );
+  const token = localStorage.getItem('access_token');
 
-    if (!response.ok) {
-      throw new Error('Failed to delete chat session');
+  if (!token) {
+    throw new Error('No auth token found');
+  }
+
+  const response = await fetch(
+    `http://localhost:8000/chat/sessions/${sessionId}`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`, // 🔥 REQUIRED
+      },
     }
-  },
+  );
+
+  if (!response.ok) {
+    throw new Error('Failed to delete chat session');
+  }
+}
 };
