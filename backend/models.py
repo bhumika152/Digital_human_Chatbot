@@ -26,7 +26,7 @@ class User(Base):
 
     # BIGSERIAL handled by PostgreSQL sequence
     user_id = Column(BigInteger, primary_key=True, index=True)
-
+    username = Column(Text) 
     email = Column(String, unique=True, nullable=False, index=True)
     password_hash = Column(String, nullable=False)
 
