@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+/gemini-chat-clone/node_modules
+/gemini-chat-clone/dist
