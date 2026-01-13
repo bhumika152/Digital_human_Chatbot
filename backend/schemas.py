@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import List,Optional
 
@@ -43,3 +43,17 @@ class ChatRequest(BaseModel):
     recent_messages: List[Message]
     session: SessionInfo
     constraints: Constraints
+
+# --------------------
+# FORGOT PASSWORD
+# --------------------
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+# --------------------
+# RESET PASSWORD
+# --------------------
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str

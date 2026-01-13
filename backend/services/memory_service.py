@@ -9,7 +9,7 @@ def write_memory(
     memory_type: str,
     memory_content: str,
     confidence_score: float | None = None,
-    ttl_days: int = 30  # 🔥 default 30 days
+    ttl_days: int = 30  
 ):
     expires_at = datetime.now(timezone.utc) + timedelta(days=ttl_days)
 
@@ -55,8 +55,33 @@ def update_memory(
     return memory
 
 
+    # -----------------------------
+    # FETCH MEMORY
+    # -----------------------------
+def fetch_memory(
+    self,
+    user_id: int,
+    memory_type: str,
+    limit: int = 5,
+):
+    return (
+        self.db.query(MemoryStore)
+        .filter(
+            MemoryStore.user_id == user_id,
+            MemoryStore.memory_type == memory_type,
+            MemoryStore.is_active == True,
+            or_(
+                MemoryStore.expires_at.is_(None),
+                MemoryStore.expires_at > datetime.now(timezone.utc),
+            ),
+        )
+        .order_by(MemoryStore.created_at.desc())
+        .limit(limit)
+        .all()
+    )
+
 # -------------------------
-# SOFT DELETE (user says "forget")
+# SOFT DELETE
 # -------------------------
 def soft_delete_memory(
     db: Session,
@@ -82,7 +107,7 @@ def soft_delete_memory(
 
 
 # -------------------------
-# READ (only active + not expired)
+# READ 
 # -------------------------
 def get_active_memories(db: Session, user_id: int):
     now = datetime.now(timezone.utc)
@@ -103,7 +128,7 @@ def get_active_memories(db: Session, user_id: int):
 
 
 # -------------------------
-# AUTO CLEANUP (optional cron / background task)
+# AUTO CLEANUP 
 # -------------------------
 def cleanup_expired_memories(db: Session):
     now = datetime.now(timezone.utc)

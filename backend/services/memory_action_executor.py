@@ -1,6 +1,7 @@
 from services.memory_service import (
     write_memory,
     update_memory,
+    fetch_memory,
     soft_delete_memory,
     get_active_memories,
 )

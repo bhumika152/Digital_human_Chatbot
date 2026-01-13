@@ -39,27 +39,66 @@ def browser_search_tool(params: dict):
     }
 
 
-# ---------------- BING SEARCH ----------------
-def bing_search_tool(params: dict):
+# # ---------------- BING SEARCH ----------------
+# def bing_search_tool(params: dict):
+#     query = params.get("query")
+#     api_key = os.getenv("BING_API_KEY")
+
+#     if not api_key:
+#         return {"error": "BING_API_KEY not set"}
+
+#     url = "https://api.bing.microsoft.com/v7.0/search"
+#     headers = {
+#         "Ocp-Apim-Subscription-Key": api_key
+#     }
+
+#     r = requests.get(
+#         url,
+#         headers=headers,
+#         params={"q": query},
+#         timeout=10
+#     )
+
+#     return r.json()
+
+
+
+# ---------------- SERPAPI SEARCH ----------------
+def serpapi_search_tool(params: dict):
     query = params.get("query")
-    api_key = os.getenv("BING_API_KEY")
+    api_key = os.getenv("SERPAPI_API_KEY")
 
     if not api_key:
-        return {"error": "BING_API_KEY not set"}
+        return {"error": "SERPAPI_API_KEY not set"}
 
-    url = "https://api.bing.microsoft.com/v7.0/search"
-    headers = {
-        "Ocp-Apim-Subscription-Key": api_key
-    }
+    url = "https://serpapi.com/search.json"
 
     r = requests.get(
         url,
-        headers=headers,
-        params={"q": query},
+        params={
+            "q": query,
+            "engine": "google",
+            "api_key": api_key,
+            "num": 5
+        },
         timeout=10
     )
 
-    return r.json()
+    data = r.json()
+
+    # Normalize output 
+    results = []
+    for item in data.get("organic_results", []):
+        results.append({
+            "title": item.get("title"),
+            "link": item.get("link"),
+            "snippet": item.get("snippet")
+        })
+
+    return {
+        "query": query,
+        "results": results
+    }
 
 
 # ---------------- MATH ----------------

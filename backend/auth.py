@@ -5,7 +5,8 @@ from jose import jwt, JWTError
 from datetime import datetime, timedelta,timezone
 import bcrypt
 import secrets
-
+from schemas import ForgotPasswordRequest, ResetPasswordRequest
+import secrets
 from database import SessionLocal
 from models import User, UserConfig, MemoryStore
 from schemas import SignupRequest, LoginRequest, TokenResponse
@@ -130,34 +131,46 @@ def login_help():
 # FORGOT PASSWORD
 # --------------------
 @router.post("/forgot-password")
-def forgot_password(email: str, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.email == email).first()
+def forgot_password(
+    payload: ForgotPasswordRequest,
+    db: Session = Depends(get_db)
+):
+    user = db.query(User).filter(User.email == payload.email).first()
 
-    # Do not reveal user existence
     if not user:
-        return {"message": "If email exists, reset link sent"}
+        raise HTTPException(status_code=404, detail="User not found")
 
-    token = secrets.token_urlsafe(32)
-    user.reset_token = token
+    # 🔑 1. Generate reset token
+    reset_token = secrets.token_urlsafe(32)
+
+    # ⏰ 2. Save token + expiry
+    user.reset_token = reset_token
     user.reset_token_expiry = datetime.utcnow() + timedelta(minutes=30)
+
     db.commit()
 
-    reset_link = f"http://localhost:3000/reset-password/{token}"
+    # 🔗 3. Generate correct reset link
+    reset_link = f"http://localhost:3000/?token={reset_token}"
 
-    # Replace with real email service
+    # 📩 4. For now just print (email later)
     print("RESET PASSWORD LINK:", reset_link)
 
-    return {"message": "Reset email sent"}
+    return {
+        "message": "Reset password link sent to your email"
+    }
 
 # --------------------
 # RESET PASSWORD
 # --------------------
 @router.post("/reset-password")
-def reset_password(token: str, new_password: str, db: Session = Depends(get_db)):
+def reset_password(
+    payload: ResetPasswordRequest,
+    db: Session = Depends(get_db)
+):
     user = (
         db.query(User)
         .filter(
-            User.reset_token == token,
+            User.reset_token == payload.token,
             User.reset_token_expiry > datetime.utcnow()
         )
         .first()
@@ -167,16 +180,21 @@ def reset_password(token: str, new_password: str, db: Session = Depends(get_db))
         raise HTTPException(status_code=400, detail="Invalid or expired token")
 
     hashed = bcrypt.hashpw(
-        new_password.encode(),
+        payload.new_password.encode(),
         bcrypt.gensalt()
     ).decode()
 
     user.password_hash = hashed
     user.reset_token = None
     user.reset_token_expiry = None
+
     db.commit()
 
-    return {"message": "Password reset successful"}
+    return {
+        "message": "Password reset successful"
+    }
+
+
 
 # --------------------
 # MEMORY DEBUG

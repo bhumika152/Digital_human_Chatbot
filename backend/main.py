@@ -12,6 +12,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],      # OPTIONS, POST, GET
     allow_headers=["*"],
+    expose_headers=["X-Session-Id"],
 )
 
 app.include_router(auth.router)
@@ -30,5 +31,5 @@ from database import Base, engine
 Base.metadata.create_all(bind=engine)
 
 # Include chat router
+# Include chat router WITH PREFIX
 app.include_router(chat.router)
-
