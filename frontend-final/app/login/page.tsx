@@ -39,6 +39,8 @@ export default function LoginPage() {
 
       // ✅ SAVE TOKEN (CRITICAL)
       localStorage.setItem("token", data.access_token);
+      localStorage.setItem("user_email", email);
+
 
       // ✅ REDIRECT AFTER TOKEN SAVE
       router.replace("/chat");

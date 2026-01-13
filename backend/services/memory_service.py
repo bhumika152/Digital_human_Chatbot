@@ -41,19 +41,46 @@ def update_memory(
         .filter(
             MemoryStore.user_id == user_id,
             MemoryStore.memory_type == memory_type,
-            MemoryStore.is_active == True
+            MemoryStore.is_active == True,
         )
         .first()
     )
 
-    if memory:
-        memory.memory_content = new_value
-        memory.confidence_score = confidence_score
-        db.commit()
-        db.refresh(memory)
+    if not memory:
+        return None
 
+    memory.memory_content = new_value
+    memory.confidence_score = confidence_score
+    memory.updated_at = datetime.now(timezone.utc)
+
+    db.commit()
+    db.refresh(memory)
     return memory
 
+
+def fetch_memory(
+    db: Session,
+    user_id: int,
+    memory_type: str,
+    limit: int = 5,
+):
+    now = datetime.now(timezone.utc)
+
+    return (
+        db.query(MemoryStore)
+        .filter(
+            MemoryStore.user_id == user_id,
+            MemoryStore.memory_type == memory_type,
+            MemoryStore.is_active == True,
+            or_(
+                MemoryStore.expires_at.is_(None),
+                MemoryStore.expires_at > now,
+            ),
+        )
+        .order_by(MemoryStore.created_at.desc())
+        .limit(limit)
+        .all()
+    )
 
 # -------------------------
 # SOFT DELETE (user says "forget")

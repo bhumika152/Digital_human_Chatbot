@@ -1,18 +1,28 @@
-from digital_human_sdk.app.intelligence.contracts.tool_request import ToolRequest
-
-
+from .implementations import (
+    weather_tool,
+    browser_search_tool,
+    serpapi_search_tool,
+    math_tool,
+)
+ 
+TOOL_REGISTRY = {
+    "weather": weather_tool,
+    "calculator": math_tool,
+    "web_search": serpapi_search_tool,
+    "browser": browser_search_tool,
+}
+ 
 class ToolExecutor:
-
     @staticmethod
-    def execute(tool_request):
-        if tool_request.tool_name == "calculator":
-            try:
-                expr = tool_request.arguments.get("expression", "")
-                if not all(c in "0123456789+-*/(). " for c in expr):
-                    raise ValueError("Invalid chars")
-                return {"result": eval(expr)}
-            except Exception:
-                return {"error": "Tool execution failed"}
-
-        return {"error": "Tool not allowed"}
-
+    def execute(tool: str, arguments: dict):
+        if tool == "none":
+            return None
+ 
+        fn = TOOL_REGISTRY.get(tool)
+ 
+        if not fn:
+            return {"error": f"Unknown tool: {tool}"}
+ 
+        return fn(arguments)
+ 
+ 
