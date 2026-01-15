@@ -40,6 +40,21 @@ export const chatService = {
 
     return response.json();
   },
+  /* ============================
+     👤 GET CURRENT USER PROFILE
+     ============================ */
+  async getMe(): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}/users/me`, {
+      method: "GET",
+      headers: authHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch profile");
+    }
+
+    return response.json();
+  },
 
   /* ============================
    💬 GET MESSAGES OF SESSION (PAGINATION)

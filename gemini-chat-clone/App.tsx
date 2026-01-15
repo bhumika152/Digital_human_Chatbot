@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { Routes, Route, Navigate } from "react-router-dom"; // change
 import { AuthPage } from './components/AuthPage';
 import { ChatPage } from './components/ChatPage';
 import { User, AppView } from './types';
@@ -59,7 +60,7 @@ const App: React.FC = () => {
     setView('auth');
   };
 
-  return (
+   return (
     <div className="min-h-screen bg-[#0d0d0d] text-[#ececec]">
       {view === 'auth' ? (
         <AuthPage 
@@ -71,6 +72,9 @@ const App: React.FC = () => {
       )}
     </div>
   );
+
+  
+
 };
 
 export default App;

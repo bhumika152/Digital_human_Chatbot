@@ -61,3 +61,10 @@ backend/digital_human_sdk/agents/tool_request/__pycache__
 backend/digital_human_sdk/agents/tool_response/__pycache__
 backend/digital_human_sdk/agents/tool_response_handler/__pycache__
 backend/digital_human_sdk/agents/graph/__pycache__
+
+# python cache
+__pycache__/
+*.py[cod]
+
+# python packaging metadata
+*.egg-info/

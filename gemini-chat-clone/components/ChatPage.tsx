@@ -10,14 +10,17 @@ interface ChatPageProps {
 }
 
 export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
+    console.log("ChatPage rendered on:", window.location.pathname); // changes 
   // 🔑 SINGLE SOURCE OF TRUTH
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
+  const [showEditProfile, setShowEditProfile] = useState(false); // changes
 
-    // 👇 👇 👇 YAHI ADD KARNA HAI
+
+    // 👇 👇 👇 
   const PAGE_SIZE = 20;
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true); 
@@ -202,7 +205,7 @@ const loadMoreMessages = async () => {
       setMessages(prev =>
         prev.map(m =>
           m.request_id === assistantTempId
-            ? { ...m, content: '❌ Error connecting to backend' }
+            ? { ...m, content: 'Error connecting to backend' }
             : m
         )
       );
@@ -247,9 +250,11 @@ const loadMoreMessages = async () => {
         toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
         onLogout={onLogout}
         user={user}
+         onEditProfile={() => setShowEditProfile(true)} // changes1
       />
 
-      <ChatWindow
+        
+      {/* <ChatWindow
         chat={{
           id: currentSessionId ?? 'new',
           messages,
@@ -259,7 +264,187 @@ const loadMoreMessages = async () => {
         isSidebarOpen={isSidebarOpen}
         hasMore={hasMore}                 // 👈 MUST
         onLoadMore={loadMoreMessages}     // 👈 MUST
-      />
+      /> */}
+
+      {showEditProfile ? (
+  <EditProfileUI onClose={() => setShowEditProfile(false)} />
+) : (
+  <ChatWindow
+    chat={{
+      id: currentSessionId ?? 'new',
+      messages,
+    }}
+    onSendMessage={handleSendMessage}
+    isTyping={isTyping}
+    isSidebarOpen={isSidebarOpen}
+    hasMore={hasMore}
+    onLoadMore={loadMoreMessages}
+  />
+)}
+
+    </div>
+  );
+};
+
+
+/* ==========================================================
+    EDIT PROFILE UI COMPONENT 
+========================================================== */
+
+const EditProfileUI: React.FC<{
+  onClose: () => void;
+}> = ({onClose }) => {
+  useEffect(() => {
+  const fetchProfile = async () => {
+    try {
+      const token = localStorage.getItem("access_token");
+      if (!token) {
+        console.log("No token found");
+        return;
+      }
+
+      const me = await chatService.getMe(); // 👈 service call
+
+      setFirstName(me.first_name || "");
+      setLastName(me.last_name || "");
+      setUsername(me.username || "");
+      setEmail(me.email || "");
+      setPhone(me.phone || "");
+      setBio(me.bio || "");
+    } catch (err) {
+      console.error("Failed to fetch profile:", err);
+    }
+  };
+
+  fetchProfile();
+}, []);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [bio, setBio] = useState("");
+
+  const handleSave = () => {
+    alert(" UI Working (no api yet)");
+    onClose();
+  };
+
+  return (
+    <div className="h-screen overflow-y-auto bg-[#0f0f0f] text-white flex justify-center p-6 w-full">
+      <div className="w-full max-w-2xl bg-[#171717] border border-[#303030] rounded-2xl p-6">
+
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-xl font-bold">Edit Profile</h1>
+          <button
+            onClick={onClose}
+            className="text-sm text-[#b4b4b4] hover:text-white transition"
+          >
+            ✕ Close
+          </button>
+        </div>
+
+        {/* Form */}
+        <div className="space-y-5">
+
+          {/* First + Last Name */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm text-[#b4b4b4] mb-2">
+                First Name
+              </label>
+              <input
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="Enter first name"
+                className="w-full bg-[#0f0f0f] border border-[#303030] rounded-lg px-4 py-2 outline-none focus:border-indigo-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm text-[#b4b4b4] mb-2">
+                Last Name
+              </label>
+              <input
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                placeholder="Enter last name"
+                className="w-full bg-[#0f0f0f] border border-[#303030] rounded-lg px-4 py-2 outline-none focus:border-indigo-500"
+              />
+            </div>
+          </div>
+
+          {/* Username */}
+          <div>
+            <label className="block text-sm text-[#b4b4b4] mb-2">
+              Username
+            </label>
+            <input
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter username"
+              className="w-full bg-[#0f0f0f] border border-[#303030] rounded-lg px-4 py-2 outline-none focus:border-indigo-500"
+            />
+          </div>
+
+          {/* Email (read-only) */}
+          <div>
+            <label className="block text-sm text-[#b4b4b4] mb-2">
+              Email (Read only)
+            </label>
+            <input
+              value={email}
+              readOnly
+             
+              className="w-full bg-[#0f0f0f] border border-[#303030] rounded-lg px-4 py-2 outline-none opacity-60 cursor-not-allowed"
+            />
+          </div>
+
+          {/* Phone */}
+          <div>
+            <label className="block text-sm text-[#b4b4b4] mb-2">
+              Phone Number
+            </label>
+            <input
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="Enter phone number"
+              className="w-full bg-[#0f0f0f] border border-[#303030] rounded-lg px-4 py-2 outline-none focus:border-indigo-500"
+            />
+          </div>
+
+          {/* Bio */}
+          <div>
+            <label className="block text-sm text-[#b4b4b4] mb-2">Bio</label>
+            <textarea
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              placeholder="Write something about yourself..."
+              rows={4}
+              className="w-full bg-[#0f0f0f] border border-[#303030] rounded-lg px-4 py-2 outline-none focus:border-indigo-500"
+            />
+          </div>
+
+          {/* Buttons */}
+          <div className="flex gap-3 pt-2">
+            <button
+              onClick={handleSave}
+              className="w-1/2 bg-indigo-600 hover:bg-indigo-700 transition rounded-lg py-3 font-medium"
+            >
+              Save Changes
+            </button>
+
+            <button
+              onClick={onClose}
+              className="w-1/2 bg-[#2a2a2a] hover:bg-[#333] transition rounded-lg py-3 font-medium"
+            >
+              Cancel
+            </button>
+          </div>
+
+        </div>
+      </div>
     </div>
   );
 };

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 import logging
 
 from database import SessionLocal
-from models import ChatSession, ChatMessage
+from models import ChatSession, ChatMessage,User
 from auth import get_current_user
 from constants import get_user_config
 from services.memory_action_executor import apply_memory_action
@@ -16,7 +16,9 @@ from digital_human_sdk.app.main import run_digital_human_chat
 # ==========================================================
 # Router & Logger
 # ==========================================================
-router = APIRouter(prefix="/chat", tags=["chat"])
+# router = APIRouter(prefix="/chat", tags=["chat"])
+chat_router = APIRouter(prefix="/chat", tags=["chat"])
+user_router = APIRouter(prefix="/users", tags=["users"])
 
 logger = logging.getLogger("chat")
 logging.basicConfig(
@@ -39,7 +41,8 @@ def get_db():
 # ==========================================================
 # CHAT ENDPOINT (STREAMING)
 # ==========================================================
-@router.post("")
+# @router.post("")
+@chat_router.post("")
 def chat(
     payload: dict,
     user_id: int = Depends(get_current_user),
@@ -185,7 +188,8 @@ def chat(
 # ==========================================================
 # GET ALL SESSIONS (SIDEBAR)
 # ==========================================================
-@router.get("/sessions")
+# @router.get("/sessions")
+@chat_router.get("/sessions")
 def get_chat_sessions(
     user_id: int = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -210,7 +214,8 @@ def get_chat_sessions(
 # ==========================================================
 # CREATE NEW CHAT SESSION
 # ==========================================================
-@router.post("/sessions")
+# @router.post("/sessions")
+@chat_router.post("/sessions")
 def create_chat_session(
     user_id: int = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -232,7 +237,8 @@ def create_chat_session(
 # ==========================================================
 # GET MESSAGES OF A SESSION
 # ==========================================================
-@router.get("/sessions/{session_id}/messages")
+# @router.get("/sessions/{session_id}/messages")
+@chat_router.get("/sessions/{session_id}/messages")
 def get_chat_messages(
     session_id: str,
     limit: int = 20,
@@ -274,7 +280,8 @@ def get_chat_messages(
 # ==========================================================
 # DELETE CHAT SESSION
 # ==========================================================
-@router.delete("/sessions/{session_id}")
+# @router.delete("/sessions/{session_id}")
+@chat_router.delete("/sessions/{session_id}")
 def delete_chat_session(
     session_id: str,
     user_id: int = Depends(get_current_user),
@@ -296,3 +303,28 @@ def delete_chat_session(
     db.commit()
 
     return {"message": "Chat deleted successfully"}
+
+#   Get user data 
+@user_router.get("/me")
+def get_me(
+    user_id: int = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    user = db.query(User).filter(User.user_id == user_id).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    return {
+        "user_id": user.user_id,
+        "email": user.email,
+        "username": user.username,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "phone": user.phone,
+        "bio": user.bio,
+        "created_at": user.created_at,
+
+    }
+
+
