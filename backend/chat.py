@@ -3,6 +3,9 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 import logging
 
+from pydantic import BaseModel
+from typing import Optional 
+
 from database import SessionLocal
 from models import ChatSession, ChatMessage,User
 from auth import get_current_user
@@ -11,7 +14,8 @@ from services.memory_action_executor import apply_memory_action
 
 # 🔥 Digital Human SDK
 from digital_human_sdk.app.main import run_digital_human_chat
-
+# IntegrityError for unique constraint 
+from sqlalchemy.exc import IntegrityError
 
 # ==========================================================
 # Router & Logger
@@ -19,6 +23,18 @@ from digital_human_sdk.app.main import run_digital_human_chat
 # router = APIRouter(prefix="/chat", tags=["chat"])
 chat_router = APIRouter(prefix="/chat", tags=["chat"])
 user_router = APIRouter(prefix="/users", tags=["users"])
+
+# ------------------------------------
+#   Schemas
+# ------------------------------------
+class UpdateProfileRequest(BaseModel):
+    
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    username: Optional[str] = None
+    phone: Optional[str] = None
+    bio: Optional[str] = None
+
 
 logger = logging.getLogger("chat")
 logging.basicConfig(
@@ -303,8 +319,9 @@ def delete_chat_session(
     db.commit()
 
     return {"message": "Chat deleted successfully"}
-
+#------------------------------------
 #   Get user data 
+#------------------------------------
 @user_router.get("/me")
 def get_me(
     user_id: int = Depends(get_current_user),
@@ -327,4 +344,50 @@ def get_me(
 
     }
 
+#------------------------------------
+#   Update user data 
+#------------------------------------
+@user_router.put("/me")
+def update_me(
+    payload: UpdateProfileRequest,
+    user_id: int = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    user = db.query(User).filter(User.user_id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="user not found")
 
+    # ✅ update fields
+    if payload.first_name is not None:
+        user.first_name = payload.first_name
+
+    if payload.last_name is not None:
+        user.last_name = payload.last_name
+
+    if payload.username is not None:
+        user.username = payload.username
+
+    if payload.phone is not None:
+        user.phone = payload.phone
+
+    if payload.bio is not None:
+        user.bio = payload.bio
+
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=400, detail="Username already exists")
+    db.refresh(user)
+    return {
+        "message": "User updated successfully",
+        "user": {
+            "user_id": user.user_id,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "username": user.username,
+            "email": user.email,
+            "phone": user.phone,
+            "bio": user.bio,
+        },
+    }

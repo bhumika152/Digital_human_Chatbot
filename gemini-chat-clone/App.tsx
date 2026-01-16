@@ -5,6 +5,10 @@ import { AuthPage } from './components/AuthPage';
 import { ChatPage } from './components/ChatPage';
 import { User, AppView } from './types';
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+
 /**
  * App component manages the global state: Authentication and App View.
  */
@@ -70,6 +74,8 @@ const App: React.FC = () => {
       ) : (
         <ChatPage user={currentUser} onLogout={handleLogout} />
       )}
+
+      <ToastContainer position="top-right" autoClose={2500} />
     </div>
   );
 

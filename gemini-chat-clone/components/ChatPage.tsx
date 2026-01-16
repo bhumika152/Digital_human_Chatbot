@@ -4,6 +4,10 @@ import { Sidebar } from './Sidebar';
 import { ChatWindow } from './ChatWindow';
 import { chatService } from '../services/chatService';
 
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+
 interface ChatPageProps {
   user: User | null;
   onLogout: () => void;
@@ -18,8 +22,11 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
   const [showEditProfile, setShowEditProfile] = useState(false); // changes
+  const [profileUser, setProfileUser] = useState<User | null>(user);
 
-
+  useEffect(() => {
+    setProfileUser(user);
+  }, [user]);
     // 👇 👇 👇 
   const PAGE_SIZE = 20;
   const [offset, setOffset] = useState(0);
@@ -237,6 +244,7 @@ const loadMoreMessages = async () => {
 
   return (
     <div className="flex h-screen overflow-hidden">
+       <ToastContainer position="top-right" autoClose={2000} />
       <Sidebar
         chats={sessions.map(s => ({
           id: s.session_id,
@@ -249,7 +257,7 @@ const loadMoreMessages = async () => {
         isOpen={isSidebarOpen}
         toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
         onLogout={onLogout}
-        user={user}
+        user={profileUser} // changes
          onEditProfile={() => setShowEditProfile(true)} // changes1
       />
 
@@ -267,7 +275,10 @@ const loadMoreMessages = async () => {
       /> */}
 
       {showEditProfile ? (
-  <EditProfileUI onClose={() => setShowEditProfile(false)} />
+  <EditProfileUI 
+  onClose={() => setShowEditProfile(false)}
+  onProfileUpdated={(updatedUser) => setProfileUser(updatedUser)}
+   />
 ) : (
   <ChatWindow
     chat={{
@@ -293,7 +304,8 @@ const loadMoreMessages = async () => {
 
 const EditProfileUI: React.FC<{
   onClose: () => void;
-}> = ({onClose }) => {
+  onProfileUpdated: (updatedUser: User) => void;
+}> = ({onClose, onProfileUpdated }) => {
   useEffect(() => {
   const fetchProfile = async () => {
     try {
@@ -325,9 +337,32 @@ const EditProfileUI: React.FC<{
   const [phone, setPhone] = useState("");
   const [bio, setBio] = useState("");
 
-  const handleSave = () => {
-    alert(" UI Working (no api yet)");
-    onClose();
+  // const handleSave = () => {
+  //   alert(" UI Working (no api yet)");
+  //   onClose();
+  // };
+  const handleSave = async () => {
+    try{
+      const payload={
+        first_name: firstName,
+        last_name: lastName,
+        username: username,
+        phone: phone,
+        bio: bio,
+      };
+      const res = await chatService.updateMe(payload); // put api call
+      //alert(res.message || "Profile updated successfully");
+      toast.success(res.message || "Profile updated successfully ");
+
+      // sidebar instantly update
+      onProfileUpdated(res.user as User);
+      onClose();
+    } catch (err) {
+      console.error("Failed to update profile:", err);
+      toast.error("Username already exists");
+
+    
+    }
   };
 
   return (
