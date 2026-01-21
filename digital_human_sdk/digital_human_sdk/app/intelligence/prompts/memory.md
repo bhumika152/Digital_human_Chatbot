@@ -71,8 +71,7 @@ OUTPUT FORMAT (JSON ONLY)
 
 ========================
 CONFIDENCE GUIDELINES
-========================
-- 1.0 → Explicit command (e.g., "forget my preference")
+======== xplicit command (e.g., "forget my preference")
 - 0.8–0.9 → Clear personal statement
 - Below 0.7 → Weak or ambiguous (avoid storing)
 

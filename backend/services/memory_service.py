@@ -9,7 +9,7 @@ def write_memory(
     memory_type: str,
     memory_content: str,
     confidence_score: float | None = None,
-    ttl_days: int = 30  # 🔥 default 30 days
+    ttl_days: int = 30
 ):
     expires_at = datetime.now(timezone.utc) + timedelta(days=ttl_days)
 
@@ -22,11 +22,9 @@ def write_memory(
         expires_at=expires_at
     )
     db.add(memory)
-    db.commit()
-    db.refresh(memory)
     return memory
 
-# -------------------------
+#----------------------
 # UPDATE (only active memory)
 # -------------------------
 def update_memory(
@@ -52,10 +50,8 @@ def update_memory(
     memory.memory_content = new_value
     memory.confidence_score = confidence_score
     memory.updated_at = datetime.now(timezone.utc)
-
-    db.commit()
-    db.refresh(memory)
     return memory
+
 
 
 def fetch_memory(
@@ -95,17 +91,14 @@ def soft_delete_memory(
         MemoryStore.is_active == True
     )
 
-    # delete specific memory type OR all memories
     if memory_type:
         query = query.filter(MemoryStore.memory_type == memory_type)
 
-    updated = query.update(
+    query.update(
         {"is_active": False},
         synchronize_session=False
     )
 
-    db.commit()
-    return updated
 
 
 # -------------------------
