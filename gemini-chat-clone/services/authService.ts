@@ -24,7 +24,7 @@ export const authService = {
         localStorage.setItem("access_token", data.access_token);
 
 
-    return data;
+    return data.user;
   
   },
 

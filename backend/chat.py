@@ -2,24 +2,37 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 import logging
-import json
-import uuid
-import time
-from dotenv import load_dotenv
+
+from pydantic import BaseModel
+from typing import Optional 
 
 from database import SessionLocal
-from models import ChatSession, ChatMessage
+from models import ChatSession, ChatMessage,User
 from auth import get_current_user
 from constants import get_user_config
 from services.memory_action_executor import apply_memory_action
 from digital_human_sdk.app.main import run_digital_human_chat
-
-load_dotenv()
+# IntegrityError for unique constraint 
+from sqlalchemy.exc import IntegrityError
 
 # ==========================================================
 # Router & Logger
 # ==========================================================
-router = APIRouter(prefix="/chat", tags=["chat"])
+# router = APIRouter(prefix="/chat", tags=["chat"])
+chat_router = APIRouter(prefix="/chat", tags=["chat"])
+user_router = APIRouter(prefix="/users", tags=["users"])
+
+# ------------------------------------
+#   Schemas
+# ------------------------------------
+class UpdateProfileRequest(BaseModel):
+    
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    username: Optional[str] = None
+    phone: Optional[str] = None
+    bio: Optional[str] = None
+
 
 logger = logging.getLogger("chat")
 logger.setLevel(logging.INFO)
@@ -45,7 +58,8 @@ def get_db():
 # ==========================================================
 # CHAT ENDPOINT (STREAMING)
 # ==========================================================
-@router.post("")
+# @router.post("")
+@chat_router.post("")
 def chat(
     payload: dict,
     user_id: int = Depends(get_current_user),
@@ -244,7 +258,8 @@ def chat(
 # ==========================================================
 # GET ALL SESSIONS
 # ==========================================================
-@router.get("/sessions")
+# @router.get("/sessions")
+@chat_router.get("/sessions")
 def get_chat_sessions(
     user_id: int = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -273,7 +288,8 @@ def get_chat_sessions(
 # ==========================================================
 # CREATE NEW CHAT SESSION
 # ==========================================================
-@router.post("/sessions")
+# @router.post("/sessions")
+@chat_router.post("/sessions")
 def create_chat_session(
     user_id: int = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -299,7 +315,8 @@ def create_chat_session(
 # ==========================================================
 # GET MESSAGES OF A SESSION
 # ==========================================================
-@router.get("/sessions/{session_id}/messages")
+# @router.get("/sessions/{session_id}/messages")
+@chat_router.get("/sessions/{session_id}/messages")
 def get_chat_messages(
     session_id: str,
     limit: int = 20,
@@ -349,7 +366,8 @@ def get_chat_messages(
 # ==========================================================
 # DELETE CHAT SESSION
 # ==========================================================
-@router.delete("/sessions/{session_id}")
+# @router.delete("/sessions/{session_id}")
+@chat_router.delete("/sessions/{session_id}")
 def delete_chat_session(
     session_id: str,
     user_id: int = Depends(get_current_user),
@@ -376,3 +394,75 @@ def delete_chat_session(
     logger.info(f"🗑️ Session deleted | session_id={session_id}")
 
     return {"message": "Chat deleted successfully"}
+#------------------------------------
+#   Get user data 
+#------------------------------------
+@user_router.get("/me")
+def get_me(
+    user_id: int = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    user = db.query(User).filter(User.user_id == user_id).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    return {
+        "user_id": user.user_id,
+        "email": user.email,
+        "username": user.username,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "phone": user.phone,
+        "bio": user.bio,
+        "created_at": user.created_at,
+
+    }
+
+#------------------------------------
+#   Update user data 
+#------------------------------------
+@user_router.put("/me")
+def update_me(
+    payload: UpdateProfileRequest,
+    user_id: int = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    user = db.query(User).filter(User.user_id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="user not found")
+
+    # ✅ update fields
+    if payload.first_name is not None:
+        user.first_name = payload.first_name
+
+    if payload.last_name is not None:
+        user.last_name = payload.last_name
+
+    if payload.username is not None:
+        user.username = payload.username
+
+    if payload.phone is not None:
+        user.phone = payload.phone
+
+    if payload.bio is not None:
+        user.bio = payload.bio
+
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=400, detail="Username already exists")
+    db.refresh(user)
+    return {
+        "message": "User updated successfully",
+        "user": {
+            "user_id": user.user_id,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "username": user.username,
+            "email": user.email,
+            "phone": user.phone,
+            "bio": user.bio,
+        },
+    }

@@ -12,6 +12,8 @@ interface SidebarProps {
   toggleSidebar: () => void;
   onLogout: () => void;
   user: User | null;
+  onEditProfile: () => void;  // changes
+
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -23,8 +25,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
   isOpen,
   toggleSidebar,
   onLogout,
-  user
+  user,
+   onEditProfile, 
 }) => {
+   
   return (
     <aside className={`bg-[#171717] transition-all duration-300 flex flex-col h-full border-r border-[#303030] ${isOpen ? 'w-64' : 'w-0'}`}>
       <div className={`flex flex-col h-full overflow-hidden ${!isOpen && 'opacity-0'}`}>
@@ -77,7 +81,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         <div className="p-3 mt-auto border-t border-[#303030]">
-          <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#212121] transition cursor-default">
+        
+          <div onClick={onEditProfile}
+            className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#212121] transition cursor-pointer"> 
             <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-sm">
               {user?.username?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || '?'}
             </div>

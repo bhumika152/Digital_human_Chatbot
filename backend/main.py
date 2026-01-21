@@ -1,3 +1,4 @@
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import auth, chat
@@ -14,11 +15,8 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["X-Session-Id"],
 )
-
+#  auth router 
 app.include_router(auth.router)
-
-
-
 
 @app.get("/")
 def root():
@@ -31,5 +29,11 @@ from database import Base, engine
 Base.metadata.create_all(bind=engine)
 
 # Include chat router
+app.include_router(chat.chat_router)
 # Include chat router WITH PREFIX
-app.include_router(chat.router)
+# app.include_router(chat.router)
+
+# ✅ Include user router (NEW)
+app.include_router(chat.user_router)
+
+
