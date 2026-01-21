@@ -25,12 +25,34 @@ logger.setLevel(logging.INFO)
 ALLOWED_MEMORY_ACTIONS = {"save", "update", "delete", "none"}
 
 
+# --------------------------------------------------
+# CORE CHAT ORCHESTRATOR
+# --------------------------------------------------
 async def run_digital_human_chat(
     *,
-    user_input: str,
-    chat_history:list,
+    llm_messages: list,
     context: Optional[Any] = None,
 ):
+    """
+    llm_messages:
+        [
+            {"role": "system", "content": "..."},
+            {"role": "system", "content": "Conversation summary..."},
+            {"role": "user", "content": "..."},
+            {"role": "assistant", "content": "..."},
+            {"role": "user", "content": "current input"}
+        ]
+    """
+ 
+    # --------------------------------------------------
+    # Extract CURRENT user input (last user message)
+    # --------------------------------------------------
+    user_input = next(
+        msg["content"]
+        for msg in reversed(llm_messages)
+        if msg["role"] == "user"
+    )
+ 
     """
     Streaming Orchestrator (PRODUCTION SAFE)
 
@@ -206,8 +228,7 @@ async def run_digital_human_chat(
     logger.info("🧠 Reasoning agent called")
 
     reasoning_input = {
-        "user_input": user_input,
-        "chat_history": chat_history,
+        "messages": llm_messages,
         "memory_action": memory_action,
         "memory_data": memory_data,
         "tool_context": tool_context,

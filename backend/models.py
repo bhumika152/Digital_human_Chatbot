@@ -156,6 +156,15 @@ class MemoryStore(Base):
         nullable=False
     )
 
+    # ✅ ADD THIS (CRITICAL)
+    session_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("chat_sessions.session_id", ondelete="CASCADE"),
+        index=True,
+        nullable=True   # nullable = allows user-level memory + session-level memory
+    )
+ 
+
     memory_type = Column(String, nullable=False)
     memory_content = Column(Text, nullable=False)
     confidence_score = Column(Float)

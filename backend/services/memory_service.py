@@ -143,3 +143,21 @@ def cleanup_expired_memories(db: Session):
 
     db.commit()
     return expired
+
+
+def get_conversation_summary(db: Session, session_id):
+    """
+    Fetch rolling conversation summary for a session.
+    Returns None if not present.
+    """
+    summary_row = (
+        db.query(MemoryStore)
+        .filter(
+            MemoryStore.session_id == session_id,
+            MemoryStore.memory_type == "conversation_summary",
+            MemoryStore.is_active == True,
+        )
+        .first()
+    )
+ 
+    return summary_row.memory_content if summary_row else None

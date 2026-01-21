@@ -2,11 +2,14 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 import logging
-
+import json
+import uuid
+import time
+from dotenv import load_dotenv
 from pydantic import BaseModel
 from typing import Optional 
 
-from contexts.agent_context import AgentContext
+from context.agent_context import AgentContext
 from database import SessionLocal
 from models import ChatSession, ChatMessage,User
 from auth import get_current_user
@@ -125,10 +128,14 @@ def chat(
         .all()
     )
  
-    chat_history = [
-        {"role": msg.role, "content": msg.content}
-        for msg in previous_messages
-    ]
+    from context.context_builder import ContextBuilder
+ 
+    llm_context = ContextBuilder.build_llm_context(
+    db=db,
+    session_id=session.session_id,
+    user_input=user_text
+)
+ 
 
     # --------------------
     # SAVE USER MESSAGE
@@ -141,6 +148,16 @@ def chat(
         )
     )
     db.commit()
+
+    agent_context = {
+        "user_id": user_id,
+        "session_id": session.session_id,
+        "enable_memory": user_config.get("enable_memory", True),
+        "enable_tools": user_config.get("enable_tools", True),
+        "enable_rag": user_config.get("enable_rag", True),
+        "db_factory": SessionLocal,
+        "logger": logger,
+    }
 
     # --------------------
     # BUILD AGENT CONTEXT
@@ -161,6 +178,7 @@ def chat(
     # ==========================================================
     async def stream_response():
         full_response = ""
+
         token_count = 0
 
         logger.info(
@@ -175,8 +193,7 @@ def chat(
         )
 
             async for event in run_digital_human_chat(
-                user_input=user_text,
-                chat_history=chat_history,
+                llm_messages=llm_context,
                 context=agent_context,
             ):
                 event_type = event.get("type")
@@ -230,6 +247,9 @@ def chat(
                 )
             )
             db_final.commit()
+
+            from services.summary_manager import maybe_update_summary
+            maybe_update_summary(db_final, session.session_id)
 
             elapsed = round(time.perf_counter() - start_time, 2)
             logger.info(
