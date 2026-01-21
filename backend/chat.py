@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 import logging
  
 from database import SessionLocal
+from context.agent_context import AgentContext
 from models import ChatSession, ChatMessage
 from auth import get_current_user
 from constants import get_user_config
@@ -108,10 +109,13 @@ async def chat(
         .all()
     )
  
-    chat_history = [
-        {"role": msg.role, "content": msg.content}
-        for msg in previous_messages
-    ]
+    from context.context_builder import ContextBuilder
+
+    llm_context = ContextBuilder.build_llm_context(
+    db=db,
+    session_id=session.session_id,
+    user_input=user_text
+)
  
     # --------------------
     # SAVE USER MESSAGE
@@ -124,6 +128,16 @@ async def chat(
         )
     )
     db.commit()
+
+    agent_context = {
+        "user_id": user_id,
+        "session_id": session.session_id,
+        "enable_memory": user_config.get("enable_memory", True),
+        "enable_tools": user_config.get("enable_tools", True),
+        "enable_rag": user_config.get("enable_rag", True),
+        "db_factory": SessionLocal,
+        "logger": logger,
+    }
  
     # ==========================================================
     # STREAM RESPONSE
@@ -132,9 +146,8 @@ async def chat(
         full_response = ""
  
         async for event in run_digital_human_chat(
-            user_input=user_text,
-            chat_history=chat_history,
-            user_config=user_config,
+            llm_messages=llm_context,
+            context=agent_context,
         ):
             event_type = event.get("type")
  
@@ -170,6 +183,8 @@ async def chat(
                 )
             )
             db_final.commit()
+            from services.summary_manager import maybe_update_summary
+            maybe_update_summary(db_final, session.session_id)
         finally:
             db_final.close()
  

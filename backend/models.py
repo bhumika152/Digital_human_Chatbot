@@ -140,15 +140,21 @@ class MemoryStore(Base):
         nullable=False
     )
 
+    # ✅ ADD THIS (CRITICAL)
+    session_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("chat_sessions.session_id", ondelete="CASCADE"),
+        index=True,
+        nullable=True   # nullable = allows user-level memory + session-level memory
+    )
+
     # 🧠 Memory content
     memory_type = Column(String, nullable=False)
     memory_content = Column(Text, nullable=False)
     confidence_score = Column(Float)
 
-    # ✅ Soft delete flag (user "forget")
     is_active = Column(Boolean, default=True, nullable=False)
 
-    # ⏳ Auto cleanup support
     expires_at = Column(DateTime(timezone=True), nullable=True)
 
     # 🕒 Metadata
@@ -158,7 +164,6 @@ class MemoryStore(Base):
         nullable=False
     )
 
-    # 🔁 ORM relationship
     user = relationship("User", back_populates="memories")
 
 
