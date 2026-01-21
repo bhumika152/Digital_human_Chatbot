@@ -17,8 +17,9 @@ from sqlalchemy.orm import relationship
 from pgvector.sqlalchemy import Vector
 from database import Base
 import uuid
-
-
+from sqlalchemy import Column, BigInteger, Text, Integer, Boolean, TIMESTAMP
+from sqlalchemy.sql import func
+ 
 # =========================
 # USERS
 # =========================

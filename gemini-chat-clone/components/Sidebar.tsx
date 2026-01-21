@@ -81,7 +81,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         <div className="p-3 mt-auto border-t border-[#303030]">
-        
           <div onClick={onEditProfile}
             className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#212121] transition cursor-pointer"> 
             <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-sm">

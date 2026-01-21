@@ -66,10 +66,13 @@ async updateMe(payload:Partial<User>):Promise<any>{
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
+
+  const data = await response.json().catch(() => null);
   if (!response.ok) {
-    throw new Error('Failed to update profile');
+    throw new Error(data?.detail || data?.message || "Failed to update profile");
   }
-  return response.json();
+  // return response.json();
+  return data;
 },
 
   /* ============================

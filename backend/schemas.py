@@ -58,3 +58,29 @@ class ForgotPasswordRequest(BaseModel):
 class ResetPasswordRequest(BaseModel):
     token: str
     new_password: str
+
+
+class PropertyResponse(BaseModel):
+    property_id: int
+    title: str
+    city: str
+    locality: str
+    purpose: str
+    price: int
+    
+    class Config:
+        orm_mode = True # ✅ Pydantic v2
+
+# --------------------
+# PROPERTY SCHEMAS
+# --------------------
+class PropertyCreateRequest(BaseModel):
+    title: str
+    city: str
+    locality: str
+    price: int
+    bhk: int
+    area_sqft: int
+    is_legal: bool = False
+    owner_name: str
+    contact_phone: str

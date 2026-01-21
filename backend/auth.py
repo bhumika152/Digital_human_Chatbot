@@ -11,6 +11,7 @@ from database import SessionLocal
 from models import User, UserConfig, MemoryStore
 from schemas import SignupRequest, LoginRequest, TokenResponse
 from utils import create_access_token, SECRET_KEY, ALGORITHM
+from fastapi.security import OAuth2PasswordRequestForm
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -102,32 +103,29 @@ def signup_help():
 
 #     token = create_access_token({"user_id": str(user.user_id)})
 #     return {"access_token": token, "token_type": "bearer"}
-@router.post("/login")
-def login(data: LoginRequest, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.email == data.email).first()
+@router.post("/login", response_model=TokenResponse)
+def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db)
+):
+    user = db.query(User).filter(User.email == form_data.username).first()
     if not user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
-
+ 
     if not bcrypt.checkpw(
-        data.password.encode(),
+        form_data.password.encode(),
         user.password_hash.encode()
     ):
         raise HTTPException(status_code=401, detail="Invalid credentials")
-
-    # ✅ update last login
+ 
     user.last_login = datetime.now(timezone.utc)
     db.commit()
-
+ 
     token = create_access_token({"user_id": str(user.user_id)})
-
+ 
     return {
         "access_token": token,
-        "token_type": "bearer",
-        "user": {                       # 🔥 ADD THIS
-            "user_id": user.user_id,
-            "email": user.email,
-            "username": user.username
-        }
+        "token_type": "bearer"
     }
 
 @router.get("/login")
