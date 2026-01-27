@@ -55,6 +55,7 @@ def signup(data: SignupRequest, db: Session = Depends(get_db)):
     # 3️⃣ Create user
     user = User(
         email=data.email,
+        username=data.username,  
         password_hash=hashed
     )
     db.add(user)
@@ -101,7 +102,7 @@ def signup_help():
 
 #     token = create_access_token({"user_id": str(user.user_id)})
 #     return {"access_token": token, "token_type": "bearer"}
-@router.post("/login", response_model=TokenResponse)
+@router.post("/login")
 def login(data: LoginRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == data.email).first()
     if not user:
@@ -113,7 +114,7 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
     ):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    # ✅ UPDATE LAST LOGIN
+    # ✅ update last login
     user.last_login = datetime.now(timezone.utc)
     db.commit()
 
@@ -121,8 +122,14 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
 
     return {
         "access_token": token,
-        "token_type": "bearer"
+        "token_type": "bearer",
+        "user": {                       # 🔥 ADD THIS
+            "user_id": user.user_id,
+            "email": user.email,
+            "username": user.username
+        }
     }
+
 @router.get("/login")
 def login_help():
     return {"message": "Use POST /auth/login"}

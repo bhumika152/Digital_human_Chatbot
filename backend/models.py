@@ -1,3 +1,4 @@
+
 from sqlalchemy import (
     Column,
     String,
@@ -26,6 +27,13 @@ class User(Base):
 
     # BIGSERIAL handled by PostgreSQL sequence
     user_id = Column(BigInteger, primary_key=True, index=True)
+    username = Column(Text) 
+
+     # (new fields)
+    first_name = Column(String, nullable=True)
+    last_name = Column(String, nullable=True)
+    phone = Column(String, nullable=True)
+    bio = Column(Text, nullable=True)
 
     email = Column(String, unique=True, nullable=False, index=True)
     password_hash = Column(String, nullable=False)
@@ -90,24 +98,34 @@ class ChatSession(Base):
     user = relationship("User", back_populates="sessions")
     messages = relationship("ChatMessage", back_populates="session", cascade="all, delete")
 
-
 # =========================
 # CHAT MESSAGES
 # =========================
 class ChatMessage(Base):
     __tablename__ = "chat_messages"
 
-    request_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    message_id = Column(
+        BigInteger,
+        primary_key=True,
+        autoincrement=True
+    )
+
     session_id = Column(
         UUID(as_uuid=True),
         ForeignKey("chat_sessions.session_id", ondelete="CASCADE"),
-        index=True
+        index=True,
+        nullable=False
     )
 
     role = Column(String, nullable=False)
     content = Column(Text)
     token_count = Column(Integer)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    created_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False
+    )
 
     session = relationship("ChatSession", back_populates="messages")
 
@@ -125,14 +143,12 @@ class ChatMessage(Base):
 class MemoryStore(Base):
     __tablename__ = "memory_store"
 
-    # 🔑 Primary Key
     memory_id = Column(
-        UUID(as_uuid=True),
+        BigInteger,
         primary_key=True,
-        default=uuid.uuid4
+        autoincrement=True
     )
 
-    # 🔗 User relation
     user_id = Column(
         BigInteger,
         ForeignKey("users.user_id", ondelete="CASCADE"),
@@ -147,8 +163,8 @@ class MemoryStore(Base):
         index=True,
         nullable=True   # nullable = allows user-level memory + session-level memory
     )
+ 
 
-    # 🧠 Memory content
     memory_type = Column(String, nullable=False)
     memory_content = Column(Text, nullable=False)
     confidence_score = Column(Float)
@@ -157,7 +173,6 @@ class MemoryStore(Base):
 
     expires_at = Column(DateTime(timezone=True), nullable=True)
 
-    # 🕒 Metadata
     created_at = Column(
         DateTime(timezone=True),
         server_default=func.now(),
@@ -166,33 +181,23 @@ class MemoryStore(Base):
 
     user = relationship("User", back_populates="memories")
 
-
 # =========================
-# VECTOR DATABASE (RAG)
+# VECTOR DB RAG
 # =========================
-# class VectorDBRAG(Base):
-#     __tablename__ = "vector_db_rag"
-
-#     document_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-#     user_id = Column(BigInteger, ForeignKey("users.user_id", ondelete="CASCADE"), index=True)
-
-#     embedding = Column(Vector(1536))
-#     metadata = Column(JSONB)
-
-#     user = relationship("User", back_populates="vectors")
 class VectorDBRAG(Base):
     __tablename__ = "vector_db_rag"
 
     document_id = Column(
-        UUID(as_uuid=True),
+        BigInteger,
         primary_key=True,
-        default=uuid.uuid4
+        autoincrement=True
     )
 
     user_id = Column(
         BigInteger,
         ForeignKey("users.user_id", ondelete="CASCADE"),
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     embedding = Column(ARRAY(Float), nullable=False)
@@ -200,3 +205,4 @@ class VectorDBRAG(Base):
     meta_data = Column("metadata", JSONB)
 
     user = relationship("User", back_populates="vectors")
+

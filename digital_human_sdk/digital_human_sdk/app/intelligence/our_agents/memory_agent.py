@@ -1,9 +1,8 @@
-from agents import Agent
+from digital_human_sdk.app.intelligence.our_agents.base import create_agent
 from pathlib import Path
 
 PROMPT_PATH = Path(__file__).resolve().parents[1] / "prompts" / "memory.md"
-memory_agent = Agent(
+memory_agent = create_agent(
     name="Memory Agent",
-    model="litellm/gemini/gemini-2.5-flash",
-    instructions=PROMPT_PATH.read_text(encoding="utf-8"),
-)
+    instructions=PROMPT_PATH.read_text(encoding="utf-8"),  
+    )

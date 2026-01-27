@@ -1,0 +1,75 @@
+2026-01-27 00:04:37,989 | INFO | main | 🚀 FastAPI application starting
+2026-01-27 00:04:38,068 | INFO | main | 🗄️ Database tables ensured
+2026-01-27 00:05:20,805 | INFO | main | 🚀 FastAPI application starting
+2026-01-27 00:05:20,857 | INFO | main | 🗄️ Database tables ensured
+2026-01-27 00:05:27,126 | INFO | main | 🚀 FastAPI application starting
+2026-01-27 00:05:27,189 | INFO | main | 🗄️ Database tables ensured
+2026-01-27 00:06:04,204 | INFO | main | 🚀 FastAPI application starting
+2026-01-27 00:06:04,287 | INFO | main | 🗄️ Database tables ensured
+2026-01-27 00:06:29,168 | INFO | chat | 📩 Chat request | user_id=6 | request_id=f5790c83-81d7-4e16-b7bf-360db2e394b3
+2026-01-27 00:06:29,169 | INFO | chat | 🧑 User message | hi
+2026-01-27 00:06:29,185 | INFO | chat | 🆕 New session created | 42356d82-d23e-4eab-8ef8-7d395e86e6fe
+2026-01-27 00:06:29,187 | INFO | chat | 🤖 Stream started | session_id=42356d82-d23e-4eab-8ef8-7d395e86e6fe | request_id=f5790c83-81d7-4e16-b7bf-360db2e394b3
+2026-01-27 00:06:29,187 | INFO | chat | 🤖 Running digital human
+2026-01-27 00:06:29,187 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-27 00:06:29,187 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-27 00:06:29,237 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-27 00:06:32,040 | INFO | orchestrator | ✅ Safety passed
+2026-01-27 00:06:32,040 | INFO | orchestrator | 🧭 Router agent called
+2026-01-27 00:06:32,057 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-27 00:06:33,737 | INFO | orchestrator | 🧭 Router | tool=False memory=False intent=none
+2026-01-27 00:06:33,737 | INFO | orchestrator | 🧠 Reasoning agent called
+2026-01-27 00:06:33,738 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-27 00:06:35,555 | INFO | chat | ✅ Stream complete | tokens=1 | time=6.39s
+2026-01-27 00:09:30,414 | ERROR | asyncio | Fatal error on SSL transport
+protocol: <asyncio.sslproto.SSLProtocol object at 0x00000231BAD14B50>
+transport: <_SelectorSocketTransport closing fd=2220>
+Traceback (most recent call last):
+  File "C:\Users\dell\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 924, in write
+    n = self._sock.send(data)
+OSError: [WinError 10038] An operation was attempted on something that is not a socket
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\dell\AppData\Local\Programs\Python\Python310\lib\asyncio\sslproto.py", line 690, in _process_write_backlog
+    self._transport.write(chunk)
+  File "C:\Users\dell\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 930, in write
+    self._fatal_error(exc, 'Fatal write error on socket transport')
+  File "C:\Users\dell\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 725, in _fatal_error
+    self._force_close(exc)
+  File "C:\Users\dell\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 737, in _force_close
+    self._loop.call_soon(self._call_connection_lost, exc)
+  File "C:\Users\dell\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 753, in call_soon
+    self._check_closed()
+  File "C:\Users\dell\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 515, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2026-01-27 00:10:15,762 | INFO | main | 🚀 FastAPI application starting
+2026-01-27 00:10:15,836 | INFO | main | 🗄️ Database tables ensured
+2026-01-27 00:11:52,193 | INFO | main | 🚀 FastAPI application starting
+2026-01-27 00:11:52,245 | INFO | main | 🗄️ Database tables ensured
+2026-01-27 00:12:22,016 | INFO | main | 🚀 FastAPI application starting
+2026-01-27 00:12:22,086 | INFO | main | 🗄️ Database tables ensured
+2026-01-27 00:12:52,693 | INFO | chat | 📩 Chat request | user_id=6 | request_id=decef134-b84b-4e56-adaa-78d61f68fd72
+2026-01-27 00:12:52,697 | INFO | chat | 🧑 User message | hi
+2026-01-27 00:12:52,706 | INFO | chat | 🆕 New session created | 1892a976-bd53-4512-a7bc-d11eadaa106f
+2026-01-27 00:12:52,722 | INFO | chat | 🤖 Stream started | session_id=1892a976-bd53-4512-a7bc-d11eadaa106f | request_id=decef134-b84b-4e56-adaa-78d61f68fd72
+2026-01-27 00:12:52,723 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-27 00:12:52,724 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-27 00:12:52,743 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-27 00:12:54,392 | INFO | orchestrator | ✅ Safety passed
+2026-01-27 00:12:54,393 | INFO | orchestrator | 🧭 Router agent called
+2026-01-27 00:12:54,394 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-27 00:12:56,225 | INFO | orchestrator | 🧭 Router | tool=False memory=False intent=none
+2026-01-27 00:12:56,225 | INFO | orchestrator | 🧠 Reasoning agent called
+2026-01-27 00:12:56,233 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-27 00:12:58,881 | INFO | chat | ✅ Stream complete | tokens=1 | time=6.19s
+2026-01-27 09:50:49,321 | INFO | main | 🚀 FastAPI application starting
+2026-01-27 09:50:49,370 | INFO | main | 🗄️ Database tables ensured

@@ -6,6 +6,7 @@ from typing import List,Optional
 class SignupRequest(BaseModel):
     email: str
     password: str
+    username: str
 
     # config checkboxes (optional)
     enable_memory: Optional[bool] = True

@@ -48,7 +48,14 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess, initialMode =
         onAuthSuccess(user);
       } else if (mode === 'signup') {
         const user = await authService.signup(username, email, password);
-        onAuthSuccess(user);
+        setSuccessMessage("Signup successful. Please login.");
+  
+  // 🔥 IMPORTANT: switch to login mode
+  setTimeout(() => {
+    setMode('login');
+    setSuccessMessage(null);
+  }, 1500);
+
       } else if (mode === 'forgot-password') {
         const response = await authService.forgotPassword(email);
         setSuccessMessage(response.message || 'Check your email for reset instructions.');

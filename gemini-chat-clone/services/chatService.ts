@@ -1,4 +1,4 @@
-import { ChatSession, Message } from '../types';
+import { ChatSession, Message,User } from '../types';
 
 const API_BASE_URL = 'http://localhost:8000';
 
@@ -40,6 +40,37 @@ export const chatService = {
 
     return response.json();
   },
+  /* ============================
+     👤 GET CURRENT USER PROFILE
+     ============================ */
+  async getMe(): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}/users/me`, {
+      method: "GET",
+      headers: authHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch profile");
+    }
+
+    return response.json();
+  },
+
+  /* ============================
+Update current user profile 
+============================ */
+
+async updateMe(payload:Partial<User>):Promise<any>{
+  const response = await fetch(`${API_BASE_URL}/users/me`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to update profile');
+  }
+  return response.json();
+},
 
   /* ============================
    💬 GET MESSAGES OF SESSION (PAGINATION)
@@ -135,6 +166,9 @@ async getMessages(
   if (!response.ok) {
     throw new Error('Failed to delete chat session');
   }
+
+  
 }
 };
+
 

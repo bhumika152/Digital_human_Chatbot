@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from models import ChatSession, ChatMessage
 import uuid
+
 def get_or_create_session(
     db: Session,
     user_id: int,
@@ -26,6 +27,8 @@ def get_or_create_session(
     db.refresh(session)
 
     return session
+
+
 def save_message(
     db: Session,
     session_id,
@@ -41,6 +44,8 @@ def save_message(
     )
     db.add(msg)
     db.commit()
+   
+    
 def get_recent_messages(
     db: Session,
     session_id,

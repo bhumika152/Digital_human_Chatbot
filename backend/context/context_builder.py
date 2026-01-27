@@ -2,14 +2,14 @@ from typing import List, Dict
 from sqlalchemy.orm import Session
 from models import ChatMessage
 from services.memory_service import get_conversation_summary
-
+ 
 MAX_RECENT_MESSAGES = 6
-
+ 
 SYSTEM_PROMPT = """
 You are a helpful AI assistant.
 Answer clearly and concisely.
 """
-
+ 
 class ContextBuilder:
     @staticmethod
     def build_llm_context(
@@ -18,13 +18,13 @@ class ContextBuilder:
         user_input: str
     ) -> List[Dict[str, str]]:
         messages = []
-
+ 
         # 1️⃣ System prompt
         messages.append({
             "role": "system",
             "content": SYSTEM_PROMPT.strip()
         })
-
+ 
         # 2️⃣ Conversation summary (rolling)
         summary = get_conversation_summary(db, session_id)
         if summary:
@@ -32,7 +32,7 @@ class ContextBuilder:
                 "role": "system",
                 "content": f"Conversation summary:\n{summary}"
             })
-
+ 
         # 3️⃣ Recent messages
         recent_msgs = (
             db.query(ChatMessage)
@@ -41,17 +41,17 @@ class ContextBuilder:
             .limit(MAX_RECENT_MESSAGES)
             .all()
         )
-
+ 
         for msg in reversed(recent_msgs):
             messages.append({
                 "role": msg.role,
                 "content": msg.content
             })
-
+ 
         # 4️⃣ Current user message
         messages.append({
             "role": "user",
             "content": user_input
         })
-
+ 
         return messages
