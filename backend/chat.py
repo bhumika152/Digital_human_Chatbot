@@ -18,6 +18,10 @@ from services.memory_action_executor import apply_memory_action
 from digital_human_sdk.app.main import run_digital_human_chat
 # IntegrityError for unique constraint 
 from sqlalchemy.exc import IntegrityError
+from models import Property
+import re
+from models import PropertyEnquiry
+
 
 # ==========================================================
 # Router & Logger
@@ -94,9 +98,12 @@ def chat(
 
     logger.info("🧑 User message | %.200s", user_text)
 
-    # --------------------
-    # SESSION HANDLING
-    # --------------------
+
+    # ==========================================================
+# SESSION HANDLING (MUST BE BEFORE PROPERTY LOGIC)
+# ==========================================================
+    session = None
+
     if session_id:
         session = (
             db.query(ChatSession)
@@ -120,26 +127,10 @@ def chat(
 
         logger.info("🆕 New session created | %s", session_id)
 
-    
-    previous_messages = (
-        db.query(ChatMessage)
-        .filter(ChatMessage.session_id == session.session_id)
-        .order_by(ChatMessage.created_at.asc())
-        .all()
-    )
- 
-    from context.context_builder import ContextBuilder
- 
-    llm_context = ContextBuilder.build_llm_context(
-    db=db,
-    session_id=session.session_id,
-    user_input=user_text
-)
- 
+            
 
-    # --------------------
-    # SAVE USER MESSAGE
-    # --------------------
+
+    # ✅ SAVE USER MESSAGE (ONCE)
     db.add(
         ChatMessage(
             session_id=session.session_id,
@@ -149,28 +140,133 @@ def chat(
     )
     db.commit()
 
-    agent_context = {
-        "user_id": user_id,
-        "session_id": session.session_id,
-        "enable_memory": user_config.get("enable_memory", True),
-        "enable_tools": user_config.get("enable_tools", True),
-        "enable_rag": user_config.get("enable_rag", True),
-        "db_factory": SessionLocal,
-        "logger": logger,
-    }
 
-    # --------------------
-    # BUILD AGENT CONTEXT
-    # --------------------
+    # ✅ CREATE AGENT CONTEXT (CORRECT & SAFE)
     agent_context = AgentContext(
         user_id=user_id,
-        session_id=session.session_id,
+        session_id=session.session_id,  # ✅ ALWAYS VALID
         enable_memory=user_config.get("enable_memory", True),
         enable_tools=user_config.get("enable_tool", True),
         enable_rag=user_config.get("enable_rag", True),
-        db_factory=SessionLocal,   # 🔑 SAFE FOR STREAMING
+        db_factory=SessionLocal,
         logger=logger,
     )
+
+
+
+ # ==========================================================
+    # PROPERTY QUERY CHECK (DB-BASED RESPONSE)
+    # ==========================================================
+ 
+ 
+    lower_text = user_text.lower()
+ 
+    is_property_query = any(word in lower_text for word in [
+        "property", "rent", "buy", "flat", "room", "house", "plot"
+    ])
+ 
+    if is_property_query:
+        purpose = "rent" if "rent" in lower_text else "buy" if "buy" in lower_text else None
+ 
+        city = None
+        if "noida" in lower_text:
+            city = "Noida"
+        elif "jaipur" in lower_text:
+            city = "Jaipur"
+        elif "greater noida" in lower_text:
+            city = "Greater Noida"
+        elif "chandigarh" in lower_text:
+            city = "Chandigarh"
+
+        
+        if city is None:
+            response_text = (
+                "Please tell me the city you are looking for.\n"
+                "(For example: Noida, Jaipur, Chandigarh)"
+            )
+
+            db.add(
+                ChatMessage(
+                    session_id=session.session_id,
+                    role="assistant",
+                    content=response_text,
+                )
+            )
+            db.commit()
+
+            return StreamingResponse(
+                iter([response_text]),
+                media_type="text/plain",
+            )
+
+        # 1️⃣ Read CSV data from DB
+    properties = db.query(Property).all()
+
+    property_context = ""
+    for p in properties:
+        property_context += (
+            f"Property ID: {p.property_id}, "
+            f"Title: {p.title}, "
+            f"City: {p.city}, "
+            f"Locality: {p.locality}, "
+            f"Purpose: {p.purpose}, "
+            f"Price: {p.price}\n"
+        )
+
+    # 2️⃣ Build LLM prompt
+    llm_messages = [
+        {
+            "role": "system",
+            "content": (
+                "You are a real estate assistant. "
+                "Answer ONLY using the provided property data. "
+                "If no property matches, say so clearly. "
+                "Reply in the same language as the user."
+            )
+        },
+        {
+            "role": "user",
+            "content": f"""
+    User question:
+    {user_text}
+
+    Property data:
+    {property_context}
+    """
+        }
+    ]
+
+    async def stream_response():
+        full_response = ""
+
+        async for event in run_digital_human_chat(
+            llm_messages=llm_messages,
+            context=agent_context,
+        ):
+            if event.get("type") == "token":
+                token = event.get("value", "")
+                full_response += token
+                yield token
+
+        db_final = SessionLocal()
+        db_final.add(
+            ChatMessage(
+                session_id=session.session_id,
+                role="assistant",
+                content=full_response,
+            )
+        )
+        db_final.commit()
+        db_final.close()
+
+    return StreamingResponse(
+        stream_response(),
+        media_type="text/event-stream",
+    )
+
+
+    
+
     
 
     # ==========================================================

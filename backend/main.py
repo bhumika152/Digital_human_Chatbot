@@ -2,6 +2,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import auth, chat
+from property import property_router
 
 app = FastAPI()
 
@@ -35,5 +36,8 @@ app.include_router(chat.chat_router)
 
 # ✅ Include user router (NEW)
 app.include_router(chat.user_router)
+
+app.include_router(property_router)
+
 
 
