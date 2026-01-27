@@ -30,10 +30,10 @@ class User(Base):
     username = Column(Text) 
 
      # (new fields)
-    first_name = Column(String, nullable=True)
-    last_name = Column(String, nullable=True)
-    phone = Column(String, nullable=True)
-    bio = Column(Text, nullable=True)
+    first_name = Column(String(20), nullable=True)
+    last_name = Column(String(20), nullable=True)
+    phone = Column(String(10), nullable=True)
+    bio = Column(String(500), nullable=True)
 
     email = Column(String, unique=True, nullable=False, index=True)
     password_hash = Column(String, nullable=False)

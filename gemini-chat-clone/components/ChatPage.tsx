@@ -3,15 +3,15 @@ import { User, Message, ChatSession } from '../types';
 import { Sidebar } from './Sidebar';
 import { ChatWindow } from './ChatWindow';
 import { chatService } from '../services/chatService';
-
+ 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
-
+ 
 /* ==========================================================
-    EDIT PROFILE UI COMPONENT 
+    EDIT PROFILE UI COMPONENT
 ========================================================== */
-
+ 
 const EditProfileUI: React.FC<{
   onClose: () => void;
   onProfileUpdated: (updatedUser: User) => void;
@@ -24,17 +24,17 @@ const EditProfileUI: React.FC<{
         console.log("No token found");
         return;
       }
-
+ 
       const me = await chatService.getMe();
-
+ 
 setFirstName(me.first_name || "");
 setLastName(me.last_name || "");
 setUsername(me.username || "");
 setEmail(me.email || "");
 setPhone(me.phone || "");
 setBio(me.bio || "");
-
-// ✅ store original values
+ 
+//  store original values
 setOriginalData({
   firstName: me.first_name || "",
   lastName: me.last_name || "",
@@ -42,12 +42,12 @@ setOriginalData({
   phone: me.phone || "",
   bio: me.bio || ""
 });
-
+ 
     } catch (err) {
       console.error("Failed to fetch profile:", err);
     }
   };
-
+ 
   fetchProfile();
 }, []);
   const [firstName, setFirstName] = useState("");
@@ -64,7 +64,7 @@ setOriginalData({
     phone: "",
     bio: ""
   });
-
+ 
   //  store original values to detect changes
 const [originalData, setOriginalData] = useState({
   firstName: "",
@@ -73,19 +73,19 @@ const [originalData, setOriginalData] = useState({
   phone: "",
   bio: ""
 });
-
+ 
   const hasErrors = Object.values(errors).some(error => error !== "");
-
-
+ 
+ 
   const validateField = (name: string, value: string) => {
     let message = "";
-  
-    // 🔥 If field is empty → NO error (backend old value rakhega)
+ 
+    // If field is empty → NO error (backend old value rakhega)
     if (value.trim() === "") {
       setErrors(prev => ({ ...prev, [name]: "" }));
       return;
     }
-  
+ 
     // ---------------- FIRST NAME & LAST NAME ----------------
     if (name === "firstName" || name === "lastName") {
       if (value.length > 20) {
@@ -94,7 +94,7 @@ const [originalData, setOriginalData] = useState({
         message = "Only letters allowed. No spaces or special characters.";
       }
     }
-  
+ 
     // ---------------- USERNAME ----------------
     if (name === "username") {
       if (value.length > 20) {
@@ -103,24 +103,24 @@ const [originalData, setOriginalData] = useState({
         message = "Only letters, numbers and underscore allowed.";
       }
     }
-  
+ 
     // ---------------- PHONE ----------------
     if (name === "phone") {
       if (!/^\d{10}$/.test(value)) {
         message = "Phone number must be exactly 10 digits.";
       }
     }
-  
+ 
     // ---------------- BIO ----------------
     if (name === "bio") {
       if (value.length > 500) {
         message = "Bio cannot exceed 500 characters.";
       }
     }
-  
+ 
     setErrors(prev => ({ ...prev, [name]: message }));
   };
-  
+ 
   // const handleSave = () => {
   //   alert(" UI Working (no api yet)");
   //   onClose();
@@ -137,43 +137,44 @@ if (
   toast.info("No changes ");
   return;
 }
-
+ 
     if (hasErrors) return; // extra safety
     try{
       const payload: any = {};
-
+ 
 if (firstName.trim() !== "") payload.first_name = firstName;
 if (lastName.trim() !== "") payload.last_name = lastName;
 if (username.trim() !== "") payload.username = username;
 if (phone.trim() !== "") payload.phone = phone;
 if (bio.trim() !== "") payload.bio = bio;
-
-      
+ 
+     
       const res = await chatService.updateMe(payload); // put api call
       //alert(res.message || "Profile updated successfully");
       toast.success(res.message || "Profile updated successfully ");
-
+ 
       // sidebar instantly update
       onProfileUpdated(res.user as User);
+      localStorage.setItem("user", JSON.stringify(res.user));
       onClose();
     } catch (err: any) {
       console.log(" SERVER ERROR:", err);
-    
+   
       const message =
         err?.detail ||               // FastAPI HTTPException
         err?.message ||              // fallback
         "Update failed. Try again.";
-    
+   
       toast.error(message);
     }
-    
-    
+   
+   
   };
-
+ 
   return (
     <div className="h-screen overflow-y-auto bg-[#0f0f0f] text-white flex justify-center p-6 w-full">
       <div className="w-full max-w-2xl bg-[#171717] border border-[#303030] rounded-2xl p-6">
-
+ 
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-xl font-bold">Edit Profile</h1>
@@ -184,10 +185,10 @@ if (bio.trim() !== "") payload.bio = bio;
             ✕ Close
           </button>
         </div>
-
+ 
         {/* Form */}
         <div className="space-y-5">
-
+ 
           {/* First + Last Name */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -202,7 +203,7 @@ if (bio.trim() !== "") payload.bio = bio;
               setFirstName(val);
               validateField("firstName", val);
 }}
-
+ 
   placeholder="Enter first name"
   className={`w-full bg-[#0f0f0f] border rounded-lg px-4 py-2 outline-none ${
     errors.firstName
@@ -213,9 +214,9 @@ if (bio.trim() !== "") payload.bio = bio;
 {errors.firstName && (
   <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>
 )}
-
+ 
             </div>
-
+ 
             <div>
               <label className="block text-sm text-[#b4b4b4] mb-2">
                 Last Name
@@ -228,7 +229,7 @@ if (bio.trim() !== "") payload.bio = bio;
     setLastName(val);
     validateField("lastName", val);
   }}
-  
+ 
   className={`w-full bg-[#0f0f0f] border rounded-lg px-4 py-2 outline-none ${
     errors.lastName ? "border-red-500" : "border-[#303030]"
   }`}
@@ -236,10 +237,10 @@ if (bio.trim() !== "") payload.bio = bio;
 {errors.lastName && (
   <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>
 )}
-
+ 
             </div>
           </div>
-
+ 
           {/* Username */}
           <div>
             <label className="block text-sm text-[#b4b4b4] mb-2">
@@ -253,7 +254,7 @@ if (bio.trim() !== "") payload.bio = bio;
     setUsername(val);
     validateField("username", val);
   }}
-  
+ 
   className={`w-full bg-[#0f0f0f] border rounded-lg px-4 py-2 outline-none ${
     errors.username ? "border-red-500" : "border-[#303030]"
   }`}
@@ -261,9 +262,9 @@ if (bio.trim() !== "") payload.bio = bio;
 {errors.username && (
   <p className="text-red-500 text-xs mt-1">{errors.username}</p>
 )}
-
+ 
           </div>
-
+ 
           {/* Email (read-only) */}
           <div>
             <label className="block text-sm text-[#b4b4b4] mb-2">
@@ -276,7 +277,7 @@ if (bio.trim() !== "") payload.bio = bio;
               className="w-full bg-[#0f0f0f] border border-[#303030] rounded-lg px-4 py-2 outline-none opacity-60 cursor-not-allowed"
             />
           </div>
-
+ 
           {/* Phone */}
           <div>
             <label className="block text-sm text-[#b4b4b4] mb-2">
@@ -290,7 +291,7 @@ if (bio.trim() !== "") payload.bio = bio;
     setPhone(val);
     validateField("phone", val);
   }}
-  
+ 
   className={`w-full bg-[#0f0f0f] border rounded-lg px-4 py-2 outline-none ${
     errors.phone ? "border-red-500" : "border-[#303030]"
   }`}
@@ -298,9 +299,9 @@ if (bio.trim() !== "") payload.bio = bio;
 {errors.phone && (
   <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
 )}
-
+ 
           </div>
-
+ 
           {/* Bio */}
           <div>
             <label className="block text-sm text-[#b4b4b4] mb-2">Bio</label>
@@ -312,7 +313,7 @@ if (bio.trim() !== "") payload.bio = bio;
     setBio(val);
     validateField("bio", val);
   }}
-  
+ 
   className={`w-full bg-[#0f0f0f] border rounded-lg px-4 py-2 outline-none ${
     errors.bio ? "border-red-500" : "border-[#303030]"
   }`}
@@ -320,24 +321,24 @@ if (bio.trim() !== "") payload.bio = bio;
 {errors.bio && (
   <p className="text-red-500 text-xs mt-1">{errors.bio}</p>
 )}
-
+ 
           </div>
-
+ 
           {/* Buttons */}
           <div className="flex gap-3 pt-2">
           <button
   onClick={handleSave}
   disabled={hasErrors}
-  className={`w-1/2 rounded-lg py-3 font-medium transition 
-    ${hasErrors 
-      ? "bg-gray-600 cursor-not-allowed opacity-60" 
+  className={`w-1/2 rounded-lg py-3 font-medium transition
+    ${hasErrors
+      ? "bg-gray-600 cursor-not-allowed opacity-60"
       : "bg-indigo-600 hover:bg-indigo-700 cursor-pointer"}
   `}
 >
   Save Changes
 </button>
-
-
+ 
+ 
             <button
               onClick={onClose}
               className="w-1/2 bg-[#2a2a2a] hover:bg-[#333] transition rounded-lg py-3 font-medium"
@@ -345,22 +346,22 @@ if (bio.trim() !== "") payload.bio = bio;
               Cancel
             </button>
           </div>
-
+ 
         </div>
       </div>
     </div>
   );
 };
-
-
-
+ 
+ 
+ 
 interface ChatPageProps {
   user: User | null;
   onLogout: () => void;
 }
-
+ 
 export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
-    console.log("ChatPage rendered on:", window.location.pathname); // changes 
+    console.log("ChatPage rendered on:", window.location.pathname); // changes
   // 🔑 SINGLE SOURCE OF TRUTH
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -369,15 +370,15 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
   const [isTyping, setIsTyping] = useState(false);
   const [showEditProfile, setShowEditProfile] = useState(false); // changes
   const [profileUser, setProfileUser] = useState<User | null>(user);
-
-  useEffect(() => {
-    setProfileUser(user);
-  }, [user]);
-    // 👇 👇 👇 
+ 
+  // useEffect(() => {
+  //   setProfileUser(user);
+  // }, [user]);
+    // 👇 👇 👇
   const PAGE_SIZE = 20;
   const [offset, setOffset] = useState(0);
-  const [hasMore, setHasMore] = useState(true); 
-
+  const [hasMore, setHasMore] = useState(true);
+ 
 //    // ✅👇 YAHAN ADD KARO (TEMP TEST)
 //   useEffect(() => {
 //   const fakeMessages = Array.from({ length: 40 }, (_, i) => ({
@@ -387,13 +388,13 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
 //     content: `Fake message ${i}`,
 //     created_at: new Date().toISOString(),
 //   }));
-
+ 
 //   // 🔥 ONLY LAST 20 LOAD FIRST
 //   setMessages(fakeMessages.slice(20));
 //   setOffset(20);
 //   setHasMore(true);
 // }, []);
-
+ 
 // // ✅ 3. 🔥 YAHI ADD KARNA HAI (TESTING FUNCTION)
 //   const loadMoreMessages = async () => {
 //     const older = Array.from({ length: 20 }, (_, i) => ({
@@ -403,7 +404,7 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
 //       content: `OLDER message ${i}`,
 //       created_at: new Date().toISOString(),
 //     }));
-
+ 
 //     setMessages(prev => [...older, ...prev]);
 //     // setHasMore(false); // 👈 ek hi baar load
 //   };
@@ -412,19 +413,19 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
   ---------------------------- */
   useEffect(() => {
     if (!user) return;
-
+ 
     chatService
       .getSessions()
       .then(setSessions)
       .catch(err => console.error('Failed to load sessions', err));
   }, [user]);
-
+ 
   /* ----------------------------
    LOAD CHAT HISTORY ON SIDEBAR CLICK
   ---------------------------- */
 useEffect(() => {
   if (!currentSessionId) return;
-
+ 
   const loadMessages = async () => {
     try {
       const history = await chatService.getMessages(
@@ -436,7 +437,7 @@ useEffect(() => {
       console.log("MESSAGES RECEIVED:", history.length);
       console.log("FIRST MESSAGE ID:", history[0]?.request_id);
       console.log("LAST MESSAGE ID:", history[history.length-1]?.request_id);
-
+ 
       setMessages(history);
       setOffset(history.length);                 // 🔥 REQUIRED
       setHasMore(history.length === PAGE_SIZE);  // 🔥 REQUIRED
@@ -444,23 +445,23 @@ useEffect(() => {
       console.error('Failed to load chat history', err);
     }
   };
-
+ 
   loadMessages();
 }, [currentSessionId]);
-
+ 
 /* ----------------------------
    LOAD OLDER MESSAGES (PAGINATION)
 ---------------------------- */
 const loadMoreMessages = async () => {
   if (!currentSessionId) return;
-
+ 
   try {
     const olderMessages = await chatService.getMessages(
       currentSessionId,
       PAGE_SIZE,
       offset
     );
-
+ 
     setMessages(prev => [...olderMessages, ...prev]); // ⬆️ prepend
     setOffset(prev => prev + olderMessages.length);
     // hasMore ko yahan touch hi nahi karna
@@ -469,31 +470,29 @@ const loadMoreMessages = async () => {
     console.error('Failed to load older messages', err);
   }
 };
-
+ 
 useEffect(() => {
   const handler = () => {
     if (hasMore) loadMoreMessages();
   };
-
+ 
   window.addEventListener("loadMoreMessages", handler);
   return () => window.removeEventListener("loadMoreMessages", handler);
 }, [hasMore, offset, currentSessionId]);
-
-
-
+ 
+ 
+ 
   /* ----------------------------
      NEW CHAT
   ---------------------------- */
   const handleNewChat = async () => {
   try {
-
     // 🔥 BACKEND ME NEW SESSION CREATE
           setCurrentSessionId(null);   // 🔥 VERY IMPORTANT
           setMessages([]);             // 🔥 CLEAR UI
           setOffset(0);
           setHasMore(true);
-
-
+ 
     // 🔄 refresh sidebar
     const updatedSessions = await chatService.getSessions();
     setSessions(updatedSessions);
@@ -501,19 +500,19 @@ useEffect(() => {
     console.error("Failed to create new chat", err);
   }
 };
-
+ 
   /* ----------------------------
      SEND MESSAGE (CORE FIX)
   ---------------------------- */
   const handleSendMessage = async (content: string) => {
     if (!content.trim() || !user) return;
-
+ 
     const token = localStorage.getItem('access_token');
     if (!token) {
       alert('Please login again');
       return;
     }
-
+ 
     // 👤 show user message instantly
     const userMsg: Message = {
       request_id: 'user-' + Date.now(),
@@ -522,10 +521,10 @@ useEffect(() => {
       content,
       created_at: new Date().toISOString(),
     };
-
+ 
     setMessages(prev => [...prev, userMsg]);
     setIsTyping(true);
-
+ 
     // 🤖 assistant placeholder
     const assistantTempId = 'assistant-' + Date.now();
     setMessages(prev => [
@@ -538,17 +537,17 @@ useEffect(() => {
         created_at: new Date().toISOString(),
       },
     ]);
-
+ 
     try {
       let fullResponse = '';
-
+ 
       await chatService.sendChatMessageStreaming(
         token,
         currentSessionId, // 🔥 SAME session id reuse hoti hai
         content,
         (chunk) => {
           fullResponse += chunk;
-
+ 
           setMessages(prev =>
             prev.map(m =>
               m.request_id === assistantTempId
@@ -561,13 +560,13 @@ useEffect(() => {
           // 🔑 ONLY FIRST MESSAGE ME SAVE HOGA
           setCurrentSessionId(prev => prev ?? newSessionId);
           }
-        
+       
       );
-
+ 
       // 🔄 refresh sidebar
       const updatedSessions = await chatService.getSessions();
       setSessions(updatedSessions);
-
+ 
     } catch (err) {
       setMessages(prev =>
         prev.map(m =>
@@ -580,18 +579,18 @@ useEffect(() => {
       setIsTyping(false);
     }
   };
-
+ 
   /* ----------------------------
      DELETE CHAT
   ---------------------------- */
   const handleDeleteChat = async (sessionId: string) => {
     if (!window.confirm('Delete this chat?')) return;
-
+ 
     try {
       await chatService.deleteSession(sessionId);
-
+ 
       setSessions(prev => prev.filter(s => s.session_id !== sessionId));
-
+ 
       if (currentSessionId === sessionId) {
         setCurrentSessionId(null);
         setMessages([]);
@@ -601,7 +600,7 @@ useEffect(() => {
       alert('Unable to delete chat');
     }
   };
-
+ 
   return (
     <div className="flex h-screen overflow-hidden">
        
@@ -620,8 +619,8 @@ useEffect(() => {
         user={profileUser} // changes
          onEditProfile={() => setShowEditProfile(true)} // changes1
       />
-
-        
+ 
+       
       {/* <ChatWindow
         chat={{
           id: currentSessionId ?? 'new',
@@ -633,15 +632,14 @@ useEffect(() => {
         hasMore={hasMore}                 // 👈 MUST
         onLoadMore={loadMoreMessages}     // 👈 MUST
       /> */}
-
+ 
       {showEditProfile ? (
-  <EditProfileUI 
+  <EditProfileUI
   onClose={() => setShowEditProfile(false)}
   onProfileUpdated={(updatedUser) => setProfileUser(updatedUser)}
    />
 ) : (
   <ChatWindow
-
   key={currentSessionId ?? 'new-chat'} // 🔥 MAGIC LINE
   chat={{
     id: currentSessionId ?? 'new',
@@ -651,12 +649,13 @@ useEffect(() => {
   isTyping={isTyping}
   isSidebarOpen={isSidebarOpen}
 />
-
-
+ 
 )}
-
+ 
     </div>
   );
 };
-
-
+ 
+ 
+ 
+ 

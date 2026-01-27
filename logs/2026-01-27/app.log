@@ -869,3 +869,55 @@ LiteLLM completion() model= gemini-2.5-flash; provider = gemini
 2026-01-27 13:33:55,903 | INFO | sentence_transformers.SentenceTransformer | Use pytorch device_name: cpu
 2026-01-27 13:33:55,903 | INFO | sentence_transformers.SentenceTransformer | Load pretrained SentenceTransformer: all-MiniLM-L6-v2
 2026-01-27 13:34:02,624 | INFO | main | 🚀 FastAPI application starting
+2026-01-27 13:37:57,702 | INFO | sentence_transformers.SentenceTransformer | Use pytorch device_name: cpu
+2026-01-27 13:37:57,703 | INFO | sentence_transformers.SentenceTransformer | Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2026-01-27 13:38:03,467 | INFO | main | 🚀 FastAPI application starting
+2026-01-27 13:45:19,882 | INFO | chat | 📩 Chat request | user_id=3 | request_id=e7bfd2ac-a49b-4ad1-b469-ef4058af9658
+2026-01-27 13:45:19,890 | INFO | chat | 🧑 User message | hi
+2026-01-27 13:45:19,906 | INFO | chat | 🆕 New session created | b8bafaac-76e6-43b7-b11b-9650423a713e
+2026-01-27 13:45:19,924 | INFO | chat | 🤖 Stream started | session_id=b8bafaac-76e6-43b7-b11b-9650423a713e | request_id=e7bfd2ac-a49b-4ad1-b469-ef4058af9658
+2026-01-27 13:45:19,926 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-27 13:45:19,928 | INFO | orchestrator | 🧑 USER_INPUT | hi
+2026-01-27 13:45:19,928 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-27 13:45:19,931 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-27 13:45:19,972 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-27 13:45:21,555 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 13:45:21,556 | INFO | orchestrator | ✅ Safety passed
+2026-01-27 13:45:21,557 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-27 13:45:21,610 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=False | count=0
+2026-01-27 13:45:21,610 | INFO | orchestrator | 🧭 Router agent called
+2026-01-27 13:45:21,623 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-27 13:45:23,025 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=False | intent=none
+2026-01-27 13:45:23,027 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "user",
+      "content": "hi"
+    },
+    {
+      "role": "user",
+      "content": "hi"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "message": null
+  },
+  "memory_action": {},
+  "memory_data": [],
+  "memory_found": false,
+  "tool_context": {}
+}
+2026-01-27 13:45:23,042 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-27 13:45:24,059 | INFO | session_summary | 🧠 SUMMARY_START | session_id=b8bafaac-76e6-43b7-b11b-9650423a713e
+2026-01-27 13:45:24,068 | INFO | session_summary | 📊 Unsummarized messages = 2
+2026-01-27 13:45:24,069 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-27 13:45:24,070 | INFO | chat | ✅ Stream complete | tokens=1 | time=4.19s
