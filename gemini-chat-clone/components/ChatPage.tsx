@@ -125,15 +125,10 @@ const loadMoreMessages = async () => {
   ---------------------------- */
   const handleNewChat = async () => {
   try {
-    // 🔥 BACKEND ME NEW SESSION CREATE
-    const newSession = await chatService.createSession();
-
-    // 🔑 SET NEW SESSION ID
-    setCurrentSessionId(newSession.session_id);
-
-    // 🧹 clear UI
+    setCurrentSessionId(null); 
     setMessages([]);
-
+    setOffset(0);
+    setHasMore(true);
     // 🔄 refresh sidebar
     const updatedSessions = await chatService.getSessions();
     setSessions(updatedSessions);
@@ -281,6 +276,7 @@ const loadMoreMessages = async () => {
    />
 ) : (
   <ChatWindow
+  key ={currentSessionId ?? 'new-chat'}  
     chat={{
       id: currentSessionId ?? 'new',
       messages,
