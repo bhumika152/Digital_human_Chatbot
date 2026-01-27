@@ -17,7 +17,10 @@ from constants import get_user_config
 from services.memory_action_executor import apply_memory_action
 from digital_human_sdk.app.main import run_digital_human_chat
 # IntegrityError for unique constraint 
-from sqlalchemy.exc import IntegrityError
+import re
+from sqlalchemy.exc import IntegrityError, DataError
+
+
 
 # ==========================================================
 # Router & Logger
@@ -544,11 +547,13 @@ def get_chat_messages(
     messages = (
         db.query(ChatMessage)
         .filter(ChatMessage.session_id == session.session_id)
-        .order_by(ChatMessage.created_at.desc())
+        .order_by(ChatMessage.created_at.desc())  # latest first
         .offset(offset)
         .limit(limit)
         .all()
     )
+
+    messages.reverse()  # 🔥 oldest → newest for UI
 
     return [
         {
@@ -556,8 +561,10 @@ def get_chat_messages(
             "content": m.content,
             "created_at": m.created_at,
         }
-        for m in reversed(messages)
+        for m in messages
     ]
+
+
 
 # ==========================================================
 # DELETE CHAT SESSION
@@ -621,30 +628,96 @@ def update_me(
 ):
     user = db.query(User).filter(User.user_id == user_id).first()
     if not user:
-        raise HTTPException(status_code=404, detail="user not found")
+        raise HTTPException(status_code=404, detail="User not found")
 
-    # ✅ update fields
+    # ✅ Regex patterns (NO SPACES allowed in names & username)
+    name_pattern = r"^[A-Za-z]+$"
+    username_pattern = r"^[A-Za-z0-9_]+$"
+    phone_pattern = r"^\d{10}$"
+    bio_pattern = r"^[A-Za-z0-9 .,!?_\-'\n\"]*$"
+
+    # ---------------- FIRST NAME ----------------
     if payload.first_name is not None:
-        user.first_name = payload.first_name
+        first_name = payload.first_name.strip()
 
+        if first_name != "":
+            if len(first_name) > 20:
+                raise HTTPException(status_code=400, detail="First name max 20 characters")
+
+            if not re.fullmatch(name_pattern, first_name):
+                raise HTTPException(status_code=400, detail="First name only letters allowed")
+
+            user.first_name = first_name
+
+    # ---------------- LAST NAME ----------------
     if payload.last_name is not None:
-        user.last_name = payload.last_name
+        last_name = payload.last_name.strip()
 
+        if last_name != "":
+            if len(last_name) > 20:
+                raise HTTPException(status_code=400, detail="Last name max 20 characters")
+
+            if not re.fullmatch(name_pattern, last_name):
+                raise HTTPException(status_code=400, detail="Last name only letters allowed")
+
+            user.last_name = last_name
+
+    # ---------------- USERNAME ----------------
     if payload.username is not None:
-        user.username = payload.username
+        username = payload.username.strip()
 
+        if username != "":
+            if len(username) > 20:
+                raise HTTPException(status_code=400, detail="Username max 20 characters")
+
+            if not re.fullmatch(username_pattern, username):
+                raise HTTPException(status_code=400, detail="Username only letters, numbers, underscore")
+
+            existing_user = (
+                db.query(User)
+                .filter(User.username == username, User.user_id != user_id)
+                .first()
+            )
+            if existing_user:
+                raise HTTPException(status_code=400, detail="Username already exists")
+
+            user.username = username
+
+    # ---------------- PHONE ----------------
     if payload.phone is not None:
-        user.phone = payload.phone
+        phone = payload.phone.strip()
 
+        if phone != "":
+            if not re.fullmatch(phone_pattern, phone):
+                raise HTTPException(status_code=400, detail="Phone must be exactly 10 digits")
+
+            user.phone = phone
+
+    # ---------------- BIO ----------------
     if payload.bio is not None:
-        user.bio = payload.bio
+        bio = payload.bio.strip()
 
+        if bio != "":
+            if len(bio) > 500:
+                raise HTTPException(status_code=400, detail="Bio max 500 characters")
+
+            if not re.fullmatch(bio_pattern, bio):
+                raise HTTPException(status_code=400, detail="Bio contains invalid characters")
+
+            user.bio = bio
+
+    # ---------------- COMMIT ----------------
     try:
         db.commit()
     except IntegrityError:
         db.rollback()
         raise HTTPException(status_code=400, detail="Username already exists")
+    except DataError:
+        db.rollback()
+        raise HTTPException(status_code=400, detail="Invalid input: value too long or wrong format")
+
     db.refresh(user)
+
     return {
         "message": "User updated successfully",
         "user": {

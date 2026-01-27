@@ -60,7 +60,7 @@ export const chatService = {
 Update current user profile 
 ============================ */
 
-async updateMe(payload:Partial<User>):Promise<any>{
+async updateMe(payload: Partial<User>): Promise<any> {
   const response = await fetch(`${API_BASE_URL}/users/me`, {
     method: "PUT",
     headers: authHeaders(),
@@ -68,12 +68,15 @@ async updateMe(payload:Partial<User>):Promise<any>{
   });
 
   const data = await response.json().catch(() => null);
+
   if (!response.ok) {
-    throw new Error(data?.detail || data?.message || "Failed to update profile");
+    // 🔥 THROW FULL ERROR OBJECT
+    throw data || { detail: "Failed to update profile" };
   }
-  // return response.json();
+
   return data;
-},
+}
+,
 
   /* ============================
    💬 GET MESSAGES OF SESSION (PAGINATION)

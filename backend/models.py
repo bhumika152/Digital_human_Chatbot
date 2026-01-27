@@ -28,7 +28,7 @@ class User(Base):
 
     # BIGSERIAL handled by PostgreSQL sequence
     user_id = Column(BigInteger, primary_key=True, index=True)
-    username = Column(Text) 
+    username = Column(String(20), unique=True, nullable=False, index=True) 
 
      # (new fields)
     first_name = Column(String, nullable=True)

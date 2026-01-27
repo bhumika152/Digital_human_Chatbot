@@ -5,8 +5,7 @@ from fastapi.responses import JSONResponse
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import auth, chat
-# import  property
-from property import property_router
+
 app = FastAPI()
 
 
@@ -66,9 +65,4 @@ app.include_router(chat.user_router)
 # Include property router
 # app.include_router(property.property_router)
 
-app.include_router(property_router)
 
-print("✅ REGISTERED ROUTES:")
-for r in app.routes:
-    if hasattr(r, "methods"):
-        print(r.path, r.methods)
