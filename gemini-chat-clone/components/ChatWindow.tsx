@@ -1,67 +1,67 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Message } from '../types';
-
+ 
 interface ChatWindowProps {
   chat: { id: string, messages: Message[] } | undefined;
   onSendMessage: (content: string) => void;
   isTyping: boolean;
   isSidebarOpen: boolean;
 }
-
+ 
 export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isTyping,isSidebarOpen}) => {
-  
+ 
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   // scroll system
   const chatScrollRef = useRef<HTMLDivElement>(null);
   const [showScrollDown, setShowScrollDown] = useState(false);
-
+ 
   useEffect(() => {
     const el = chatScrollRef.current;
     if (!el) return;
-  
+ 
     const handleScroll = () => {
       const threshold = 120;
-  
+ 
       // show ↓ button when not at bottom
       const isNotAtBottom =
         el.scrollTop + el.clientHeight < el.scrollHeight - threshold;
       setShowScrollDown(isNotAtBottom);
-  
+ 
       // 🔼 Top pe → trigger pagination
       if (el.scrollTop === 0) {
         const event = new CustomEvent("loadMoreMessages");
         window.dispatchEvent(event);
       }
     };
-  
+ 
     el.addEventListener("scroll", handleScroll);
     return () => el.removeEventListener("scroll", handleScroll);
   }, []);
-  
-
+ 
+ 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
-
+ 
   useEffect(() => {
     scrollToBottom();
   }, [chat?.messages.length, chat?.messages[chat?.messages.length - 1]?.content]);
-
+ 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputValue.trim() || isTyping) return;
     onSendMessage(inputValue);
     setInputValue('');
   };
-
+ 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
     }
   };
-
+ 
   return (
     <main className="flex-1 flex flex-col bg-[#0d0d0d] h-full relative overflow-hidden">
         {/* 👇 YE SCROLL CONTAINER HAI */}
@@ -115,7 +115,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isT
           </svg>
         )}
       </div>
-
+ 
       <div className="flex-1 space-y-1 overflow-hidden">
         <div className="font-bold text-sm uppercase tracking-wide text-[#b4b4b4]">
           {message.role === 'user' ? 'You' : 'Assistant'}
@@ -132,13 +132,13 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isT
       </div>
     </div>
   ))}
-
+ 
   <div ref={messagesEndRef} />
 </div>
-
+ 
         )}
       </div>
-
+ 
       {/* changes */}
       {showScrollDown && (
   <button
@@ -149,12 +149,12 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isT
       })
     }
     className="absolute bottom-24 left-1/2 -translate-x-1/2 bg-white text-black w-10 h-10 rounded-full shadow-lg hover:scale-110 transition"
-
+ 
   >
     ↓
   </button>
 )}
-
+ 
       <div className="p-4 bg-gradient-to-t from-[#0d0d0d] via-[#0d0d0d] to-transparent">
         <form onSubmit={handleSubmit} className="max-w-3xl mx-auto relative group">
           <textarea
@@ -182,3 +182,5 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isT
     </main>
   );
 };
+ 
+ 

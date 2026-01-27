@@ -1,7 +1,7 @@
-
+ 
 import React from 'react';
 import { User } from '../types';
-
+ 
 interface SidebarProps {
   chats: { id: string, title: string }[];
   currentChatId: string | null;
@@ -13,9 +13,9 @@ interface SidebarProps {
   onLogout: () => void;
   user: User | null;
   onEditProfile: () => void;  // changes
-
+ 
 }
-
+ 
 export const Sidebar: React.FC<SidebarProps> = ({
   chats,
   currentChatId,
@@ -26,7 +26,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   toggleSidebar,
   onLogout,
   user,
-   onEditProfile, 
+   onEditProfile,
 }) => {
    
   return (
@@ -45,7 +45,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <span>New Chat</span>
           </button>
         </div>
-
+ 
         <div className="flex-1 overflow-y-auto no-scrollbar p-3 space-y-2">
           <div className="text-xs font-semibold text-[#b4b4b4] px-3 py-2 uppercase tracking-wider">
             History
@@ -79,10 +79,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
             ))
           )}
         </div>
-
+ 
         <div className="p-3 mt-auto border-t border-[#303030]">
           <div onClick={onEditProfile}
-            className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#212121] transition cursor-pointer"> 
+            className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#212121] transition cursor-pointer">
             <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-sm">
               {user?.username?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || '?'}
             </div>
@@ -105,3 +105,5 @@ export const Sidebar: React.FC<SidebarProps> = ({
     </aside>
   );
 };
+ 
+ 

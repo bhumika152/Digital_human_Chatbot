@@ -486,11 +486,13 @@ useEffect(() => {
   ---------------------------- */
   const handleNewChat = async () => {
   try {
+
     // 🔥 BACKEND ME NEW SESSION CREATE
           setCurrentSessionId(null);   // 🔥 VERY IMPORTANT
           setMessages([]);             // 🔥 CLEAR UI
           setOffset(0);
           setHasMore(true);
+
 
     // 🔄 refresh sidebar
     const updatedSessions = await chatService.getSessions();
@@ -639,6 +641,7 @@ useEffect(() => {
    />
 ) : (
   <ChatWindow
+
   key={currentSessionId ?? 'new-chat'} // 🔥 MAGIC LINE
   chat={{
     id: currentSessionId ?? 'new',
@@ -648,6 +651,7 @@ useEffect(() => {
   isTyping={isTyping}
   isSidebarOpen={isSidebarOpen}
 />
+
 
 )}
 
