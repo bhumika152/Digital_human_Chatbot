@@ -6,14 +6,39 @@ interface ChatWindowProps {
   onSendMessage: (content: string) => void;
   isTyping: boolean;
   isSidebarOpen: boolean;
-  
- hasMore: boolean;        // ✅ REQUIRED
-  onLoadMore: () => void;  // ✅ REQUIRED
 }
 
-export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isTyping,isSidebarOpen,hasMore,onLoadMore }) => {
+export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isTyping,isSidebarOpen}) => {
+  
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  // scroll system
+  const chatScrollRef = useRef<HTMLDivElement>(null);
+  const [showScrollDown, setShowScrollDown] = useState(false);
+
+  useEffect(() => {
+    const el = chatScrollRef.current;
+    if (!el) return;
+  
+    const handleScroll = () => {
+      const threshold = 120;
+  
+      // show ↓ button when not at bottom
+      const isNotAtBottom =
+        el.scrollTop + el.clientHeight < el.scrollHeight - threshold;
+      setShowScrollDown(isNotAtBottom);
+  
+      // 🔼 Top pe → trigger pagination
+      if (el.scrollTop === 0) {
+        const event = new CustomEvent("loadMoreMessages");
+        window.dispatchEvent(event);
+      }
+    };
+  
+    el.addEventListener("scroll", handleScroll);
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, []);
+  
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -39,7 +64,11 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isT
 
   return (
     <main className="flex-1 flex flex-col bg-[#0d0d0d] h-full relative overflow-hidden">
-      <div className="flex-1 overflow-y-auto no-scrollbar scroll-smooth">
+        {/* 👇 YE SCROLL CONTAINER HAI */}
+      <div
+        ref={chatScrollRef}
+        className="flex-1 overflow-y-auto no-scrollbar scroll-smooth"
+      >
         {!chat || chat.messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center p-8">
             <div className="w-16 h-16 bg-[#171717] rounded-full flex items-center justify-center mb-6 border border-[#303030]">
@@ -67,19 +96,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isT
           </div>
         ) : (
           <div className="w-full max-w-3xl mx-auto py-8 px-4 space-y-8">
-
-  {/* 🔥 LOAD OLDER MESSAGES BUTTON (TOP) */}
-  {hasMore && (
-    <div className="flex justify-center mb-4">
-      <button
-        onClick={onLoadMore}
-        className="text-xs text-[#b4b4b4] hover:text-white px-3 py-1 rounded-lg border border-[#303030] hover:bg-[#171717] transition"
-      >
-        Load older messages
-      </button>
-    </div>
-  )}
-
+             
   {/* 💬 CHAT MESSAGES */}
   {chat.messages.map((message) => (
     <div key={message.request_id} className="flex gap-4">
@@ -121,6 +138,22 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isT
 
         )}
       </div>
+
+      {/* changes */}
+      {showScrollDown && (
+  <button
+    onClick={() =>
+      chatScrollRef.current?.scrollTo({
+        top: chatScrollRef.current.scrollHeight,
+        behavior: "smooth",
+      })
+    }
+    className="absolute bottom-24 left-1/2 -translate-x-1/2 bg-white text-black w-10 h-10 rounded-full shadow-lg hover:scale-110 transition"
+
+  >
+    ↓
+  </button>
+)}
 
       <div className="p-4 bg-gradient-to-t from-[#0d0d0d] via-[#0d0d0d] to-transparent">
         <form onSubmit={handleSubmit} className="max-w-3xl mx-auto relative group">

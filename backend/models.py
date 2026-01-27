@@ -17,8 +17,9 @@ from sqlalchemy.orm import relationship
 from pgvector.sqlalchemy import Vector
 from database import Base
 import uuid
-
-
+from sqlalchemy import Column, BigInteger, Text, Integer, Boolean, TIMESTAMP
+from sqlalchemy.sql import func
+ 
 # =========================
 # USERS
 # =========================
@@ -27,7 +28,7 @@ class User(Base):
 
     # BIGSERIAL handled by PostgreSQL sequence
     user_id = Column(BigInteger, primary_key=True, index=True)
-    username = Column(Text) 
+    username = Column(String(20), unique=True, nullable=False, index=True) 
 
      # (new fields)
     first_name = Column(String, nullable=True)

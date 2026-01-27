@@ -58,3 +58,53 @@ class ForgotPasswordRequest(BaseModel):
 class ResetPasswordRequest(BaseModel):
     token: str
     new_password: str
+
+
+# --------------------
+# UPDATE PROFILE
+# --------------------
+from pydantic import validator
+import re
+
+class UpdateProfileRequest(BaseModel):
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    username: Optional[str] = None
+    phone: Optional[str] = None
+    bio: Optional[str] = None
+
+    # First & Last Name → Only letters (NO space, NO numbers, NO special chars)
+    @validator("first_name", "last_name")
+    def validate_names(cls, v):
+        if v is None:
+            return v
+        if not re.fullmatch(r"[A-Za-z]+", v):
+            raise ValueError("Only letters allowed. No spaces, numbers or special characters.")
+        return v
+
+    # Username → letters, numbers, underscore only
+    @validator("username")
+    def validate_username(cls, v):
+        if v is None:
+            return v
+        if not re.fullmatch(r"[A-Za-z0-9_]+", v):
+            raise ValueError("Username can contain only letters, numbers, and underscore.")
+        return v
+
+    # Phone → only digits, exactly 10
+    @validator("phone")
+    def validate_phone(cls, v):
+        if v is None:
+            return v
+        if not re.fullmatch(r"\d{10}", v):
+            raise ValueError("Phone number must be exactly 10 digits.")
+        return v
+
+    # Bio → letters, numbers and spaces only
+    @validator("bio")
+    def validate_bio(cls, v):
+        if v is None:
+            return v
+        if not re.fullmatch(r"[A-Za-z0-9 ]*", v):
+            raise ValueError("Bio can contain only letters, numbers, and spaces.")
+        return v
