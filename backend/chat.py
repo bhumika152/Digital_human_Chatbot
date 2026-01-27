@@ -16,11 +16,9 @@ from auth import get_current_user
 from constants import get_user_config
 from services.memory_action_executor import apply_memory_action
 from digital_human_sdk.app.main import run_digital_human_chat
-# IntegrityError for unique constraint 
-import re
-from sqlalchemy.exc import IntegrityError, DataError
-
-
+from context.context_builder import ContextBuilder
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy import Boolean
 
 # ==========================================================
 # Router & Logger
@@ -148,17 +146,6 @@ async def chat(
         session_id=session.session_id,
         user_input=user_text,
     )
-
-    agent_context = {
-        "user_id": user_id,
-        "session_id": session.session_id,
-        "enable_memory": user_config.get("enable_memory", True),
-        "enable_tools": user_config.get("enable_tools", True),
-        "enable_rag": user_config.get("enable_rag", True),
-        "db_factory": SessionLocal,
-        "logger": logger,
-    }
-
     # --------------------
     # BUILD AGENT CONTEXT
     # --------------------
@@ -178,7 +165,6 @@ async def chat(
     # ==========================================================
     async def stream_response():
     # 🔥 send initial keep-alive
-        yield "data: \n\n"
 
         full_response = ""
         token_count = 0
@@ -205,7 +191,7 @@ async def chat(
                         token_count += 1
                         full_response += token
                         # ✅ SSE FORMAT
-                        yield f"data: {token}\n\n"
+                        yield f"{token}\n\n"
 
         except Exception:
             logger.exception("🔥 Streaming failed")
@@ -247,211 +233,9 @@ async def chat(
         },
     )
 
-# from fastapi import APIRouter, Depends, HTTPException
-# from fastapi.responses import StreamingResponse
-# from sqlalchemy.orm import Session
-# import logging
-# import uuid
-# import time
-# from typing import Any
-# from dotenv import load_dotenv
-# import os
-# from contexts.llm_context_builder import build_llm_context
-# from contexts.agent_context import AgentContext
-# from database import SessionLocal
-# from models import ChatSession, ChatMessage
-# from auth import get_current_user
-# from constants import get_user_config
-# from services.memory_action_executor import apply_memory_action
-# from clients.digital_human_client import DigitalHumanClient
-
-# load_dotenv()
-
-# digital_human = DigitalHumanClient(
-#     base_url=os.getenv("DIGITAL_HUMAN_BASE_URL")
-# )
-
-# # ==========================================================
-# # Router & Logger
-# # ==========================================================
-# router = APIRouter(prefix="/chat", tags=["chat"])
-
-# logger = logging.getLogger("chat")
-# logging.basicConfig(
-#     level=logging.INFO,
-#     format="%(asctime)s | %(levelname)s | %(message)s",
-# )
-# logger.info(
-#     "🌐 DigitalHuman base_url=%s",
-#     os.getenv("DIGITAL_HUMAN_BASE_URL"),
-# )
-
-# # ==========================================================
-# # DB Dependency
-# # ==========================================================
-# def get_db():
-#     db = SessionLocal()
-#     try:
-#         yield db
-#     finally:
-#         db.close()
-
-# # ==========================================================
-# # CHAT ENDPOINT (STREAMING)
-# # ==========================================================
-# @router.post("")
-# async def chat(
-#     payload: dict[str, Any],
-#     user_id: int = Depends(get_current_user),
-#     db: Session = Depends(get_db),
-# ):
-#     request_id = str(uuid.uuid4())
-#     start_time = time.perf_counter()
-
-#     logger.info("📩 Chat request | user_id=%s | request_id=%s", user_id, request_id)
-
-#     user_config = get_user_config(db, user_id)
-
-#     raw_message = payload.get("message")
-#     session_id = payload.get("conversation_id")
-
-#     if not raw_message:
-#         raise HTTPException(status_code=400, detail="Message missing")
-
-#     user_text = (
-#         raw_message.get("content", "")
-#         if isinstance(raw_message, dict)
-#         else str(raw_message)
-#     )
-
-#     if not user_text.strip():
-#         raise HTTPException(status_code=400, detail="Empty message")
-
-#     # --------------------
-#     # SESSION HANDLING
-#     # --------------------
-#     if session_id:
-#         session = (
-#             db.query(ChatSession)
-#             .filter(
-#                 ChatSession.session_id == session_id,
-#                 ChatSession.user_id == user_id,
-#             )
-#             .first()
-#         )
-#         if not session:
-#             raise HTTPException(status_code=404, detail="Session not found")
-#     else:
-#         session = ChatSession(
-#             user_id=user_id,
-#             session_title=user_text[:50],
-#         )
-#         db.add(session)
-#         db.commit()
-#         db.refresh(session)
-
-#     previous_messages = (
-#         db.query(ChatMessage)
-#         .filter(ChatMessage.session_id == session.session_id)
-#         .order_by(ChatMessage.created_at.asc())
-#         .all()
-#     )
-
-#     chat_history = [
-#         {"role": m.role, "content": m.content}
-#         for m in previous_messages[-20:]
-#     ]
-
-#     # Save user message
-#     db.add(
-#         ChatMessage(
-#             session_id=session.session_id,
-#             role="user",
-#             content=user_text,
-#         )
-#     )
-#     db.commit()
-
-#     agent_context = AgentContext(
-#         user_id=user_id,
-#         session_id=session.session_id,
-#         chat_history=chat_history,
-#         enable_memory=user_config.get("enable_memory", True),
-#         enable_tools=user_config.get("enable_tool", True),
-#         enable_rag=user_config.get("enable_rag", True),
-#         db_factory=SessionLocal,
-#         logger=logger,
-#     )
-
-#     llm_context = build_llm_context(
-#         agent_context=agent_context,
-#         user_input=user_text,
-#     )
-
-#     async def stream_response():
-#         full_response = ""
-#         token_count = 0
-
-#         try:
-#             async for event in digital_human.stream_chat(
-#                 user_input=user_text,
-#                 llm_context=llm_context,
-#                 flags={
-#                     "user_id": user_id,
-#                     "session_id": str(session.session_id),
-#                     "enable_memory": agent_context.enable_memory,
-#                     "enable_tools": agent_context.enable_tools,
-#                     "enable_rag": agent_context.enable_rag,
-#                 },
-#             ):
-#                 event_type = event.get("type")
-
-#                 if event_type == "memory_event":
-#                     db_inner = SessionLocal()
-#                     try:
-#                         apply_memory_action(
-#                             db=db_inner,
-#                             user_id=user_id,
-#                             action=event["payload"],
-#                         )
-#                         db_inner.commit()
-#                     finally:
-#                         db_inner.close()
-
-#                 elif event_type == "token":
-#                     token = event.get("value", "")
-#                     if token:
-#                         token_count += 1
-#                         full_response += token
-#                         yield token
-
-#         except Exception:
-#             logger.exception("🔥 Streaming failed")
-#             yield "\n[Error]"
-
-#         # Save assistant message
-#         db_final = SessionLocal()
-#         try:
-#             db_final.add(
-#                 ChatMessage(
-#                     session_id=session.session_id,
-#                     role="assistant",
-#                     content=full_response,
-#                 )
-#             )
-#             db_final.commit()
-#         finally:
-#             db_final.close()
-
-#     return StreamingResponse(
-#         stream_response(),
-#         media_type="text/event-stream",
-#     )
-
 # ==========================================================
 # GET ALL SESSIONS (SIDEBAR)
 # ==========================================================
-# @router.get("/sessions")
 @chat_router.get("/sessions")
 def get_chat_sessions(
     user_id: int = Depends(get_current_user),
@@ -522,25 +306,21 @@ def get_chat_messages(
     messages = (
         db.query(ChatMessage)
         .filter(ChatMessage.session_id == session.session_id)
-        .order_by(ChatMessage.created_at.desc())  # latest first
+        .order_by(ChatMessage.created_at.desc())
         .offset(offset)
         .limit(limit)
         .all()
     )
-
-    messages.reverse()  # 🔥 oldest → newest for UI
-
+ 
     return [
         {
             "role": m.role,
             "content": m.content,
             "created_at": m.created_at,
         }
-        for m in messages
+        for m in reversed(messages)
     ]
-
-
-
+ 
 # ==========================================================
 # DELETE CHAT SESSION
 # ==========================================================
@@ -603,96 +383,30 @@ def update_me(
 ):
     user = db.query(User).filter(User.user_id == user_id).first()
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="user not found")
 
-    # ✅ Regex patterns (NO SPACES allowed in names & username)
-    name_pattern = r"^[A-Za-z]+$"
-    username_pattern = r"^[A-Za-z0-9_]+$"
-    phone_pattern = r"^\d{10}$"
-    bio_pattern = r"^[A-Za-z0-9 .,!?_\-'\n\"]*$"
-
-    # ---------------- FIRST NAME ----------------
+    # ✅ update fields
     if payload.first_name is not None:
-        first_name = payload.first_name.strip()
+        user.first_name = payload.first_name
 
-        if first_name != "":
-            if len(first_name) > 20:
-                raise HTTPException(status_code=400, detail="First name max 20 characters")
-
-            if not re.fullmatch(name_pattern, first_name):
-                raise HTTPException(status_code=400, detail="First name only letters allowed")
-
-            user.first_name = first_name
-
-    # ---------------- LAST NAME ----------------
     if payload.last_name is not None:
-        last_name = payload.last_name.strip()
+        user.last_name = payload.last_name
 
-        if last_name != "":
-            if len(last_name) > 20:
-                raise HTTPException(status_code=400, detail="Last name max 20 characters")
-
-            if not re.fullmatch(name_pattern, last_name):
-                raise HTTPException(status_code=400, detail="Last name only letters allowed")
-
-            user.last_name = last_name
-
-    # ---------------- USERNAME ----------------
     if payload.username is not None:
-        username = payload.username.strip()
+        user.username = payload.username
 
-        if username != "":
-            if len(username) > 20:
-                raise HTTPException(status_code=400, detail="Username max 20 characters")
-
-            if not re.fullmatch(username_pattern, username):
-                raise HTTPException(status_code=400, detail="Username only letters, numbers, underscore")
-
-            existing_user = (
-                db.query(User)
-                .filter(User.username == username, User.user_id != user_id)
-                .first()
-            )
-            if existing_user:
-                raise HTTPException(status_code=400, detail="Username already exists")
-
-            user.username = username
-
-    # ---------------- PHONE ----------------
     if payload.phone is not None:
-        phone = payload.phone.strip()
+        user.phone = payload.phone
 
-        if phone != "":
-            if not re.fullmatch(phone_pattern, phone):
-                raise HTTPException(status_code=400, detail="Phone must be exactly 10 digits")
-
-            user.phone = phone
-
-    # ---------------- BIO ----------------
     if payload.bio is not None:
-        bio = payload.bio.strip()
+        user.bio = payload.bio
 
-        if bio != "":
-            if len(bio) > 500:
-                raise HTTPException(status_code=400, detail="Bio max 500 characters")
-
-            if not re.fullmatch(bio_pattern, bio):
-                raise HTTPException(status_code=400, detail="Bio contains invalid characters")
-
-            user.bio = bio
-
-    # ---------------- COMMIT ----------------
     try:
         db.commit()
     except IntegrityError:
         db.rollback()
         raise HTTPException(status_code=400, detail="Username already exists")
-    except DataError:
-        db.rollback()
-        raise HTTPException(status_code=400, detail="Invalid input: value too long or wrong format")
-
     db.refresh(user)
-
     return {
         "message": "User updated successfully",
         "user": {

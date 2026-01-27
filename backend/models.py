@@ -17,9 +17,8 @@ from sqlalchemy.orm import relationship
 from pgvector.sqlalchemy import Vector
 from database import Base
 import uuid
-from sqlalchemy import Column, BigInteger, Text, Integer, Boolean, TIMESTAMP
-from sqlalchemy.sql import func
- 
+
+
 # =========================
 # USERS
 # =========================
@@ -28,7 +27,7 @@ class User(Base):
 
     # BIGSERIAL handled by PostgreSQL sequence
     user_id = Column(BigInteger, primary_key=True, index=True)
-    username = Column(String(20), unique=True, nullable=False, index=True) 
+    username = Column(Text) 
 
      # (new fields)
     first_name = Column(String, nullable=True)
@@ -49,7 +48,8 @@ class User(Base):
     config = relationship("UserConfig", back_populates="user", uselist=False)
     sessions = relationship("ChatSession", back_populates="user", cascade="all, delete")
     memories = relationship("MemoryStore", back_populates="user", cascade="all, delete")
-    vectors = relationship("VectorDBRAG", back_populates="user", cascade="all, delete")
+    summary = relationship("SessionSummary", back_populates="user", cascade="all, delete")
+
 
 
 # =========================
@@ -98,6 +98,12 @@ class ChatSession(Base):
 
     user = relationship("User", back_populates="sessions")
     messages = relationship("ChatMessage", back_populates="session", cascade="all, delete")
+    summary = relationship(
+        "SessionSummary",
+        back_populates="session",
+        uselist=False,
+        cascade="all, delete"
+    )
 
 # =========================
 # CHAT MESSAGES
@@ -119,8 +125,15 @@ class ChatMessage(Base):
     )
 
     role = Column(String, nullable=False)
+    
     content = Column(Text)
     token_count = Column(Integer)
+    is_summarized = Column(
+        Boolean,
+        nullable=False,
+        default=False,
+        server_default="false"
+    )
 
     created_at = Column(
         DateTime(timezone=True),
@@ -156,18 +169,10 @@ class MemoryStore(Base):
         index=True,
         nullable=False
     )
-
-    # ✅ ADD THIS (CRITICAL)
-    session_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("chat_sessions.session_id", ondelete="CASCADE"),
-        index=True,
-        nullable=True   # nullable = allows user-level memory + session-level memory
-    )
+  
  
-
-    memory_type = Column(String, nullable=False)
     memory_content = Column(Text, nullable=False)
+    embedding = Column(ARRAY(Float), nullable=False)
     confidence_score = Column(Float)
 
     is_active = Column(Boolean, default=True, nullable=False)
@@ -180,18 +185,23 @@ class MemoryStore(Base):
         nullable=False
     )
 
+
     user = relationship("User", back_populates="memories")
 
-# =========================
-# VECTOR DB RAG
-# =========================
-class VectorDBRAG(Base):
-    __tablename__ = "vector_db_rag"
+class SessionSummary(Base):
+    __tablename__ = "session_summary"
 
-    document_id = Column(
+    summary_id = Column(
         BigInteger,
         primary_key=True,
         autoincrement=True
+    )
+
+    session_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("chat_sessions.session_id", ondelete="CASCADE"),
+        nullable=False,
+        index=True
     )
 
     user_id = Column(
@@ -201,9 +211,34 @@ class VectorDBRAG(Base):
         index=True
     )
 
-    embedding = Column(ARRAY(Float), nullable=False)
+    summary_text = Column(Text, nullable=False)
 
-    meta_data = Column("metadata", JSONB)
+    summary_type = Column(
+        String,
+        default="auto"
+    )  # auto | manual | system
 
-    user = relationship("User", back_populates="vectors")
+    confidence_score = Column(Float, nullable=True)
 
+    is_active = Column(
+        Boolean,
+        nullable=False,
+        default=True
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False
+    )
+
+    updated_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+        nullable=False
+    )
+
+    # 🔗 Relationships
+    session = relationship("ChatSession", back_populates="summary")
+    user = relationship("User",back_populates="summary")
