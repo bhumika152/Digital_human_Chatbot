@@ -12,6 +12,7 @@ from digital_human_sdk.app.intelligence.our_agents.tool_agent import tool_agent
 from digital_human_sdk.app.intelligence.our_agents.reasoning_agent import reasoning_agent
 from digital_human_sdk.app.intelligence.tools.tool_executor import ToolExecutor
 from digital_human_sdk.app.intelligence.utils.json_utils import safe_json_loads
+from context.context_builder import ContextBuilder
 from services.memory_service import MemoryService
 #from services.memory_service import fetch_semantic_memory
 
@@ -47,6 +48,16 @@ async def run_digital_human_chat(
         for msg in reversed(llm_messages)
         if msg["role"] == "user"
     )
+
+    router_input = user_input
+
+    if context and context.db:
+        router_input = ContextBuilder.build_router_context(
+            db=context.db,
+            session_id=context.session_id,
+            user_input=user_input
+        )
+
 
     logger.info("🧑 USER_INPUT | %s", user_input)
     logger.info(
@@ -92,7 +103,7 @@ async def run_digital_human_chat(
 
         memory_data = MemoryService.read(
             user_id=context.user_id,
-            query=user_input,
+            query=router_input,
             limit=3,
         )
 
@@ -112,7 +123,7 @@ async def run_digital_human_chat(
 
     router_raw = await Runner.run(
         router_agent,
-        user_input,
+        router_input,
         context=context,
         max_turns=1,
     )
@@ -140,7 +151,7 @@ async def run_digital_human_chat(
 
         mem_raw = await Runner.run(
             memory_agent,
-            user_input,
+            router_input,
             context=context,
             max_turns=1,
         )
@@ -172,7 +183,7 @@ async def run_digital_human_chat(
 
         tool_raw = await Runner.run(
             tool_agent,
-            user_input,
+            router_input,
             context=context,
         )
 

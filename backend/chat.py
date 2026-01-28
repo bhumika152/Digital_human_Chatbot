@@ -147,6 +147,17 @@ async def chat(
         session_id=session.session_id,
         user_input=user_text,
     )
+
+    agent_context = {
+        "user_id": user_id,
+        "session_id": session.session_id,
+        "enable_memory": user_config.get("enable_memory", True),
+        "enable_tools": user_config.get("enable_tools", True),
+        "enable_rag": user_config.get("enable_rag", True),
+        "db_factory": SessionLocal,
+        "logger": logger,
+    }
+ 
     # --------------------
     # BUILD AGENT CONTEXT
     # --------------------
@@ -184,7 +195,40 @@ async def chat(
                 event_type = event.get("type")
 
                 if event_type == "memory_event":
-                    ...
+                    # 🔎 Extract memory action safely (FINAL)
+                    memory_action = (
+                        event.get("payload")
+                        or event.get("value")
+                        or event.get("memory_action")
+                        or event.get("data")
+                    )
+
+                    # Handle wrapped payloads
+                    if isinstance(memory_action, dict) and "memory_action" in memory_action:
+                        memory_action = memory_action["memory_action"]
+
+                    if not memory_action:
+                        logger.error(
+                            "❌ memory_event received without payload | event=%s",
+                            event,
+                        )
+                        continue
+
+                    logger.info("🧠 MEMORY_EVENT_RECEIVED | %s", memory_action)
+
+                    if not agent_context.enable_memory:
+                        logger.info("🧠 Memory disabled — skipping")
+                        continue
+
+                    db_mem = agent_context.db_factory()
+                    try:
+                        apply_memory_action(
+                            db=db_mem,
+                            user_id=agent_context.user_id,
+                            action=memory_action,
+                        )
+                    finally:
+                        db_mem.close()
                 
                 elif event_type == "token":
                     token = event.get("value", "")
