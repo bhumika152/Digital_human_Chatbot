@@ -1,0 +1,63 @@
+2026-01-29 14:14:52,447 | ERROR | orchestrator | Router failed — continuing without routing
+Traceback (most recent call last):
+  File "c:\users\dell\downloads\chatbot-project-final\chatbot-project-main\digital_human_sdk\digital_human_sdk\app\main.py", line 310, in run_digital_human_chat
+    router_raw = await Runner.run(
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\run.py", line 367, in run
+    return await runner.run(
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\run.py", line 647, in run
+    sequential_guardrails = [
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\run.py", line 648, in <listcomp>
+    g for g in all_input_guardrails if not g.run_in_parallel
+AttributeError: 'str' object has no attribute 'run_in_parallel'
+2026-01-29 14:15:01,651 | ERROR | orchestrator | Reasoning failed
+Traceback (most recent call last):
+  File "c:\users\dell\downloads\chatbot-project-final\chatbot-project-main\digital_human_sdk\digital_human_sdk\app\main.py", line 420, in run_digital_human_chat
+    async for event in reasoning_stream.stream_events():
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\result.py", line 347, in stream_events
+    raise self._stored_exception
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\run.py", line 1260, in _start_streaming
+    output_guardrail_results = await streamed_result._output_guardrails_task
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\run.py", line 1803, in _run_output_guardrails
+    result = await done
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 571, in _wait_for_one
+    return f.result()  # May raise f.exception().
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\_run_impl.py", line 1409, in run_single_output_guardrail
+    with guardrail_span(guardrail.get_name()) as span_guardrail:
+AttributeError: 'str' object has no attribute 'get_name'
+2026-01-29 14:21:15,876 | ERROR | orchestrator | Router failed — continuing without routing
+Traceback (most recent call last):
+  File "c:\users\dell\downloads\chatbot-project-final\chatbot-project-main\digital_human_sdk\digital_human_sdk\app\main.py", line 310, in run_digital_human_chat
+    router_raw = await Runner.run(
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\run.py", line 367, in run
+    return await runner.run(
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\run.py", line 647, in run
+    sequential_guardrails = [
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\run.py", line 648, in <listcomp>
+    g for g in all_input_guardrails if not g.run_in_parallel
+AttributeError: 'str' object has no attribute 'run_in_parallel'
+2026-01-29 14:21:20,685 | ERROR | orchestrator | Reasoning failed
+Traceback (most recent call last):
+  File "c:\users\dell\downloads\chatbot-project-final\chatbot-project-main\digital_human_sdk\digital_human_sdk\app\main.py", line 420, in run_digital_human_chat
+    async for event in reasoning_stream.stream_events():
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\result.py", line 347, in stream_events
+    raise self._stored_exception
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\run.py", line 1260, in _start_streaming
+    output_guardrail_results = await streamed_result._output_guardrails_task
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\run.py", line 1803, in _run_output_guardrails
+    result = await done
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 571, in _wait_for_one
+    return f.result()  # May raise f.exception().
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\_run_impl.py", line 1409, in run_single_output_guardrail
+    with guardrail_span(guardrail.get_name()) as span_guardrail:
+AttributeError: 'str' object has no attribute 'get_name'
+2026-01-29 14:26:33,255 | ERROR | orchestrator | Reasoning failed
+Traceback (most recent call last):
+  File "c:\users\dell\downloads\chatbot-project-final\chatbot-project-main\digital_human_sdk\digital_human_sdk\app\main.py", line 420, in run_digital_human_chat
+    async for event in reasoning_stream.stream_events():
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\result.py", line 347, in stream_events
+    raise self._stored_exception
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\run.py", line 1260, in _start_streaming
+    output_guardrail_results = await streamed_result._output_guardrails_task
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\run.py", line 1814, in _run_output_guardrails
+    raise OutputGuardrailTripwireTriggered(result)
+agents.exceptions.OutputGuardrailTripwireTriggered: Guardrail OutputGuardrail triggered tripwire

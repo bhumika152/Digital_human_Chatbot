@@ -12,27 +12,45 @@ from .config import (
 
 
 # -------------------------------
-# INPUT GUARDRAIL
+# INPUT GUARDRAIL (HARD BLOCK ONLY)
 # -------------------------------
 @input_guardrail(name="Input Safety Guardrail")
 def input_safety(ctx, agent, raw_input):
-    text = str(raw_input).lower()
+    if not raw_input:
+        return GuardrailFunctionOutput(
+            tripwire_triggered=False,
+            output_info="Empty input allowed",
+        )
 
-    # Prompt injection detection
+    text = str(raw_input).strip().lower()
+
+    # ✅ Allow greetings / very short input
+    if len(text.split()) <= 2:
+        return GuardrailFunctionOutput(
+            tripwire_triggered=False,
+            output_info="Short safe input",
+        )
+
+    # 🚫 Prompt injection (STRICT)
     if matches_blocked_pattern(text):
         return GuardrailFunctionOutput(
             tripwire_triggered=True,
-            output_info="Prompt injection attempt detected",
+            output_info={
+                "message": "I can’t help with that request."
+            },
         )
 
-    # Blocked topic detection
+    # 🚫 Explicit dangerous HOW-TO only
     for topic in BLOCKED_TOPICS:
-        if topic in text:
+        if topic in text and any(k in text for k in ["how to", "steps", "make", "build"]):
             return GuardrailFunctionOutput(
                 tripwire_triggered=True,
-                output_info=f"Blocked topic: {topic}",
+                output_info={
+                    "message": "I can’t help with that topic."
+                },
             )
 
+    # ✅ Everything else allowed
     return GuardrailFunctionOutput(
         tripwire_triggered=False,
         output_info="Input safe",
@@ -40,29 +58,32 @@ def input_safety(ctx, agent, raw_input):
 
 
 # -------------------------------
-# OUTPUT GUARDRAIL
+# OUTPUT GUARDRAIL (POST-REASONING)
 # -------------------------------
 @output_guardrail(name="Output Safety Guardrail")
 def output_safety(ctx, agent, output):
     text = str(output)
 
-    # Output length control
+    # 🚫 Output size limit
     if len(text) > MAX_OUTPUT_CHARS:
         return GuardrailFunctionOutput(
             tripwire_triggered=True,
-            output_info="Output too long (possible data leakage)",
+            output_info={
+                "message": "Response was too long to safely display."
+            },
         )
 
-    # Prevent policy disclosure
-    if "openai policy" in text.lower():
+    # 🚫 Policy / system leakage
+    lowered = text.lower()
+    if any(k in lowered for k in ["system prompt", "developer message", "openai policy"]):
         return GuardrailFunctionOutput(
             tripwire_triggered=True,
-            output_info="Policy disclosure attempt",
+            output_info={
+                "message": "I can’t share internal system details."
+            },
         )
 
     return GuardrailFunctionOutput(
         tripwire_triggered=False,
         output_info="Output safe",
     )
-
-

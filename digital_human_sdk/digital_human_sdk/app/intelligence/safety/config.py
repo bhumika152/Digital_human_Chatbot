@@ -1,39 +1,25 @@
 import re
 
-# ❌ Disallowed patterns (prompt injection, hacking, policy bypass)
+# ❌ VERY STRICT injection patterns (phrases only)
 DISALLOWED_PATTERNS = [
-    r"ignore previous instructions",
-    r"system prompt",
-    r"developer message",
-    r"jailbreak",
-    r"bypass",
-    r"hack",
-    r"exploit",
+    r"ignore\s+previous\s+instructions",
+    r"reveal\s+system\s+prompt",
+    r"developer\s+message",
+    r"jailbreak\s+the\s+model",
+    r"bypass\s+ai\s+safety",
 ]
 
-# ❌ Blocked topics
+# ❌ Dangerous domains (used WITH intent words)
 BLOCKED_TOPICS = [
-    "violence",
+    "bomb",
+    "weapon",
     "self-harm",
-    "terrorism",
+    "terrorist attack",
     "illegal drugs",
 ]
 
-# ✅ Max output size (anti data exfiltration)
 MAX_OUTPUT_CHARS = 800
-
-# ✅ Allowed tools (deny-by-default)
-ALLOWED_TOOLS = {
-    "weather_tool",
-    "math_tool",
-    "bing_search_tool",
-    "browser_search_tool"
-
-}
 
 
 def matches_blocked_pattern(text: str) -> bool:
-    text = text.lower()
     return any(re.search(p, text) for p in DISALLOWED_PATTERNS)
-
-
