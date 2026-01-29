@@ -74,28 +74,16 @@ async def run_digital_human_chat(
     parsed = safe_json_loads(safety_raw.final_output, default={})
 
     try:
-        safety_llm = SafetySchema(**parsed)
-        safety_payload = safety_response(
-            safe=safety_llm.safe,
-            reason=safety_llm.reason,
-        )
+        safety_payload = SafetySchema(**parsed).model_dump()
+    
     except Exception:
-        logger.exception("🚨 Invalid safety JSON")
-        safety_payload = safety_response(
-            safe=False,
-            reason="Invalid safety response",
-        )
+        safety_payload = {
+        "safe": False,
+        "message": "I can’t help with that request , Invalid safety response(JSON Parsing Fails)"
+        }
 
     if not safety_payload["safe"]:
         logger.warning("🚫 Safety blocked request")
-    # 🔥 stream like normal LLM output
-        # for ch in safety_payload["message"]:
-        #     yield {
-        #         "type": "token",
-        #         "value": ch,
-        #     }
-
-        # return
         yield {
             "type": "token",
             "value": safety_payload["message"],

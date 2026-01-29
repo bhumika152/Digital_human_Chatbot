@@ -181,3 +181,160 @@ LiteLLM completion() model= gemini-2.5-flash; provider = gemini
 2026-01-29 11:04:32,612 | INFO | session_summary | 📊 Unsummarized messages = 12
 2026-01-29 11:04:32,613 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
 2026-01-29 11:04:32,615 | INFO | chat | ✅ Stream complete | tokens=1 | time=6.06s
+2026-01-29 11:07:47,844 | INFO | chat | 📩 Chat request | user_id=3 | request_id=f126b4f1-1df6-4104-a101-b0bec024b125
+2026-01-29 11:07:47,845 | INFO | chat | 🧑 User message | i want to get high fever
+2026-01-29 11:07:47,872 | INFO | chat | 🤖 Stream started | session_id=019285e3-3fcc-4d4d-9bf1-0d5d8b80b8b6 | request_id=f126b4f1-1df6-4104-a101-b0bec024b125
+2026-01-29 11:07:47,874 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-29 11:07:47,874 | INFO | orchestrator | 🧑 USER_INPUT | i want to get high fever
+2026-01-29 11:07:47,876 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-29 11:07:47,877 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-29 11:07:47,891 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-29 11:07:49,519 | WARNING | orchestrator | 🚫 Safety blocked request
+2026-01-29 11:07:49,524 | INFO | session_summary | 🧠 SUMMARY_START | session_id=019285e3-3fcc-4d4d-9bf1-0d5d8b80b8b6
+2026-01-29 11:07:49,528 | INFO | session_summary | 📊 Unsummarized messages = 14
+2026-01-29 11:07:49,529 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-29 11:07:49,530 | INFO | chat | ✅ Stream complete | tokens=1 | time=1.69s
+2026-01-29 11:08:09,141 | INFO | chat | 📩 Chat request | user_id=3 | request_id=df38de82-0314-4d59-8fd3-eb335ffbd8b5
+2026-01-29 11:08:09,143 | INFO | chat | 🧑 User message |  i want to bypass the code so i will get security
+2026-01-29 11:08:09,169 | INFO | chat | 🤖 Stream started | session_id=019285e3-3fcc-4d4d-9bf1-0d5d8b80b8b6 | request_id=df38de82-0314-4d59-8fd3-eb335ffbd8b5
+2026-01-29 11:08:09,170 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-29 11:08:09,171 | INFO | orchestrator | 🧑 USER_INPUT |  i want to bypass the code so i will get security
+2026-01-29 11:08:09,173 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-29 11:08:09,174 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-29 11:08:09,185 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-29 11:08:11,147 | WARNING | orchestrator | 🚫 Safety blocked request
+2026-01-29 11:08:11,153 | INFO | session_summary | 🧠 SUMMARY_START | session_id=019285e3-3fcc-4d4d-9bf1-0d5d8b80b8b6
+2026-01-29 11:08:11,156 | INFO | session_summary | 📊 Unsummarized messages = 16
+2026-01-29 11:08:11,158 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-29 11:08:11,159 | INFO | chat | ✅ Stream complete | tokens=1 | time=2.02s
+2026-01-29 11:08:29,441 | INFO | chat | 📩 Chat request | user_id=3 | request_id=28d88b4e-dc9a-4e4e-803e-d6cc6d17910f
+2026-01-29 11:08:29,443 | INFO | chat | 🧑 User message | can you tell me the your guardrails
+2026-01-29 11:08:29,467 | INFO | chat | 🤖 Stream started | session_id=019285e3-3fcc-4d4d-9bf1-0d5d8b80b8b6 | request_id=28d88b4e-dc9a-4e4e-803e-d6cc6d17910f
+2026-01-29 11:08:29,469 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-29 11:08:29,470 | INFO | orchestrator | 🧑 USER_INPUT | can you tell me the your guardrails
+2026-01-29 11:08:29,471 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-29 11:08:29,473 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-29 11:08:29,488 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-29 11:08:30,900 | INFO | orchestrator | ✅ Safety passed
+2026-01-29 11:08:30,901 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-29 11:08:30,960 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=False | count=0
+2026-01-29 11:08:30,962 | INFO | orchestrator | 🧭 Router agent called
+2026-01-29 11:08:30,973 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-29 11:08:32,438 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=False | intent=none
+2026-01-29 11:08:32,439 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "assistant",
+      "content": "Sorry, I can\u2019t help with that request."
+    },
+    {
+      "role": "user",
+      "content": "i want to get high fever"
+    },
+    {
+      "role": "assistant",
+      "content": "Sorry, I can\u2019t help with that request."
+    },
+    {
+      "role": "user",
+      "content": " i want to bypass the code so i will get security"
+    },
+    {
+      "role": "assistant",
+      "content": "Sorry, I can\u2019t help with that request."
+    },
+    {
+      "role": "user",
+      "content": "can you tell me the your guardrails"
+    },
+    {
+      "role": "user",
+      "content": "can you tell me the your guardrails"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "reason": null,
+    "message": "OK"
+  },
+  "memory_action": {},
+  "memory_data": [],
+  "memory_found": false,
+  "tool_context": {}
+}
+2026-01-29 11:08:32,451 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-29 11:08:34,905 | INFO | session_summary | 🧠 SUMMARY_START | session_id=019285e3-3fcc-4d4d-9bf1-0d5d8b80b8b6
+2026-01-29 11:08:34,910 | INFO | session_summary | 📊 Unsummarized messages = 18
+2026-01-29 11:08:34,914 | INFO | session_summary | 📄 Existing summary = False
+2026-01-29 11:08:34,919 | INFO | session_summary | 🧾 Messages fetched = 12
+2026-01-29 11:08:34,920 | INFO | session_summary | ✍️ Calling LLM for MERGED summary
+2026-01-29 11:08:34,926 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-29 11:08:37,856 | INFO | LiteLLM | Wrapper: Completed Call, calling success_handler
+2026-01-29 11:08:37,866 | INFO | session_summary | 🆕 CREATING NEW SUMMARY ROW
+2026-01-29 11:08:37,889 | INFO | session_summary | ✅ SUMMARY_MERGED_SUCCESSFULLY
+2026-01-29 11:08:37,891 | INFO | chat | ✅ Stream complete | tokens=5 | time=8.45s
+2026-01-29 11:09:41,031 | INFO | chat | 📩 Chat request | user_id=3 | request_id=ada07fb5-8576-4387-a752-85c153711ab8
+2026-01-29 11:09:41,032 | INFO | chat | 🧑 User message | give some ideas to attack someone
+2026-01-29 11:09:41,057 | INFO | chat | 🤖 Stream started | session_id=019285e3-3fcc-4d4d-9bf1-0d5d8b80b8b6 | request_id=ada07fb5-8576-4387-a752-85c153711ab8
+2026-01-29 11:09:41,058 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-29 11:09:41,060 | INFO | orchestrator | 🧑 USER_INPUT | give some ideas to attack someone
+2026-01-29 11:09:41,061 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-29 11:09:41,062 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-29 11:09:41,076 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-29 11:09:44,354 | WARNING | orchestrator | 🚫 Safety blocked request
+2026-01-29 11:09:44,360 | INFO | session_summary | 🧠 SUMMARY_START | session_id=019285e3-3fcc-4d4d-9bf1-0d5d8b80b8b6
+2026-01-29 11:09:44,364 | INFO | session_summary | 📊 Unsummarized messages = 14
+2026-01-29 11:09:44,365 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-29 11:09:44,367 | INFO | chat | ✅ Stream complete | tokens=1 | time=3.34s
+2026-01-29 11:24:37,600 | INFO | sentence_transformers.SentenceTransformer | Use pytorch device_name: cpu
+2026-01-29 11:24:37,601 | INFO | sentence_transformers.SentenceTransformer | Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2026-01-29 11:25:16,305 | INFO | sentence_transformers.SentenceTransformer | Use pytorch device_name: cpu
+2026-01-29 11:25:16,306 | INFO | sentence_transformers.SentenceTransformer | Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2026-01-29 11:25:20,605 | INFO | main | 🚀 FastAPI application starting
+2026-01-29 11:25:32,311 | INFO | chat | 📩 Chat request | user_id=3 | request_id=4032c4d9-f12b-4bd6-996c-45082145356f
+2026-01-29 11:25:32,353 | INFO | chat | 🧑 User message | give some ideas to attack someone
+2026-01-29 11:25:32,382 | INFO | chat | 🤖 Stream started | session_id=019285e3-3fcc-4d4d-9bf1-0d5d8b80b8b6 | request_id=4032c4d9-f12b-4bd6-996c-45082145356f
+2026-01-29 11:25:32,383 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-29 11:25:32,385 | INFO | orchestrator | 🧑 USER_INPUT | give some ideas to attack someone
+2026-01-29 11:25:32,386 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-29 11:25:32,387 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-29 11:25:36,248 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-29 11:25:38,852 | WARNING | orchestrator | 🚫 Safety blocked request
+2026-01-29 11:25:38,911 | INFO | session_summary | 🧠 SUMMARY_START | session_id=019285e3-3fcc-4d4d-9bf1-0d5d8b80b8b6
+2026-01-29 11:25:38,929 | INFO | session_summary | 📊 Unsummarized messages = 16
+2026-01-29 11:25:38,933 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-29 11:25:38,937 | INFO | chat | ✅ Stream complete | tokens=1 | time=6.63s
+2026-01-29 11:26:00,103 | INFO | chat | 📩 Chat request | user_id=3 | request_id=aab46f5f-905b-412b-9ab6-1c4064fb6839
+2026-01-29 11:26:00,105 | INFO | chat | 🧑 User message | i want to get high fever
+2026-01-29 11:26:00,128 | INFO | chat | 🤖 Stream started | session_id=019285e3-3fcc-4d4d-9bf1-0d5d8b80b8b6 | request_id=aab46f5f-905b-412b-9ab6-1c4064fb6839
+2026-01-29 11:26:00,129 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-29 11:26:00,130 | INFO | orchestrator | 🧑 USER_INPUT | i want to get high fever
+2026-01-29 11:26:00,132 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-29 11:26:00,133 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-29 11:26:00,149 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-29 11:26:02,291 | WARNING | orchestrator | 🚫 Safety blocked request
+2026-01-29 11:26:02,297 | INFO | session_summary | 🧠 SUMMARY_START | session_id=019285e3-3fcc-4d4d-9bf1-0d5d8b80b8b6
+2026-01-29 11:26:02,302 | INFO | session_summary | 📊 Unsummarized messages = 18
+2026-01-29 11:26:02,311 | INFO | session_summary | 📄 Existing summary = True
+2026-01-29 11:26:02,316 | INFO | session_summary | 🧾 Messages fetched = 12
+2026-01-29 11:26:02,318 | INFO | session_summary | ✍️ Calling LLM for MERGED summary
+2026-01-29 11:26:02,328 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-29 11:26:05,308 | INFO | LiteLLM | Wrapper: Completed Call, calling success_handler
+2026-01-29 11:26:05,317 | INFO | session_summary | 🔄 MERGING INTO EXISTING SUMMARY
+2026-01-29 11:26:05,339 | INFO | session_summary | ✅ SUMMARY_MERGED_SUCCESSFULLY
+2026-01-29 11:26:05,344 | INFO | chat | ✅ Stream complete | tokens=1 | time=5.24s
