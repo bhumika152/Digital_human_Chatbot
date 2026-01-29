@@ -35,10 +35,10 @@ class User(Base):
     username = Column(Text) 
 
      # (new fields)
-    first_name = Column(String, nullable=True)
-    last_name = Column(String, nullable=True)
-    phone = Column(String, nullable=True)
-    bio = Column(Text, nullable=True)
+    first_name = Column(String(20), nullable=True)
+    last_name = Column(String(20), nullable=True)
+    phone = Column(String(10), nullable=True)
+    bio = Column(String(500), nullable=True)
 
     email = Column(String, unique=True, nullable=False, index=True)
     password_hash = Column(String, nullable=False)
@@ -53,7 +53,8 @@ class User(Base):
     config = relationship("UserConfig", back_populates="user", uselist=False)
     sessions = relationship("ChatSession", back_populates="user", cascade="all, delete")
     memories = relationship("MemoryStore", back_populates="user", cascade="all, delete")
-    vectors = relationship("VectorDBRAG", back_populates="user", cascade="all, delete")
+    summary = relationship("SessionSummary", back_populates="user", cascade="all, delete")
+
 
 
 # =========================
@@ -102,6 +103,12 @@ class ChatSession(Base):
 
     user = relationship("User", back_populates="sessions")
     messages = relationship("ChatMessage", back_populates="session", cascade="all, delete")
+    summary = relationship(
+        "SessionSummary",
+        back_populates="session",
+        uselist=False,
+        cascade="all, delete"
+    )
 
 # =========================
 # CHAT MESSAGES
@@ -123,8 +130,15 @@ class ChatMessage(Base):
     )
 
     role = Column(String, nullable=False)
+    
     content = Column(Text)
     token_count = Column(Integer)
+    is_summarized = Column(
+        Boolean,
+        nullable=False,
+        default=False,
+        server_default="false"
+    )
 
     created_at = Column(
         DateTime(timezone=True),
@@ -160,18 +174,10 @@ class MemoryStore(Base):
         index=True,
         nullable=False
     )
-
-    # ✅ ADD THIS (CRITICAL)
-    session_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("chat_sessions.session_id", ondelete="CASCADE"),
-        index=True,
-        nullable=True   # nullable = allows user-level memory + session-level memory
-    )
+  
  
-
-    memory_type = Column(String, nullable=False)
     memory_content = Column(Text, nullable=False)
+    embedding = Column(ARRAY(Float), nullable=False)
     confidence_score = Column(Float)
 
     is_active = Column(Boolean, default=True, nullable=False)
@@ -184,18 +190,23 @@ class MemoryStore(Base):
         nullable=False
     )
 
+
     user = relationship("User", back_populates="memories")
 
-# =========================
-# VECTOR DB RAG
-# =========================
-class VectorDBRAG(Base):
-    __tablename__ = "vector_db_rag"
+class SessionSummary(Base):
+    __tablename__ = "session_summary"
 
-    document_id = Column(
+    summary_id = Column(
         BigInteger,
         primary_key=True,
         autoincrement=True
+    )
+
+    session_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("chat_sessions.session_id", ondelete="CASCADE"),
+        nullable=False,
+        index=True
     )
 
     user_id = Column(

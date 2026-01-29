@@ -62,3 +62,5 @@ uvicorn.log
 # =========================
 node_modules/
 .next/
+
+tools/__pycache__/

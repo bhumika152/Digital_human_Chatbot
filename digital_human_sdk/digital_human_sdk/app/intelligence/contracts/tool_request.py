@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Literal, Optional, Dict, Any
- 
+
 class ToolRequest(BaseModel):
     action: Literal["call_tool", "none"]
     tool_name: Optional[

@@ -8,7 +8,15 @@ digital_human_sdk.egg-info/requires.txt
 digital_human_sdk.egg-info/top_level.txt
 digital_human_sdk/app/__init__.py
 digital_human_sdk/app/main.py
+digital_human_sdk/app/test_tool.py
 digital_human_sdk/app/intelligence/__init__.py
+digital_human_sdk/app/intelligence/agent_runner.py
+digital_human_sdk/app/intelligence/logging_config.py
+digital_human_sdk/app/intelligence/orchestrator.py
+digital_human_sdk/app/intelligence/memory/__init__.py
+digital_human_sdk/app/intelligence/memory/memory_service.py
+digital_human_sdk/app/intelligence/orchestration/__init__.py
+digital_human_sdk/app/intelligence/orchestration/orchestrator.py
 digital_human_sdk/app/intelligence/safety/__init__.py
 digital_human_sdk/app/intelligence/safety/config.py
 digital_human_sdk/app/intelligence/safety/contracts.py

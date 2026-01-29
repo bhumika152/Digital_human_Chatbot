@@ -7,7 +7,16 @@ MAX_RECENT_MESSAGES = 6
  
 SYSTEM_PROMPT = """
 You are a helpful AI assistant.
-Answer clearly and concisely.
+ 
+You may answer ANY general knowledge question.
+ 
+Conversation summaries and memories are ONLY to provide helpful context
+(e.g. preferences, ongoing plans).
+ 
+If a user asks something unrelated to the current topic,
+answer it normally using general knowledge.
+ 
+Do NOT restrict yourself to previous topics unless the user explicitly asks.
 """
  
 class ContextBuilder:

@@ -25,7 +25,6 @@ engine = create_engine(DATABASE_URL, connect_args=connect_args) if connect_args 
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
 
-
 def get_db():
     db = SessionLocal()
     try:

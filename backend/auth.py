@@ -11,6 +11,7 @@ from database import SessionLocal
 from models import User, UserConfig, MemoryStore
 from schemas import SignupRequest, LoginRequest, TokenResponse
 from utils import create_access_token, SECRET_KEY, ALGORITHM
+# from fastapi.security import OAuth2PasswordRequestForm
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -107,19 +108,19 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == data.email).first()
     if not user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
-
+ 
     if not bcrypt.checkpw(
         data.password.encode(),
         user.password_hash.encode()
     ):
         raise HTTPException(status_code=401, detail="Invalid credentials")
-
+ 
     # ✅ update last login
     user.last_login = datetime.now(timezone.utc)
     db.commit()
-
+ 
     token = create_access_token({"user_id": str(user.user_id)})
-
+ 
     return {
         "access_token": token,
         "token_type": "bearer",
@@ -129,6 +130,7 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
             "username": user.username
         }
     }
+ 
 
 @router.get("/login")
 def login_help():

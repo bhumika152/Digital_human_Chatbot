@@ -1,35 +1,40 @@
-from sklearn.metrics.pairwise import cosine_similarity
+import torch
+from typing import List, Tuple, Optional
+from sentence_transformers.util import cos_sim
+from models import MemoryStore
 
-SIMILARITY_THRESHOLD = 0.82
 
-def fetch_semantic_match(db, user_id, new_embedding):
+def find_best_semantic_match(
+    memories: List[MemoryStore],
+    query_embedding: List[float],
+    threshold: float = 0.35,
+) -> Tuple[Optional[MemoryStore], Optional[float]]:
     """
-    Find most similar ACTIVE memory of SAME USER
+    Returns:
+        (best_match_memory, similarity_score)
     """
-    rows = db.execute(
-        """
-        SELECT id, embedding
-        FROM memory
-        WHERE user_id = :user_id
-          AND is_active = true
-        """,
-        {"user_id": user_id}
-    ).fetchall()
 
-    best_id = None
-    best_score = 0.0
+    if not memories:
+        return None, None
 
-    for row in rows:
-        score = cosine_similarity(
-            [new_embedding],
-            [row.embedding]
-        )[0][0]
+    # Convert query embedding once
+    q = torch.tensor(query_embedding)
 
-        if score > best_score:
+    best_match = None
+    best_score = None
+
+    for mem in memories:
+        if not mem.embedding:
+            continue
+
+        mem_embedding = torch.tensor(mem.embedding)
+
+        score = cos_sim(q, mem_embedding).item()
+
+        if score >= threshold and (
+            best_score is None or score > best_score
+        ):
             best_score = score
-            best_id = row.id
+            best_match = mem
 
-    if best_score >= SIMILARITY_THRESHOLD:
-        return best_id
-
-    return None
+    return best_match, best_score

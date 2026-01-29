@@ -1,0 +1,77 @@
+2026-01-26 23:56:40,268 | INFO | main | 🚀 FastAPI application starting
+2026-01-26 23:56:40,371 | INFO | main | 🗄️ Database tables ensured
+2026-01-26 23:56:50,249 | INFO | chat | 📩 Chat request | user_id=6 | request_id=772fa783-ac36-4b5a-b6a7-ddc6bdb9eb60
+2026-01-26 23:56:50,293 | INFO | chat | 🧑 User message | me 
+2026-01-26 23:56:50,318 | INFO | chat | 🤖 Stream started | session_id=ae4b8d0d-4e2b-4c2d-96c5-1acf39b38367 | request_id=772fa783-ac36-4b5a-b6a7-ddc6bdb9eb60
+2026-01-26 23:56:50,318 | INFO | chat | 🤖 Running digital human
+2026-01-26 23:56:50,318 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-26 23:56:50,318 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-26 23:56:50,351 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-26 23:56:52,652 | INFO | orchestrator | ✅ Safety passed
+2026-01-26 23:56:52,652 | INFO | orchestrator | 🧭 Router agent called
+2026-01-26 23:56:52,655 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-26 23:56:54,459 | INFO | orchestrator | 🧭 Router | tool=False memory=False intent=none
+2026-01-26 23:56:54,459 | INFO | orchestrator | 🧠 Reasoning agent called
+2026-01-26 23:56:54,466 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-26 23:56:56,755 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-26 23:56:59,465 | INFO | LiteLLM | Wrapper: Completed Call, calling success_handler
+2026-01-26 23:56:59,472 | INFO | chat | ✅ Stream complete | tokens=2 | time=9.22s
+2026-01-26 23:57:20,364 | INFO | chat | 📩 Chat request | user_id=6 | request_id=fa15f90f-c89f-407a-b63b-786758370d01
+2026-01-26 23:57:20,364 | INFO | chat | 🧑 User message | myself 
+2026-01-26 23:57:20,379 | INFO | chat | 🤖 Stream started | session_id=ae4b8d0d-4e2b-4c2d-96c5-1acf39b38367 | request_id=fa15f90f-c89f-407a-b63b-786758370d01
+2026-01-26 23:57:20,383 | INFO | chat | 🤖 Running digital human
+2026-01-26 23:57:20,385 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-26 23:57:20,385 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-26 23:57:20,388 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-26 23:57:22,268 | INFO | orchestrator | ✅ Safety passed
+2026-01-26 23:57:22,268 | INFO | orchestrator | 🧭 Router agent called
+2026-01-26 23:57:22,284 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-26 23:57:24,825 | INFO | orchestrator | 🧭 Router | tool=False memory=False intent=none
+2026-01-26 23:57:24,831 | INFO | orchestrator | 🧠 Reasoning agent called
+2026-01-26 23:57:24,835 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-26 23:57:26,459 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-26 23:57:29,818 | INFO | LiteLLM | Wrapper: Completed Call, calling success_handler
+2026-01-26 23:57:29,818 | INFO | chat | ✅ Stream complete | tokens=2 | time=9.46s
+2026-01-26 23:57:52,014 | INFO | chat | 📩 Chat request | user_id=6 | request_id=acbe85dd-0da1-4784-809e-c04617e8fd65
+2026-01-26 23:57:52,015 | INFO | chat | 🧑 User message | hi
+2026-01-26 23:57:52,016 | INFO | chat | 🤖 Stream started | session_id=7ca900f1-14b6-4d0f-8ff8-094a9fc2b87c | request_id=acbe85dd-0da1-4784-809e-c04617e8fd65
+2026-01-26 23:57:52,016 | INFO | chat | 🤖 Running digital human
+2026-01-26 23:57:52,031 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-26 23:57:52,032 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-26 23:57:52,041 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-26 23:57:53,284 | INFO | orchestrator | ✅ Safety passed
+2026-01-26 23:57:53,284 | INFO | orchestrator | 🧭 Router agent called
+2026-01-26 23:57:53,284 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-26 23:57:55,967 | INFO | orchestrator | 🧭 Router | tool=False memory=False intent=none
+2026-01-26 23:57:55,970 | INFO | orchestrator | 🧠 Reasoning agent called
+2026-01-26 23:57:55,970 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-26 23:57:57,137 | INFO | chat | ✅ Stream complete | tokens=1 | time=5.12s
+2026-01-26 23:58:35,246 | INFO | chat | 📩 Chat request | user_id=6 | request_id=e1f7ba64-f33f-437b-a65b-36df530e32aa
+2026-01-26 23:58:35,247 | INFO | chat | 🧑 User message | hi
+2026-01-26 23:58:35,254 | INFO | chat | 🆕 New session created | 7a24ad4f-c531-4c1c-a792-617a5e931cb3
+2026-01-26 23:58:35,261 | INFO | chat | 🤖 Stream started | session_id=7a24ad4f-c531-4c1c-a792-617a5e931cb3 | request_id=e1f7ba64-f33f-437b-a65b-36df530e32aa
+2026-01-26 23:58:35,262 | INFO | chat | 🤖 Running digital human
+2026-01-26 23:58:35,263 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-26 23:58:35,263 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-26 23:58:35,273 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-26 23:58:38,275 | INFO | orchestrator | ✅ Safety passed
+2026-01-26 23:58:38,276 | INFO | orchestrator | 🧭 Router agent called
+2026-01-26 23:58:38,283 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-26 23:58:41,167 | INFO | orchestrator | 🧭 Router | tool=False memory=False intent=none
+2026-01-26 23:58:41,167 | INFO | orchestrator | 🧠 Reasoning agent called
+2026-01-26 23:58:41,183 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-26 23:58:42,332 | INFO | chat | ✅ Stream complete | tokens=1 | time=7.09s

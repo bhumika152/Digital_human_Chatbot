@@ -24,7 +24,11 @@ MAX_OUTPUT_CHARS = 800
 
 # ✅ Allowed tools (deny-by-default)
 ALLOWED_TOOLS = {
-    "safe_calculator",
+    "weather_tool",
+    "math_tool",
+    "bing_search_tool",
+    "browser_search_tool"
+
 }
 
 
