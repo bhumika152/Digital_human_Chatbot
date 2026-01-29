@@ -57,3 +57,147 @@ RuntimeError: Event loop is closed
 2026-01-27 13:23:35,328 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
 2026-01-27 13:29:03,826 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
 2026-01-27 13:29:21,975 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 13:45:21,555 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 15:28:56,342 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 15:29:06,476 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 15:56:55,494 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 16:13:57,450 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 16:14:00,990 | ERROR | chat | 🔥 Streaming failed
+Traceback (most recent call last):
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\litellm\llms\vertex_ai\gemini\vertex_and_google_ai_studio_gemini.py", line 2115, in make_call
+    response = await client.post(
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\litellm\litellm_core_utils\logging_utils.py", line 190, in async_wrapper
+    result = await func(*args, **kwargs)
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\litellm\llms\custom_httpx\http_handler.py", line 464, in post
+    raise e
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\litellm\llms\custom_httpx\http_handler.py", line 420, in post
+    response.raise_for_status()
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\httpx\_models.py", line 829, in raise_for_status
+    raise HTTPStatusError(message, request=request, response=self)
+httpx.HTTPStatusError: Server error '503 Service Unavailable' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?key=AIzaSyA9SwakTt1qzLCb_lhhWMUWgk4B2oWtoyA&alt=sse'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\litellm\litellm_core_utils\streaming_handler.py", line 1812, in __anext__
+    await self.fetch_stream()
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\litellm\litellm_core_utils\streaming_handler.py", line 1796, in fetch_stream
+    self.completion_stream = await self.make_call(
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\litellm\llms\vertex_ai\gemini\vertex_and_google_ai_studio_gemini.py", line 2121, in make_call
+    raise VertexAIError(
+litellm.llms.vertex_ai.common_utils.VertexAIError: b'{\n  "error": {\n    "code": 503,\n    "message": "The model is overloaded. Please try again later.",\n    "status": "UNAVAILABLE"\n  }\n}\n'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\litellm\litellm_core_utils\streaming_handler.py", line 2003, in __anext__
+    raise exception_type(
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\litellm\litellm_core_utils\exception_mapping_utils.py", line 2340, in exception_type
+    raise e
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\litellm\litellm_core_utils\exception_mapping_utils.py", line 1350, in exception_type
+    raise litellm.InternalServerError(
+litellm.exceptions.InternalServerError: litellm.InternalServerError: litellm.InternalServerError: vertex_ai_betaException - b'{\n  "error": {\n    "code": 503,\n    "message": "The model is overloaded. Please try again later.",\n    "status": "UNAVAILABLE"\n  }\n}\n'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\chat.py", line 331, in stream_response
+    async for event in run_digital_human_chat(
+  File "c:\users\dell\downloads\chatbot-project-final\chatbot-project-main\digital_human_sdk\digital_human_sdk\app\main.py", line 222, in run_digital_human_chat
+    async for event in reasoning_stream.stream_events():
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\result.py", line 347, in stream_events
+    raise self._stored_exception
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\run.py", line 1199, in _start_streaming
+    turn_result = await cls._run_single_turn_streamed(
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\run.py", line 1436, in _run_single_turn_streamed
+    async for event in model.stream_response(
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\extensions\models\litellm_model.py", line 218, in stream_response
+    async for chunk in ChatCmplStreamHandler.handle_stream(response, stream):
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\models\chatcmpl_stream_handler.py", line 91, in handle_stream
+    async for chunk in stream:
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\litellm\litellm_core_utils\streaming_handler.py", line 2013, in __anext__
+    raise MidStreamFallbackError(
+litellm.exceptions.MidStreamFallbackError: litellm.ServiceUnavailableError: litellm.MidStreamFallbackError: litellm.InternalServerError: litellm.InternalServerError: vertex_ai_betaException - b'{\n  "error": {\n    "code": 503,\n    "message": "The model is overloaded. Please try again later.",\n    "status": "UNAVAILABLE"\n  }\n}\n' Original exception: InternalServerError: litellm.InternalServerError: litellm.InternalServerError: vertex_ai_betaException - b'{\n  "error": {\n    "code": 503,\n    "message": "The model is overloaded. Please try again later.",\n    "status": "UNAVAILABLE"\n  }\n}\n'
+2026-01-27 16:14:49,989 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 16:24:23,070 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 16:53:23,882 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 17:15:35,874 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 17:15:37,903 | ERROR | chat | 🔥 Chat failed
+Traceback (most recent call last):
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\chat.py", line 336, in chat
+    async for event in run_digital_human_chat(
+  File "c:\users\dell\downloads\chatbot-project-final\chatbot-project-main\digital_human_sdk\digital_human_sdk\app\main.py", line 228, in run_digital_human_chat
+    final_text = reasoning_raw.final_output or ""
+NameError: name 'reasoning_raw' is not defined. Did you mean: 'reasoning_stream'?
+2026-01-27 17:15:58,750 | ERROR | asyncio | Fatal error on SSL transport
+protocol: <asyncio.sslproto.SSLProtocol object at 0x0000022A9789D450>
+transport: <_SelectorSocketTransport closing fd=4088>
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 924, in write
+    n = self._sock.send(data)
+OSError: [WinError 10038] An operation was attempted on something that is not a socket
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\sslproto.py", line 690, in _process_write_backlog
+    self._transport.write(chunk)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 930, in write
+    self._fatal_error(exc, 'Fatal write error on socket transport')
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 725, in _fatal_error
+    self._force_close(exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 737, in _force_close
+    self._loop.call_soon(self._call_connection_lost, exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 753, in call_soon
+    self._check_closed()
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 515, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2026-01-27 17:37:09,095 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 17:37:22,558 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 17:37:25,807 | ERROR | chat | 🔥 Streaming failed
+Traceback (most recent call last):
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\chat.py", line 222, in stream_response
+    db_mem = agent_context.db_factory()
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\pydantic\main.py", line 1026, in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+AttributeError: 'AgentContext' object has no attribute 'db_factory'
+2026-01-27 17:39:46,042 | ERROR | asyncio | Fatal error on SSL transport
+protocol: <asyncio.sslproto.SSLProtocol object at 0x00000223F2E97CD0>
+transport: <_SelectorSocketTransport closing fd=3960>
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 924, in write
+    n = self._sock.send(data)
+OSError: [WinError 10038] An operation was attempted on something that is not a socket
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\sslproto.py", line 690, in _process_write_backlog
+    self._transport.write(chunk)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 930, in write
+    self._fatal_error(exc, 'Fatal write error on socket transport')
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 725, in _fatal_error
+    self._force_close(exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 737, in _force_close
+    self._loop.call_soon(self._call_connection_lost, exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 753, in call_soon
+    self._check_closed()
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 515, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2026-01-27 17:41:32,841 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 17:42:23,490 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 22:48:44,739 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 22:49:45,573 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 22:50:26,533 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 22:51:03,785 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 22:52:22,716 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 22:52:55,842 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 22:53:21,823 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 22:53:43,708 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 22:54:31,657 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 22:55:11,460 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 22:55:38,401 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-27 22:58:18,442 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed

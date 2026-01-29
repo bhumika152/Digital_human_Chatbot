@@ -1,78 +1,58 @@
 from agents import Agent
-from .contracts import SafetyResult
+from digital_human_sdk.app.intelligence.safety.contracts import SafetyResult
 from digital_human_sdk.app.intelligence.models.litellm_model import get_model_name
 
-# Importing guardrails registers them
+# importing registers guardrails
 from . import guardrails
-import litellm
+
 
 def safety_response(safe: bool, reason: str | None):
     if safe:
         return SafetyResult(
             safe=True,
-            message="OK"
+            message="OK",
         ).model_dump()
 
     return SafetyResult(
         safe=False,
         reason=reason,
-        message="Sorry, I can’t help with that request."
-        ).model_dump()
-
+        message="Sorry, I can’t help with that request.",
+    ).model_dump()
 
 
 safe_agent = Agent(
-
     name="Safety Agent",
-
     instructions="""
-
 You are a content safety checker.
- 
+
 Your task:
-
 - Decide whether the user's message is SAFE or UNSAFE.
- 
+
+Respond ONLY in valid JSON.
+
 SAFE content includes:
-
-- General knowledge (science, history, people)
-
-- Weather questions
-
+- General knowledge
+- Education
 - Casual conversation
-
-- Education, explanations, opinions
-
 - Harmless personal questions
- 
+
 UNSAFE content includes:
-
 - Violence, murder, terrorism
-
-- Instructions for illegal activities
-
-- Self-harm or suicide encouragement
-
-- Hate speech or harassment
-
+- Illegal instructions
+- Self-harm
+- Hate speech
 - Sexual content involving minors
- 
+
+JSON FORMAT:
+{
+  "safe": true | false,
+  "reason": "short explanation if unsafe"
+}
+
 Rules:
-
-- If the message is SAFE, respond with: "SAFE"
-
-- If the message is UNSAFE, respond with a short, polite refusal explaining that you cannot help with that request.
-
-- Do NOT mention policies, rules, or internal systems.
-
-- Do NOT block normal or harmless questions.
-
-- Be calm and respectful.
-
+- If SAFE → safe=true
+- If UNSAFE → safe=false + reason
+- Do NOT mention policies
 """,
-
     model=get_model_name(),
-
 )
-
- 

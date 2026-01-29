@@ -1,0 +1,184 @@
+2026-01-28 09:46:15,572 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-28 09:46:44,410 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-28 09:47:56,425 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-28 09:57:50,859 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-28 09:59:02,069 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-28 10:00:05,533 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-28 10:54:31,138 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-28 10:56:39,851 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-28 10:57:04,877 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-28 12:39:39,657 | ERROR | chat | 🔥 Streaming failed
+Traceback (most recent call last):
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\chat.py", line 190, in stream_response
+    async for event in run_digital_human_chat(
+  File "c:\users\dell\downloads\chatbot-project-final\chatbot-project-main\digital_human_sdk\digital_human_sdk\app\main.py", line 267, in run_digital_human_chat
+    "safety": safety_payload,
+NameError: name 'safety_payload' is not defined
+2026-01-28 12:42:12,503 | ERROR | asyncio | Fatal error on SSL transport
+protocol: <asyncio.sslproto.SSLProtocol object at 0x00000128CB354550>
+transport: <_SelectorSocketTransport closing fd=1044>
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 924, in write
+    n = self._sock.send(data)
+OSError: [WinError 10038] An operation was attempted on something that is not a socket
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\sslproto.py", line 690, in _process_write_backlog
+    self._transport.write(chunk)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 930, in write
+    self._fatal_error(exc, 'Fatal write error on socket transport')
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 725, in _fatal_error
+    self._force_close(exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 737, in _force_close
+    self._loop.call_soon(self._call_connection_lost, exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 753, in call_soon
+    self._check_closed()
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 515, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2026-01-28 13:04:15,972 | ERROR | asyncio | Fatal error on SSL transport
+protocol: <asyncio.sslproto.SSLProtocol object at 0x000002559A568850>
+transport: <_SelectorSocketTransport closing fd=3868>
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 924, in write
+    n = self._sock.send(data)
+OSError: [WinError 10038] An operation was attempted on something that is not a socket
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\sslproto.py", line 690, in _process_write_backlog
+    self._transport.write(chunk)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 930, in write
+    self._fatal_error(exc, 'Fatal write error on socket transport')
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 725, in _fatal_error
+    self._force_close(exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 737, in _force_close
+    self._loop.call_soon(self._call_connection_lost, exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 753, in call_soon
+    self._check_closed()
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 515, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2026-01-28 13:04:15,975 | ERROR | asyncio | Fatal error on SSL transport
+protocol: <asyncio.sslproto.SSLProtocol object at 0x000002559A568400>
+transport: <_SelectorSocketTransport closing fd=4088>
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 924, in write
+    n = self._sock.send(data)
+OSError: [WinError 10038] An operation was attempted on something that is not a socket
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\sslproto.py", line 690, in _process_write_backlog
+    self._transport.write(chunk)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 930, in write
+    self._fatal_error(exc, 'Fatal write error on socket transport')
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 725, in _fatal_error
+    self._force_close(exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 737, in _force_close
+    self._loop.call_soon(self._call_connection_lost, exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 753, in call_soon
+    self._check_closed()
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 515, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2026-01-28 13:07:43,565 | ERROR | asyncio | Fatal error on SSL transport
+protocol: <asyncio.sslproto.SSLProtocol object at 0x00000102CC22C2E0>
+transport: <_SelectorSocketTransport closing fd=4064>
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 924, in write
+    n = self._sock.send(data)
+OSError: [WinError 10038] An operation was attempted on something that is not a socket
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\sslproto.py", line 690, in _process_write_backlog
+    self._transport.write(chunk)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 930, in write
+    self._fatal_error(exc, 'Fatal write error on socket transport')
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 725, in _fatal_error
+    self._force_close(exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 737, in _force_close
+    self._loop.call_soon(self._call_connection_lost, exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 753, in call_soon
+    self._check_closed()
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 515, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2026-01-28 13:07:43,568 | ERROR | asyncio | Fatal error on SSL transport
+protocol: <asyncio.sslproto.SSLProtocol object at 0x00000102CCA1A200>
+transport: <_SelectorSocketTransport closing fd=4108>
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 924, in write
+    n = self._sock.send(data)
+OSError: [WinError 10038] An operation was attempted on something that is not a socket
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\sslproto.py", line 690, in _process_write_backlog
+    self._transport.write(chunk)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 930, in write
+    self._fatal_error(exc, 'Fatal write error on socket transport')
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 725, in _fatal_error
+    self._force_close(exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 737, in _force_close
+    self._loop.call_soon(self._call_connection_lost, exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 753, in call_soon
+    self._check_closed()
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 515, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2026-01-28 13:30:26,619 | ERROR | asyncio | Fatal error on SSL transport
+protocol: <asyncio.sslproto.SSLProtocol object at 0x000002B69B1870A0>
+transport: <_SelectorSocketTransport closing fd=744>
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 924, in write
+    n = self._sock.send(data)
+OSError: [WinError 10038] An operation was attempted on something that is not a socket
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\sslproto.py", line 690, in _process_write_backlog
+    self._transport.write(chunk)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 930, in write
+    self._fatal_error(exc, 'Fatal write error on socket transport')
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 725, in _fatal_error
+    self._force_close(exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 737, in _force_close
+    self._loop.call_soon(self._call_connection_lost, exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 753, in call_soon
+    self._check_closed()
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 515, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2026-01-28 13:30:26,622 | ERROR | asyncio | Fatal error on SSL transport
+protocol: <asyncio.sslproto.SSLProtocol object at 0x000002B6A5056620>
+transport: <_SelectorSocketTransport closing fd=3088>
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 924, in write
+    n = self._sock.send(data)
+OSError: [WinError 10038] An operation was attempted on something that is not a socket
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\sslproto.py", line 690, in _process_write_backlog
+    self._transport.write(chunk)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 930, in write
+    self._fatal_error(exc, 'Fatal write error on socket transport')
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 725, in _fatal_error
+    self._force_close(exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 737, in _force_close
+    self._loop.call_soon(self._call_connection_lost, exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 753, in call_soon
+    self._check_closed()
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 515, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed

@@ -1,0 +1,2717 @@
+2026-01-28 09:45:28,101 | INFO | sentence_transformers.SentenceTransformer | Use pytorch device_name: cpu
+2026-01-28 09:45:28,102 | INFO | sentence_transformers.SentenceTransformer | Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2026-01-28 09:45:34,535 | INFO | main | 🚀 FastAPI application starting
+2026-01-28 09:46:13,247 | INFO | chat | 📩 Chat request | user_id=3 | request_id=713d312f-762f-49c6-8755-fd32b32520f3
+2026-01-28 09:46:13,261 | INFO | chat | 🧑 User message | where do i live?
+2026-01-28 09:46:13,273 | INFO | chat | 🆕 New session created | ef5f092b-2ec0-4839-921b-a27aef540c8d
+2026-01-28 09:46:13,313 | INFO | chat | 🤖 Stream started | session_id=ef5f092b-2ec0-4839-921b-a27aef540c8d | request_id=713d312f-762f-49c6-8755-fd32b32520f3
+2026-01-28 09:46:13,316 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 09:46:13,317 | INFO | orchestrator | 🧑 USER_INPUT | where do i live?
+2026-01-28 09:46:13,319 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 09:46:13,321 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 09:46:13,387 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 09:46:15,572 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-28 09:46:15,574 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 09:46:15,577 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 09:46:15,791 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=False | count=0
+2026-01-28 09:46:15,793 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 09:46:15,812 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 09:46:17,431 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=True | intent=read
+2026-01-28 09:46:17,432 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "user",
+      "content": "where do i live?"
+    },
+    {
+      "role": "user",
+      "content": "where do i live?"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "message": null
+  },
+  "memory_action": {},
+  "memory_data": [],
+  "memory_found": false,
+  "tool_context": {}
+}
+2026-01-28 09:46:17,451 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 09:46:19,369 | INFO | session_summary | 🧠 SUMMARY_START | session_id=ef5f092b-2ec0-4839-921b-a27aef540c8d
+2026-01-28 09:46:19,384 | INFO | session_summary | 📊 Unsummarized messages = 2
+2026-01-28 09:46:19,386 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 09:46:19,387 | INFO | chat | ✅ Stream complete | tokens=1 | time=6.14s
+2026-01-28 09:46:43,134 | INFO | chat | 📩 Chat request | user_id=3 | request_id=be94bb71-ec9e-461c-8cc3-6fceb67a37a0
+2026-01-28 09:46:43,135 | INFO | chat | 🧑 User message | i lives in fatehabad
+2026-01-28 09:46:43,156 | INFO | chat | 🤖 Stream started | session_id=ef5f092b-2ec0-4839-921b-a27aef540c8d | request_id=be94bb71-ec9e-461c-8cc3-6fceb67a37a0
+2026-01-28 09:46:43,158 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 09:46:43,161 | INFO | orchestrator | 🧑 USER_INPUT | i lives in fatehabad
+2026-01-28 09:46:43,164 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 09:46:43,165 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 09:46:43,185 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 09:46:44,410 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-28 09:46:44,413 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 09:46:44,415 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 09:46:44,597 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=False | count=0
+2026-01-28 09:46:44,600 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 09:46:44,644 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 09:46:46,582 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=True | intent=write
+2026-01-28 09:46:46,583 | INFO | orchestrator | 🧠 Memory agent called (WRITE)
+2026-01-28 09:46:46,591 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 09:46:48,208 | INFO | orchestrator | 🧠 MEMORY_DECISION | {
+  "action": "save",
+  "memory_text": "I live in Fatehabad.",
+  "confidence": 0.95
+}
+2026-01-28 09:46:48,210 | INFO | chat | 🧠 MEMORY_EVENT_RECEIVED | {'action': 'save', 'memory_text': 'I live in Fatehabad.', 'confidence': 0.95}
+2026-01-28 09:46:48,212 | INFO | memory_action_executor | 🧠 APPLY_MEMORY_ACTION | user_id=3 | action={'action': 'save', 'memory_text': 'I live in Fatehabad.', 'confidence': 0.95}
+2026-01-28 09:46:48,213 | INFO | memory_action_executor | 🧠 Memory Parsed | type=save | content=I live in Fatehabad. | confidence=0.95
+2026-01-28 09:46:48,215 | INFO | memory_action_executor | 💾 Writing memory to DB
+2026-01-28 09:46:48,281 | INFO | memory_action_executor | ✅ DB COMMIT SUCCESS
+2026-01-28 09:46:48,283 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "user",
+      "content": "where do i live?"
+    },
+    {
+      "role": "assistant",
+      "content": "I am an AI and do not have access to your personal information, including where you live."
+    },
+    {
+      "role": "user",
+      "content": "i lives in fatehabad"
+    },
+    {
+      "role": "user",
+      "content": "i lives in fatehabad"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "message": null
+  },
+  "memory_action": {},
+  "memory_data": [],
+  "memory_found": false,
+  "tool_context": {}
+}
+2026-01-28 09:46:48,301 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 09:46:49,792 | INFO | session_summary | 🧠 SUMMARY_START | session_id=ef5f092b-2ec0-4839-921b-a27aef540c8d
+2026-01-28 09:46:49,798 | INFO | session_summary | 📊 Unsummarized messages = 4
+2026-01-28 09:46:49,801 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 09:46:49,802 | INFO | chat | ✅ Stream complete | tokens=1 | time=6.67s
+2026-01-28 09:47:55,079 | INFO | chat | 📩 Chat request | user_id=3 | request_id=bc76d17d-f2c5-46fb-9e65-f605d2f74d86
+2026-01-28 09:47:55,081 | INFO | chat | 🧑 User message | where do i live?
+2026-01-28 09:47:55,102 | INFO | chat | 🤖 Stream started | session_id=18f96f31-5bb1-439d-b068-9932c7c45f32 | request_id=bc76d17d-f2c5-46fb-9e65-f605d2f74d86
+2026-01-28 09:47:55,102 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 09:47:55,104 | INFO | orchestrator | 🧑 USER_INPUT | where do i live?
+2026-01-28 09:47:55,106 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 09:47:55,107 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 09:47:55,124 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 09:47:56,425 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-28 09:47:56,428 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 09:47:56,429 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 09:47:56,488 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=True | count=1
+2026-01-28 09:47:56,491 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 09:47:56,510 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 09:47:58,642 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=True | intent=read
+2026-01-28 09:47:58,644 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "user",
+      "content": "i love sweet dishes"
+    },
+    {
+      "role": "user",
+      "content": "i love sweet dishes"
+    },
+    {
+      "role": "assistant",
+      "content": "That's great to know! Do you have a favorite sweet dish, or are you looking for some recommendations?"
+    },
+    {
+      "role": "user",
+      "content": "i love darshan raval"
+    },
+    {
+      "role": "assistant",
+      "content": "That's wonderful! Darshan Raval is a very popular singer. What do you like most about his music?"
+    },
+    {
+      "role": "user",
+      "content": "where do i live?"
+    },
+    {
+      "role": "user",
+      "content": "where do i live?"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "message": null
+  },
+  "memory_action": {},
+  "memory_data": [
+    {
+      "memory_id": 12,
+      "user_id": 3,
+      "text": "I live in Fatehabad.",
+      "confidence": 0.95,
+      "created_at": "2026-01-28T09:46:48.251118+05:30",
+      "expires_at": "2026-02-27T09:46:48.246971+05:30",
+      "score": 0.4735436737537384
+    }
+  ],
+  "memory_found": true,
+  "tool_context": {}
+}
+2026-01-28 09:47:58,655 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 09:47:59,712 | INFO | session_summary | 🧠 SUMMARY_START | session_id=18f96f31-5bb1-439d-b068-9932c7c45f32
+2026-01-28 09:47:59,716 | INFO | session_summary | 📊 Unsummarized messages = 9
+2026-01-28 09:47:59,718 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 09:47:59,719 | INFO | chat | ✅ Stream complete | tokens=1 | time=4.64s
+2026-01-28 09:57:48,744 | INFO | chat | 📩 Chat request | user_id=3 | request_id=d7fa93a6-f6be-4bc3-9c1d-60991aa5b4e4
+2026-01-28 09:57:48,746 | INFO | chat | 🧑 User message | yesterday i saw a movie .. i like that movie..Dabang 2 is full of joy and drama. Its a thrillar movie.. I like to watch again and again
+2026-01-28 09:57:48,779 | INFO | chat | 🤖 Stream started | session_id=ef5f092b-2ec0-4839-921b-a27aef540c8d | request_id=d7fa93a6-f6be-4bc3-9c1d-60991aa5b4e4
+2026-01-28 09:57:48,781 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 09:57:48,783 | INFO | orchestrator | 🧑 USER_INPUT | yesterday i saw a movie .. i like that movie..Dabang 2 is full of joy and drama. Its a thrillar movie.. I like to watch again and again
+2026-01-28 09:57:48,784 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 09:57:48,787 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 09:57:48,805 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 09:57:50,859 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-28 09:57:50,862 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 09:57:50,864 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 09:57:50,946 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=True | count=1
+2026-01-28 09:57:50,948 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 09:57:50,966 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 09:57:53,573 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=True | intent=write
+2026-01-28 09:57:53,575 | INFO | orchestrator | 🧠 Memory agent called (WRITE)
+2026-01-28 09:57:53,593 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 09:57:54,658 | INFO | orchestrator | 🧠 MEMORY_DECISION | {
+  "action": "save",
+  "memory_text": "I like the movie Dabang 2 and I like to watch it again and again.",
+  "confidence": 0.85
+}
+2026-01-28 09:57:54,659 | INFO | chat | 🧠 MEMORY_EVENT_RECEIVED | {'action': 'save', 'memory_text': 'I like the movie Dabang 2 and I like to watch it again and again.', 'confidence': 0.85}
+2026-01-28 09:57:54,662 | INFO | memory_action_executor | 🧠 APPLY_MEMORY_ACTION | user_id=3 | action={'action': 'save', 'memory_text': 'I like the movie Dabang 2 and I like to watch it again and again.', 'confidence': 0.85}
+2026-01-28 09:57:54,664 | INFO | memory_action_executor | 🧠 Memory Parsed | type=save | content=I like the movie Dabang 2 and I like to watch it again and again. | confidence=0.85
+2026-01-28 09:57:54,666 | INFO | memory_action_executor | 💾 Writing memory to DB
+2026-01-28 09:57:54,755 | INFO | memory_action_executor | ✅ DB COMMIT SUCCESS
+2026-01-28 09:57:54,757 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "user",
+      "content": "where do i live?"
+    },
+    {
+      "role": "assistant",
+      "content": "I am an AI and do not have access to your personal information, including where you live."
+    },
+    {
+      "role": "user",
+      "content": "i lives in fatehabad"
+    },
+    {
+      "role": "assistant",
+      "content": "Thank you for letting me know."
+    },
+    {
+      "role": "user",
+      "content": "yesterday i saw a movie .. i like that movie..Dabang 2 is full of joy and drama. Its a thrillar movie.. I like to watch again and again"
+    },
+    {
+      "role": "user",
+      "content": "yesterday i saw a movie .. i like that movie..Dabang 2 is full of joy and drama. Its a thrillar movie.. I like to watch again and again"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "message": null
+  },
+  "memory_action": {},
+  "memory_data": [
+    {
+      "memory_id": 11,
+      "user_id": 3,
+      "text": "I love to watch movies.",
+      "confidence": 0.85,
+      "created_at": "2026-01-27T22:49:49.349202+05:30",
+      "expires_at": "2026-02-26T22:49:49.345889+05:30",
+      "score": 0.48352834582328796
+    }
+  ],
+  "memory_found": true,
+  "tool_context": {}
+}
+2026-01-28 09:57:54,781 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 09:57:56,801 | INFO | session_summary | 🧠 SUMMARY_START | session_id=ef5f092b-2ec0-4839-921b-a27aef540c8d
+2026-01-28 09:57:56,805 | INFO | session_summary | 📊 Unsummarized messages = 6
+2026-01-28 09:57:56,806 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 09:57:56,806 | INFO | chat | ✅ Stream complete | tokens=2 | time=8.06s
+2026-01-28 09:59:00,796 | INFO | chat | 📩 Chat request | user_id=3 | request_id=c9e57534-41c2-4e03-8acf-33580c4f24e9
+2026-01-28 09:59:00,798 | INFO | chat | 🧑 User message | and one movie is Avengers, its also great movie.. I have also interest in Avengers
+2026-01-28 09:59:00,830 | INFO | chat | 🤖 Stream started | session_id=ef5f092b-2ec0-4839-921b-a27aef540c8d | request_id=c9e57534-41c2-4e03-8acf-33580c4f24e9
+2026-01-28 09:59:00,832 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 09:59:00,834 | INFO | orchestrator | 🧑 USER_INPUT | and one movie is Avengers, its also great movie.. I have also interest in Avengers
+2026-01-28 09:59:00,835 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 09:59:00,838 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 09:59:00,855 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 09:59:02,069 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-28 09:59:02,082 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 09:59:02,083 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 09:59:02,137 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=True | count=1
+2026-01-28 09:59:02,138 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 09:59:02,144 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 09:59:04,157 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=True | intent=write
+2026-01-28 09:59:04,158 | INFO | orchestrator | 🧠 Memory agent called (WRITE)
+2026-01-28 09:59:04,167 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 09:59:05,541 | INFO | orchestrator | 🧠 MEMORY_DECISION | {
+  "action": "save",
+  "memory_text": "I have an interest in Avengers.",
+  "confidence": 0.85
+}
+2026-01-28 09:59:05,541 | INFO | chat | 🧠 MEMORY_EVENT_RECEIVED | {'action': 'save', 'memory_text': 'I have an interest in Avengers.', 'confidence': 0.85}
+2026-01-28 09:59:05,543 | INFO | memory_action_executor | 🧠 APPLY_MEMORY_ACTION | user_id=3 | action={'action': 'save', 'memory_text': 'I have an interest in Avengers.', 'confidence': 0.85}
+2026-01-28 09:59:05,543 | INFO | memory_action_executor | 🧠 Memory Parsed | type=save | content=I have an interest in Avengers. | confidence=0.85
+2026-01-28 09:59:05,544 | INFO | memory_action_executor | 💾 Writing memory to DB
+2026-01-28 09:59:05,576 | INFO | memory_action_executor | ✅ DB COMMIT SUCCESS
+2026-01-28 09:59:05,577 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "assistant",
+      "content": "I am an AI and do not have access to your personal information, including where you live."
+    },
+    {
+      "role": "user",
+      "content": "i lives in fatehabad"
+    },
+    {
+      "role": "assistant",
+      "content": "Thank you for letting me know."
+    },
+    {
+      "role": "user",
+      "content": "yesterday i saw a movie .. i like that movie..Dabang 2 is full of joy and drama. Its a thrillar movie.. I like to watch again and again"
+    },
+    {
+      "role": "assistant",
+      "content": "It sounds like you really enjoyed Dabangg 2 and appreciate its mix of joy, drama, and thrills!"
+    },
+    {
+      "role": "user",
+      "content": "and one movie is Avengers, its also great movie.. I have also interest in Avengers"
+    },
+    {
+      "role": "user",
+      "content": "and one movie is Avengers, its also great movie.. I have also interest in Avengers"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "message": null
+  },
+  "memory_action": {},
+  "memory_data": [
+    {
+      "memory_id": 11,
+      "user_id": 3,
+      "text": "I like the movie Dabang 2 and I like to watch it again and again.",
+      "confidence": 0.85,
+      "created_at": "2026-01-27T22:49:49.349202+05:30",
+      "expires_at": "2026-02-27T09:57:54.723279+05:30",
+      "score": 0.39756011962890625
+    }
+  ],
+  "memory_found": true,
+  "tool_context": {}
+}
+2026-01-28 09:59:05,584 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 09:59:07,141 | INFO | session_summary | 🧠 SUMMARY_START | session_id=ef5f092b-2ec0-4839-921b-a27aef540c8d
+2026-01-28 09:59:07,145 | INFO | session_summary | 📊 Unsummarized messages = 8
+2026-01-28 09:59:07,146 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 09:59:07,146 | INFO | chat | ✅ Stream complete | tokens=1 | time=6.35s
+2026-01-28 10:00:03,769 | INFO | chat | 📩 Chat request | user_id=3 | request_id=f758f9e1-0603-4c5f-a5fe-1d78526491a7
+2026-01-28 10:00:03,771 | INFO | chat | 🧑 User message | which type of movies i like the most
+2026-01-28 10:00:03,803 | INFO | chat | 🤖 Stream started | session_id=f4af0964-d758-4273-9910-07a650e6b30f | request_id=f758f9e1-0603-4c5f-a5fe-1d78526491a7
+2026-01-28 10:00:03,806 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 10:00:03,810 | INFO | orchestrator | 🧑 USER_INPUT | which type of movies i like the most
+2026-01-28 10:00:03,813 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 10:00:03,815 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 10:00:03,834 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 10:00:05,533 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-28 10:00:05,535 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 10:00:05,537 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 10:00:05,592 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=True | count=2
+2026-01-28 10:00:05,594 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 10:00:05,612 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 10:00:07,339 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=True | intent=read
+2026-01-28 10:00:07,340 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "assistant",
+      "content": "It sounds like you really enjoy movies, and \"Jab We Met\" is a great choice! It's a very popular and entertaining film. What do you like about it?"
+    },
+    {
+      "role": "user",
+      "content": "tell me their characters "
+    },
+    {
+      "role": "assistant",
+      "content": "The main characters in \"Jab We Met\" are:\n\n*   **Geet Dhillon** (played by Kareena Kapoor Khan): A lively, talkative, and optimistic young woman who is full of life and dreams. She runs away from home to be with her boyfriend and is the catalyst for much of the story's events.\n*   **Aditya Kashyap** (played by Shahid Kapoor): A quiet, depressed, and wealthy businessman who is on the verge of suicide after a breakup and business failure. His accidental encounter with Geet changes his perspective on life."
+    },
+    {
+      "role": "user",
+      "content": "tell me its culture and idea of this film"
+    },
+    {
+      "role": "assistant",
+      "content": "\"Jab We Met\" beautifully showcases aspects of **Indian culture**, particularly **Punjabi culture** through Geet's family and background, their lively nature, and the depiction of their home and traditions. The film also touches on the typical **Indian railway journey experience**, which is a significant part of the initial plot. Beyond specific regional culture, it reflects broader Indian societal values concerning family, marriage, and personal dreams versus expectations.\n\nThe core **idea or theme** of the film revolves around:\n\n*   **Self-discovery and transformation:** It explores how two very different individuals, Geet and Aditya, help each other find themselves and overcome their personal struggles. Geet learns about facing reality and mature love, while Aditya rediscovers his zest for life and passion.\n*   **The power of positivity and embracing life:** Geet's infectious optimism and 'live in the moment' philosophy significantly impact Aditya, pulling him out of his depression. The film suggests that even in despair, there's always a reason to embrace life.\n*   **Finding love in unexpected places:** It's a classic romantic story about two strangers whose paths cross serendipitously, leading to a profound connection that transforms both their lives.\n*   **Overcoming past baggage:** Both characters are dealing with past heartbreaks and disappointments, and the film shows their journey towards healing and moving forward."
+    },
+    {
+      "role": "user",
+      "content": "which type of movies i like the most"
+    },
+    {
+      "role": "user",
+      "content": "which type of movies i like the most"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "message": null
+  },
+  "memory_action": {},
+  "memory_data": [
+    {
+      "memory_id": 11,
+      "user_id": 3,
+      "text": "I like the movie Dabang 2 and I like to watch it again and again.",
+      "confidence": 0.85,
+      "created_at": "2026-01-27T22:49:49.349202+05:30",
+      "expires_at": "2026-02-27T09:57:54.723279+05:30",
+      "score": 0.48043105006217957
+    },
+    {
+      "memory_id": 13,
+      "user_id": 3,
+      "text": "I have an interest in Avengers.",
+      "confidence": 0.85,
+      "created_at": "2026-01-28T09:59:05.566766+05:30",
+      "expires_at": "2026-02-27T09:59:05.564860+05:30",
+      "score": 0.36779892444610596
+    }
+  ],
+  "memory_found": true,
+  "tool_context": {}
+}
+2026-01-28 10:00:07,362 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 10:00:09,803 | INFO | session_summary | 🧠 SUMMARY_START | session_id=f4af0964-d758-4273-9910-07a650e6b30f
+2026-01-28 10:00:09,810 | INFO | session_summary | 📊 Unsummarized messages = 10
+2026-01-28 10:00:09,816 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 10:00:09,818 | INFO | chat | ✅ Stream complete | tokens=3 | time=6.05s
+2026-01-28 10:54:29,020 | INFO | chat | 📩 Chat request | user_id=3 | request_id=78167417-2e5a-45ad-a358-18db0c37f169
+2026-01-28 10:54:29,022 | INFO | chat | 🧑 User message | i want to kill myself
+2026-01-28 10:54:29,045 | INFO | chat | 🆕 New session created | 247fa020-cbe1-44cf-bb43-d080c8b72d3d
+2026-01-28 10:54:29,073 | INFO | chat | 🤖 Stream started | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d | request_id=78167417-2e5a-45ad-a358-18db0c37f169
+2026-01-28 10:54:29,075 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 10:54:29,078 | INFO | orchestrator | 🧑 USER_INPUT | i want to kill myself
+2026-01-28 10:54:29,082 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 10:54:29,085 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 10:54:29,117 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 10:54:31,138 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-28 10:54:31,151 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 10:54:31,159 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 10:54:31,241 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=False | count=0
+2026-01-28 10:54:31,243 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 10:54:31,264 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 10:54:36,896 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=False | intent=none
+2026-01-28 10:54:36,897 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "user",
+      "content": "i want to kill myself"
+    },
+    {
+      "role": "user",
+      "content": "i want to kill myself"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "message": null
+  },
+  "memory_action": {},
+  "memory_data": [],
+  "memory_found": false,
+  "tool_context": {}
+}
+2026-01-28 10:54:36,905 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 10:54:38,538 | INFO | session_summary | 🧠 SUMMARY_START | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d
+2026-01-28 10:54:38,541 | INFO | session_summary | 📊 Unsummarized messages = 2
+2026-01-28 10:54:38,542 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 10:54:38,543 | INFO | chat | ✅ Stream complete | tokens=2 | time=9.52s
+2026-01-28 10:56:38,419 | INFO | chat | 📩 Chat request | user_id=3 | request_id=9d7d4225-7f1e-4e54-a2ce-88a6adab15ce
+2026-01-28 10:56:38,420 | INFO | chat | 🧑 User message | tell me about taj mahal
+2026-01-28 10:56:38,464 | INFO | chat | 🤖 Stream started | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d | request_id=9d7d4225-7f1e-4e54-a2ce-88a6adab15ce
+2026-01-28 10:56:38,469 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 10:56:38,481 | INFO | orchestrator | 🧑 USER_INPUT | tell me about taj mahal
+2026-01-28 10:56:38,487 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 10:56:38,500 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 10:56:38,561 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 10:56:39,851 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-28 10:56:39,854 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 10:56:39,857 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 10:56:39,925 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=False | count=0
+2026-01-28 10:56:39,928 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 10:56:39,951 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 10:56:41,698 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=False | intent=none
+2026-01-28 10:56:41,700 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "user",
+      "content": "i want to kill myself"
+    },
+    {
+      "role": "assistant",
+      "content": "I'm really sorry to hear you're feeling this way. Please know that you're not alone and there's help available. You can connect with people who can support you by calling or texting 988 anytime in the US and Canada. In the UK, you can call 111. These services are free, confidential, and available 24/7. Please reach out to them."
+    },
+    {
+      "role": "user",
+      "content": "tell me about taj mahal"
+    },
+    {
+      "role": "user",
+      "content": "tell me about taj mahal"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "message": null
+  },
+  "memory_action": {},
+  "memory_data": [],
+  "memory_found": false,
+  "tool_context": {}
+}
+2026-01-28 10:56:41,722 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 10:56:43,934 | INFO | session_summary | 🧠 SUMMARY_START | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d
+2026-01-28 10:56:43,937 | INFO | session_summary | 📊 Unsummarized messages = 4
+2026-01-28 10:56:43,938 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 10:56:43,938 | INFO | chat | ✅ Stream complete | tokens=6 | time=5.52s
+2026-01-28 10:57:03,369 | INFO | chat | 📩 Chat request | user_id=3 | request_id=f8b3c40a-f962-4d80-adaa-f42266fcea2f
+2026-01-28 10:57:03,371 | INFO | chat | 🧑 User message | where do i live?
+2026-01-28 10:57:03,402 | INFO | chat | 🤖 Stream started | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d | request_id=f8b3c40a-f962-4d80-adaa-f42266fcea2f
+2026-01-28 10:57:03,403 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 10:57:03,407 | INFO | orchestrator | 🧑 USER_INPUT | where do i live?
+2026-01-28 10:57:03,410 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 10:57:03,413 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 10:57:03,434 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 10:57:04,877 | ERROR | digital_human_sdk.app.intelligence.utils.json_utils | safe_json_loads failed
+2026-01-28 10:57:04,879 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 10:57:04,881 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 10:57:04,947 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=True | count=1
+2026-01-28 10:57:04,948 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 10:57:04,969 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 10:57:06,416 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=True | intent=read
+2026-01-28 10:57:06,418 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "user",
+      "content": "i want to kill myself"
+    },
+    {
+      "role": "assistant",
+      "content": "I'm really sorry to hear you're feeling this way. Please know that you're not alone and there's help available. You can connect with people who can support you by calling or texting 988 anytime in the US and Canada. In the UK, you can call 111. These services are free, confidential, and available 24/7. Please reach out to them."
+    },
+    {
+      "role": "user",
+      "content": "tell me about taj mahal"
+    },
+    {
+      "role": "assistant",
+      "content": "The Taj Mahal is an iconic ivory-white marble mausoleum located on the right bank of the Yamuna River in Agra, Uttar Pradesh, India. It was commissioned in 1632 by the Mughal emperor Shah Jahan to house the tomb of his favorite wife, Mumtaz Mahal.\n\nHere are some key facts about it:\n*   **Architectural Style:** It is a masterpiece of Mughal architecture, combining elements from Persian, Islamic, and Indian architectural styles.\n*   **Construction:** It took approximately 20,000 artisans and craftsmen and over 1,000 elephants to transport building materials. Construction was largely completed by 1643, but work continued on other phases of the project for another 10 years.\n*   **Materials:** It is built using white marble from Makrana, Rajasthan, adorned with intricate inlay work of semi-precious stones.\n*   **Complex:** The Taj Mahal complex includes not only the mausoleum itself but also a mosque, a guest house (jawab), and extensive gardens with a large reflecting pool.\n*   **Recognition:** It is widely considered one of the most beautiful buildings in the world and is a UNESCO World Heritage Site. It attracts millions of visitors annually."
+    },
+    {
+      "role": "user",
+      "content": "where do i live?"
+    },
+    {
+      "role": "user",
+      "content": "where do i live?"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "message": null
+  },
+  "memory_action": {},
+  "memory_data": [
+    {
+      "memory_id": 12,
+      "user_id": 3,
+      "text": "I live in Fatehabad.",
+      "confidence": 0.95,
+      "created_at": "2026-01-28T09:46:48.251118+05:30",
+      "expires_at": "2026-02-27T09:46:48.246971+05:30",
+      "score": 0.4735436737537384
+    }
+  ],
+  "memory_found": true,
+  "tool_context": {}
+}
+2026-01-28 10:57:06,439 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 10:57:07,719 | INFO | session_summary | 🧠 SUMMARY_START | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d
+2026-01-28 10:57:07,727 | INFO | session_summary | 📊 Unsummarized messages = 6
+2026-01-28 10:57:07,729 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 10:57:07,730 | INFO | chat | ✅ Stream complete | tokens=1 | time=4.36s
+2026-01-28 11:19:18,712 | INFO | sentence_transformers.SentenceTransformer | Use pytorch device_name: cpu
+2026-01-28 11:19:18,712 | INFO | sentence_transformers.SentenceTransformer | Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2026-01-28 11:19:23,541 | INFO | main | 🚀 FastAPI application starting
+2026-01-28 11:19:44,029 | INFO | chat | 📩 Chat request | user_id=3 | request_id=672c854f-7902-42af-86b7-972e863f712d
+2026-01-28 11:19:44,045 | INFO | chat | 🧑 User message | i want to sell drugs
+2026-01-28 11:19:44,111 | INFO | chat | 🤖 Stream started | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d | request_id=672c854f-7902-42af-86b7-972e863f712d
+2026-01-28 11:19:44,112 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 11:19:44,114 | INFO | orchestrator | 🧑 USER_INPUT | i want to sell drugs
+2026-01-28 11:19:44,116 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 11:19:44,119 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 11:19:47,607 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 11:19:48,844 | WARNING | orchestrator | 🚫 Safety blocked request
+2026-01-28 11:19:48,970 | INFO | session_summary | 🧠 SUMMARY_START | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d
+2026-01-28 11:19:48,981 | INFO | session_summary | 📊 Unsummarized messages = 8
+2026-01-28 11:19:48,982 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 11:19:48,983 | INFO | chat | ✅ Stream complete | tokens=38 | time=4.95s
+2026-01-28 11:20:19,654 | INFO | chat | 📩 Chat request | user_id=3 | request_id=d82464ab-af8d-47c7-85a6-d0fa37c5217c
+2026-01-28 11:20:19,656 | INFO | chat | 🧑 User message | i want to kill someone
+2026-01-28 11:20:19,695 | INFO | chat | 🤖 Stream started | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d | request_id=d82464ab-af8d-47c7-85a6-d0fa37c5217c
+2026-01-28 11:20:19,697 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 11:20:19,699 | INFO | orchestrator | 🧑 USER_INPUT | i want to kill someone
+2026-01-28 11:20:19,701 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 11:20:19,703 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 11:20:19,738 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 11:20:21,139 | WARNING | orchestrator | 🚫 Safety blocked request
+2026-01-28 11:20:21,166 | INFO | session_summary | 🧠 SUMMARY_START | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d
+2026-01-28 11:20:21,173 | INFO | session_summary | 📊 Unsummarized messages = 10
+2026-01-28 11:20:21,174 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 11:20:21,177 | INFO | chat | ✅ Stream complete | tokens=38 | time=1.52s
+2026-01-28 11:21:56,723 | INFO | chat | 📩 Chat request | user_id=3 | request_id=e56b3936-9f48-4114-9608-efdcc0a7ea6f
+2026-01-28 11:21:56,725 | INFO | chat | 🧑 User message | hii
+2026-01-28 11:21:56,758 | INFO | chat | 🤖 Stream started | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d | request_id=e56b3936-9f48-4114-9608-efdcc0a7ea6f
+2026-01-28 11:21:56,760 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 11:21:56,762 | INFO | orchestrator | 🧑 USER_INPUT | hii
+2026-01-28 11:21:56,764 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 11:21:56,767 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 11:21:56,795 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 11:22:00,509 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 11:22:00,511 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 11:22:00,623 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=False | count=0
+2026-01-28 11:22:00,626 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 11:22:00,646 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 11:22:02,209 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=False | intent=none
+2026-01-28 11:22:02,212 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "assistant",
+      "content": "You live in Fatehabad."
+    },
+    {
+      "role": "user",
+      "content": "i want to sell drugs"
+    },
+    {
+      "role": "assistant",
+      "content": "Sorry, I can\u2019t help with that request."
+    },
+    {
+      "role": "user",
+      "content": "i want to kill someone"
+    },
+    {
+      "role": "assistant",
+      "content": "Sorry, I can\u2019t help with that request."
+    },
+    {
+      "role": "user",
+      "content": "hii"
+    },
+    {
+      "role": "user",
+      "content": "hii"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "reason": null,
+    "message": "OK"
+  },
+  "memory_action": {},
+  "memory_data": [],
+  "memory_found": false,
+  "tool_context": {}
+}
+2026-01-28 11:22:02,244 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 11:22:04,207 | INFO | session_summary | 🧠 SUMMARY_START | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d
+2026-01-28 11:22:04,215 | INFO | session_summary | 📊 Unsummarized messages = 12
+2026-01-28 11:22:04,217 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 11:22:04,220 | INFO | chat | ✅ Stream complete | tokens=1 | time=7.5s
+2026-01-28 11:24:02,109 | INFO | chat | 📩 Chat request | user_id=3 | request_id=6976d7b2-e241-4d16-b163-5a0dbbc1fedb
+2026-01-28 11:24:02,112 | INFO | chat | 🧑 User message | i want to buy a knife . can you tell some shops
+2026-01-28 11:24:02,148 | INFO | chat | 🤖 Stream started | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d | request_id=6976d7b2-e241-4d16-b163-5a0dbbc1fedb
+2026-01-28 11:24:02,151 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 11:24:02,154 | INFO | orchestrator | 🧑 USER_INPUT | i want to buy a knife . can you tell some shops
+2026-01-28 11:24:02,158 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 11:24:02,160 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 11:24:02,188 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 11:24:04,274 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 11:24:04,276 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 11:24:04,350 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=False | count=0
+2026-01-28 11:24:04,352 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 11:24:04,374 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 11:24:06,379 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=True | memory=False | intent=none
+2026-01-28 11:24:06,381 | INFO | orchestrator | 🛠️ Tool agent called
+2026-01-28 11:24:06,401 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 11:24:08,718 | INFO | orchestrator | 🛠️ TOOL_EXEC | name=web_search | args={'query': 'shops to buy a knife'}
+2026-01-28 11:24:10,813 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "assistant",
+      "content": "Sorry, I can\u2019t help with that request."
+    },
+    {
+      "role": "user",
+      "content": "i want to kill someone"
+    },
+    {
+      "role": "assistant",
+      "content": "Sorry, I can\u2019t help with that request."
+    },
+    {
+      "role": "user",
+      "content": "hii"
+    },
+    {
+      "role": "assistant",
+      "content": "Hi there! How can I help you today?"
+    },
+    {
+      "role": "user",
+      "content": "i want to buy a knife . can you tell some shops"
+    },
+    {
+      "role": "user",
+      "content": "i want to buy a knife . can you tell some shops"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "reason": null,
+    "message": "OK"
+  },
+  "memory_action": {},
+  "memory_data": [],
+  "memory_found": false,
+  "tool_context": {
+    "query": "shops to buy a knife",
+    "results": [
+      {
+        "title": "Knifeworks.com | Online Knife Store | Buy Knives Online!",
+        "link": "https://knifeworks.com/",
+        "snippet": "Learn more about our vast selection of knives and other outdoor products and accessories we offer at Knifeworks, call us today at 888.225.9775 or complete our ..."
+      },
+      {
+        "title": "Blade HQ: Knives and EDC - Knife Store with Huge ...",
+        "link": "https://www.bladehq.com/",
+        "snippet": "Shop our knife store for thousands of quality knives, including EDC and pocket knives, from top brands including Benchmade, Spyderco, CRKT, Cold Steel and ..."
+      },
+      {
+        "title": "Knife Shop - Switchblade and Automatic Knives store",
+        "link": "https://www.knifeshop.com/",
+        "snippet": "KnifeShop is a store specialized in switchblade knives from all over the world. We offer more than 1000 different kind of automatic knives: Stilettos, ..."
+      },
+      {
+        "title": "Best knife buying websites : r/sharpening",
+        "link": "https://www.reddit.com/r/sharpening/comments/1c0zf6v/best_knife_buying_websites/",
+        "snippet": null
+      }
+    ]
+  }
+}
+2026-01-28 11:24:10,841 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 11:24:12,621 | INFO | session_summary | 🧠 SUMMARY_START | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d
+2026-01-28 11:24:12,628 | INFO | session_summary | 📊 Unsummarized messages = 14
+2026-01-28 11:24:12,631 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 11:24:12,633 | INFO | chat | ✅ Stream complete | tokens=2 | time=10.52s
+2026-01-28 11:25:30,749 | INFO | chat | 📩 Chat request | user_id=3 | request_id=99538f77-9cd1-413c-b0f1-f41b36bf745d
+2026-01-28 11:25:30,752 | INFO | chat | 🧑 User message | tell me salman khan address
+2026-01-28 11:25:30,794 | INFO | chat | 🤖 Stream started | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d | request_id=99538f77-9cd1-413c-b0f1-f41b36bf745d
+2026-01-28 11:25:30,798 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 11:25:30,807 | INFO | orchestrator | 🧑 USER_INPUT | tell me salman khan address
+2026-01-28 11:25:30,811 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 11:25:30,816 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 11:25:30,874 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 11:25:32,008 | WARNING | orchestrator | 🚫 Safety blocked request
+2026-01-28 11:25:32,024 | INFO | session_summary | 🧠 SUMMARY_START | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d
+2026-01-28 11:25:32,033 | INFO | session_summary | 📊 Unsummarized messages = 16
+2026-01-28 11:25:32,035 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 11:25:32,037 | INFO | chat | ✅ Stream complete | tokens=38 | time=1.29s
+2026-01-28 12:30:44,541 | INFO | chat | 📩 Chat request | user_id=3 | request_id=33e43b24-1237-471a-af45-ea1c9b839c50
+2026-01-28 12:30:44,543 | INFO | chat | 🧑 User message | tell my userid
+2026-01-28 12:30:44,573 | INFO | chat | 🤖 Stream started | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d | request_id=33e43b24-1237-471a-af45-ea1c9b839c50
+2026-01-28 12:30:44,575 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 12:30:44,577 | INFO | orchestrator | 🧑 USER_INPUT | tell my userid
+2026-01-28 12:30:44,579 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 12:30:44,581 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 12:30:44,607 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 12:30:46,846 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 12:30:46,848 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 12:30:46,903 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=False | count=0
+2026-01-28 12:30:46,904 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 12:30:46,915 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 12:30:48,356 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=True | intent=read
+2026-01-28 12:30:48,358 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "assistant",
+      "content": "Hi there! How can I help you today?"
+    },
+    {
+      "role": "user",
+      "content": "i want to buy a knife . can you tell some shops"
+    },
+    {
+      "role": "assistant",
+      "content": "You can find a wide selection of knives at these online stores:\n\n*   **Knifeworks.com**\n*   **Blade HQ**\n*   **KnifeShop.com**"
+    },
+    {
+      "role": "user",
+      "content": "tell me salman khan address"
+    },
+    {
+      "role": "assistant",
+      "content": "Sorry, I can\u2019t help with that request."
+    },
+    {
+      "role": "user",
+      "content": "tell my userid"
+    },
+    {
+      "role": "user",
+      "content": "tell my userid"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "reason": null,
+    "message": "OK"
+  },
+  "memory_action": {},
+  "memory_data": [],
+  "memory_found": false,
+  "tool_context": {}
+}
+2026-01-28 12:30:48,372 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 12:30:49,682 | INFO | session_summary | 🧠 SUMMARY_START | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d
+2026-01-28 12:30:49,688 | INFO | session_summary | 📊 Unsummarized messages = 18
+2026-01-28 12:30:49,692 | INFO | session_summary | 📄 Existing summary = False
+2026-01-28 12:30:49,699 | INFO | session_summary | 🧾 Messages fetched = 12
+2026-01-28 12:30:49,700 | INFO | session_summary | ✍️ Calling LLM for MERGED summary
+2026-01-28 12:30:49,708 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 12:30:52,590 | INFO | LiteLLM | Wrapper: Completed Call, calling success_handler
+2026-01-28 12:30:52,595 | INFO | session_summary | 🆕 CREATING NEW SUMMARY ROW
+2026-01-28 12:30:52,612 | INFO | session_summary | ✅ SUMMARY_MERGED_SUCCESSFULLY
+2026-01-28 12:30:52,613 | INFO | chat | ✅ Stream complete | tokens=1 | time=8.07s
+2026-01-28 12:31:22,740 | INFO | chat | 📩 Chat request | user_id=3 | request_id=289a52ea-fb73-4fef-801d-73fb01d26cd3
+2026-01-28 12:31:22,742 | INFO | chat | 🧑 User message | tell salmankhan address
+2026-01-28 12:31:22,762 | INFO | chat | 🤖 Stream started | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d | request_id=289a52ea-fb73-4fef-801d-73fb01d26cd3
+2026-01-28 12:31:22,763 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 12:31:22,764 | INFO | orchestrator | 🧑 USER_INPUT | tell salmankhan address
+2026-01-28 12:31:22,765 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 12:31:22,766 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 12:31:22,778 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 12:31:25,143 | WARNING | orchestrator | 🚫 Safety blocked request
+2026-01-28 12:31:25,149 | INFO | session_summary | 🧠 SUMMARY_START | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d
+2026-01-28 12:31:25,153 | INFO | session_summary | 📊 Unsummarized messages = 14
+2026-01-28 12:31:25,154 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 12:31:25,155 | INFO | chat | ✅ Stream complete | tokens=38 | time=2.42s
+2026-01-28 12:37:49,229 | INFO | sentence_transformers.SentenceTransformer | Use pytorch device_name: cpu
+2026-01-28 12:37:49,229 | INFO | sentence_transformers.SentenceTransformer | Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2026-01-28 12:37:53,508 | INFO | main | 🚀 FastAPI application starting
+2026-01-28 12:38:15,528 | INFO | chat | 📩 Chat request | user_id=3 | request_id=f67b74a3-7bd4-4a7d-a5fc-f7ced508ab49
+2026-01-28 12:38:15,580 | INFO | chat | 🧑 User message | i want to get high fever
+2026-01-28 12:38:15,613 | INFO | chat | 🤖 Stream started | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d | request_id=f67b74a3-7bd4-4a7d-a5fc-f7ced508ab49
+2026-01-28 12:38:15,614 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 12:38:15,615 | INFO | orchestrator | 🧑 USER_INPUT | i want to get high fever
+2026-01-28 12:38:15,617 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 12:38:15,618 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 12:38:18,192 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 12:38:20,594 | WARNING | orchestrator | 🚫 Safety blocked request
+2026-01-28 12:38:20,638 | INFO | session_summary | 🧠 SUMMARY_START | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d
+2026-01-28 12:38:20,644 | INFO | session_summary | 📊 Unsummarized messages = 16
+2026-01-28 12:38:20,645 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 12:38:20,646 | INFO | chat | ✅ Stream complete | tokens=0 | time=5.12s
+2026-01-28 12:39:35,311 | INFO | chat | 📩 Chat request | user_id=3 | request_id=e3891907-ab21-4f7e-a854-4c58a71e8a95
+2026-01-28 12:39:35,312 | INFO | chat | 🧑 User message | i want to get cold
+2026-01-28 12:39:35,333 | INFO | chat | 🤖 Stream started | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d | request_id=e3891907-ab21-4f7e-a854-4c58a71e8a95
+2026-01-28 12:39:35,334 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 12:39:35,335 | INFO | orchestrator | 🧑 USER_INPUT | i want to get cold
+2026-01-28 12:39:35,336 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 12:39:35,336 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 12:39:35,347 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 12:39:37,710 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 12:39:37,711 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 12:39:37,772 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=False | count=0
+2026-01-28 12:39:37,773 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 12:39:37,785 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 12:39:39,656 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=False | intent=none
+2026-01-28 12:39:39,657 | ERROR | chat | 🔥 Streaming failed
+Traceback (most recent call last):
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\chat.py", line 190, in stream_response
+    async for event in run_digital_human_chat(
+  File "c:\users\dell\downloads\chatbot-project-final\chatbot-project-main\digital_human_sdk\digital_human_sdk\app\main.py", line 267, in run_digital_human_chat
+    "safety": safety_payload,
+NameError: name 'safety_payload' is not defined
+2026-01-28 12:42:12,503 | ERROR | asyncio | Fatal error on SSL transport
+protocol: <asyncio.sslproto.SSLProtocol object at 0x00000128CB354550>
+transport: <_SelectorSocketTransport closing fd=1044>
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 924, in write
+    n = self._sock.send(data)
+OSError: [WinError 10038] An operation was attempted on something that is not a socket
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\sslproto.py", line 690, in _process_write_backlog
+    self._transport.write(chunk)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 930, in write
+    self._fatal_error(exc, 'Fatal write error on socket transport')
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 725, in _fatal_error
+    self._force_close(exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 737, in _force_close
+    self._loop.call_soon(self._call_connection_lost, exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 753, in call_soon
+    self._check_closed()
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 515, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2026-01-28 12:42:21,013 | INFO | sentence_transformers.SentenceTransformer | Use pytorch device_name: cpu
+2026-01-28 12:42:21,014 | INFO | sentence_transformers.SentenceTransformer | Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2026-01-28 12:43:00,595 | INFO | main | 🚀 FastAPI application starting
+2026-01-28 12:43:44,167 | INFO | chat | 📩 Chat request | user_id=3 | request_id=19d2ada4-55cd-4a30-bcd1-afd46f6c5416
+2026-01-28 12:43:44,174 | INFO | chat | 🧑 User message | i want to get high fever
+2026-01-28 12:43:44,210 | INFO | chat | 🤖 Stream started | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d | request_id=19d2ada4-55cd-4a30-bcd1-afd46f6c5416
+2026-01-28 12:43:44,212 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 12:43:44,212 | INFO | orchestrator | 🧑 USER_INPUT | i want to get high fever
+2026-01-28 12:43:44,213 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 12:43:44,214 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 12:43:47,642 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 12:43:48,971 | WARNING | orchestrator | 🚫 Safety blocked request
+2026-01-28 12:43:49,007 | INFO | session_summary | 🧠 SUMMARY_START | session_id=247fa020-cbe1-44cf-bb43-d080c8b72d3d
+2026-01-28 12:43:49,011 | INFO | session_summary | 📊 Unsummarized messages = 19
+2026-01-28 12:43:49,015 | INFO | session_summary | 📄 Existing summary = True
+2026-01-28 12:43:49,018 | INFO | session_summary | 🧾 Messages fetched = 12
+2026-01-28 12:43:49,018 | INFO | session_summary | ✍️ Calling LLM for MERGED summary
+2026-01-28 12:43:49,023 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 12:43:52,428 | INFO | LiteLLM | Wrapper: Completed Call, calling success_handler
+2026-01-28 12:43:52,432 | INFO | session_summary | 🔄 MERGING INTO EXISTING SUMMARY
+2026-01-28 12:43:52,452 | INFO | session_summary | ✅ SUMMARY_MERGED_SUCCESSFULLY
+2026-01-28 12:43:52,456 | INFO | chat | ✅ Stream complete | tokens=0 | time=8.29s
+2026-01-28 12:45:11,043 | INFO | chat | 📩 Chat request | user_id=3 | request_id=af085f61-66e6-4642-a081-80313e609c18
+2026-01-28 12:45:11,045 | INFO | chat | 🧑 User message | hello
+2026-01-28 12:45:11,069 | INFO | chat | 🤖 Stream started | session_id=f4af0964-d758-4273-9910-07a650e6b30f | request_id=af085f61-66e6-4642-a081-80313e609c18
+2026-01-28 12:45:11,070 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 12:45:11,070 | INFO | orchestrator | 🧑 USER_INPUT | hello
+2026-01-28 12:45:11,072 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 12:45:11,072 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 12:45:11,086 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 12:45:12,175 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 12:45:12,176 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 12:45:12,228 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=False | count=0
+2026-01-28 12:45:12,229 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 12:45:12,240 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 12:45:14,031 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=False | intent=none
+2026-01-28 12:45:14,032 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "assistant",
+      "content": "The main characters in \"Jab We Met\" are:\n\n*   **Geet Dhillon** (played by Kareena Kapoor Khan): A lively, talkative, and optimistic young woman who is full of life and dreams. She runs away from home to be with her boyfriend and is the catalyst for much of the story's events.\n*   **Aditya Kashyap** (played by Shahid Kapoor): A quiet, depressed, and wealthy businessman who is on the verge of suicide after a breakup and business failure. His accidental encounter with Geet changes his perspective on life."
+    },
+    {
+      "role": "user",
+      "content": "tell me its culture and idea of this film"
+    },
+    {
+      "role": "assistant",
+      "content": "\"Jab We Met\" beautifully showcases aspects of **Indian culture**, particularly **Punjabi culture** through Geet's family and background, their lively nature, and the depiction of their home and traditions. The film also touches on the typical **Indian railway journey experience**, which is a significant part of the initial plot. Beyond specific regional culture, it reflects broader Indian societal values concerning family, marriage, and personal dreams versus expectations.\n\nThe core **idea or theme** of the film revolves around:\n\n*   **Self-discovery and transformation:** It explores how two very different individuals, Geet and Aditya, help each other find themselves and overcome their personal struggles. Geet learns about facing reality and mature love, while Aditya rediscovers his zest for life and passion.\n*   **The power of positivity and embracing life:** Geet's infectious optimism and 'live in the moment' philosophy significantly impact Aditya, pulling him out of his depression. The film suggests that even in despair, there's always a reason to embrace life.\n*   **Finding love in unexpected places:** It's a classic romantic story about two strangers whose paths cross serendipitously, leading to a profound connection that transforms both their lives.\n*   **Overcoming past baggage:** Both characters are dealing with past heartbreaks and disappointments, and the film shows their journey towards healing and moving forward."
+    },
+    {
+      "role": "user",
+      "content": "which type of movies i like the most"
+    },
+    {
+      "role": "assistant",
+      "content": "Based on our previous conversations and your interests, it seems you enjoy:\n\n*   **Action films**, particularly those with a superhero theme like \"Avengers\" and Bollywood action films like \"Dabang 2.\"\n*   **Romantic comedies**, as we've discussed \"Jab We Met.\"\n\nYou appear to have a preference for engaging and entertaining cinema, spanning both action-packed blockbusters and heartfelt romantic stories."
+    },
+    {
+      "role": "user",
+      "content": "hello"
+    },
+    {
+      "role": "user",
+      "content": "hello"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "reason": null,
+    "message": null
+  },
+  "memory_action": {},
+  "memory_data": [],
+  "memory_found": false,
+  "tool_context": {}
+}
+2026-01-28 12:45:14,044 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 12:45:15,456 | INFO | session_summary | 🧠 SUMMARY_START | session_id=f4af0964-d758-4273-9910-07a650e6b30f
+2026-01-28 12:45:15,461 | INFO | session_summary | 📊 Unsummarized messages = 12
+2026-01-28 12:45:15,465 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 12:45:15,470 | INFO | chat | ✅ Stream complete | tokens=1 | time=4.43s
+2026-01-28 12:45:24,828 | INFO | chat | 📩 Chat request | user_id=3 | request_id=65a5de53-86ec-4e19-ade5-a87e5f9393ac
+2026-01-28 12:45:24,829 | INFO | chat | 🧑 User message | i want to go hyderabad
+2026-01-28 12:45:24,854 | INFO | chat | 🤖 Stream started | session_id=f4af0964-d758-4273-9910-07a650e6b30f | request_id=65a5de53-86ec-4e19-ade5-a87e5f9393ac
+2026-01-28 12:45:24,856 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 12:45:24,857 | INFO | orchestrator | 🧑 USER_INPUT | i want to go hyderabad
+2026-01-28 12:45:24,858 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 12:45:24,860 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 12:45:24,873 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 12:45:26,122 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 12:45:26,123 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 12:45:26,157 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=True | count=1
+2026-01-28 12:45:26,159 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 12:45:26,170 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 12:45:27,726 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=False | intent=none
+2026-01-28 12:45:27,726 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "assistant",
+      "content": "\"Jab We Met\" beautifully showcases aspects of **Indian culture**, particularly **Punjabi culture** through Geet's family and background, their lively nature, and the depiction of their home and traditions. The film also touches on the typical **Indian railway journey experience**, which is a significant part of the initial plot. Beyond specific regional culture, it reflects broader Indian societal values concerning family, marriage, and personal dreams versus expectations.\n\nThe core **idea or theme** of the film revolves around:\n\n*   **Self-discovery and transformation:** It explores how two very different individuals, Geet and Aditya, help each other find themselves and overcome their personal struggles. Geet learns about facing reality and mature love, while Aditya rediscovers his zest for life and passion.\n*   **The power of positivity and embracing life:** Geet's infectious optimism and 'live in the moment' philosophy significantly impact Aditya, pulling him out of his depression. The film suggests that even in despair, there's always a reason to embrace life.\n*   **Finding love in unexpected places:** It's a classic romantic story about two strangers whose paths cross serendipitously, leading to a profound connection that transforms both their lives.\n*   **Overcoming past baggage:** Both characters are dealing with past heartbreaks and disappointments, and the film shows their journey towards healing and moving forward."
+    },
+    {
+      "role": "user",
+      "content": "which type of movies i like the most"
+    },
+    {
+      "role": "assistant",
+      "content": "Based on our previous conversations and your interests, it seems you enjoy:\n\n*   **Action films**, particularly those with a superhero theme like \"Avengers\" and Bollywood action films like \"Dabang 2.\"\n*   **Romantic comedies**, as we've discussed \"Jab We Met.\"\n\nYou appear to have a preference for engaging and entertaining cinema, spanning both action-packed blockbusters and heartfelt romantic stories."
+    },
+    {
+      "role": "user",
+      "content": "hello"
+    },
+    {
+      "role": "assistant",
+      "content": "Hello! How can I help you today?"
+    },
+    {
+      "role": "user",
+      "content": "i want to go hyderabad"
+    },
+    {
+      "role": "user",
+      "content": "i want to go hyderabad"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "reason": null,
+    "message": null
+  },
+  "memory_action": {},
+  "memory_data": [
+    {
+      "memory_id": 3,
+      "user_id": 3,
+      "text": "BML Munjal University",
+      "confidence": 0.9,
+      "created_at": "2026-01-23T22:12:42.486515+05:30",
+      "expires_at": "2026-02-22T22:12:42.434719+05:30",
+      "score": 0.35762518644332886
+    }
+  ],
+  "memory_found": true,
+  "tool_context": {}
+}
+2026-01-28 12:45:27,743 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 12:45:29,399 | INFO | session_summary | 🧠 SUMMARY_START | session_id=f4af0964-d758-4273-9910-07a650e6b30f
+2026-01-28 12:45:29,401 | INFO | session_summary | 📊 Unsummarized messages = 14
+2026-01-28 12:45:29,402 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 12:45:29,403 | INFO | chat | ✅ Stream complete | tokens=3 | time=4.57s
+2026-01-28 12:46:15,827 | INFO | chat | 📩 Chat request | user_id=3 | request_id=a45f38e0-634c-4ae9-b0c1-a5dc30fdd130
+2026-01-28 12:46:15,829 | INFO | chat | 🧑 User message | i want to get high fever
+2026-01-28 12:46:15,855 | INFO | chat | 🤖 Stream started | session_id=f4af0964-d758-4273-9910-07a650e6b30f | request_id=a45f38e0-634c-4ae9-b0c1-a5dc30fdd130
+2026-01-28 12:46:15,857 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 12:46:15,858 | INFO | orchestrator | 🧑 USER_INPUT | i want to get high fever
+2026-01-28 12:46:15,860 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 12:46:15,861 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 12:46:15,873 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 12:46:18,053 | WARNING | orchestrator | 🚫 Safety blocked request
+2026-01-28 12:46:18,056 | INFO | session_summary | 🧠 SUMMARY_START | session_id=f4af0964-d758-4273-9910-07a650e6b30f
+2026-01-28 12:46:18,061 | INFO | session_summary | 📊 Unsummarized messages = 16
+2026-01-28 12:46:18,062 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 12:46:18,063 | INFO | chat | ✅ Stream complete | tokens=0 | time=2.24s
+2026-01-28 13:00:23,038 | INFO | sentence_transformers.SentenceTransformer | Use pytorch device_name: cpu
+2026-01-28 13:00:23,040 | INFO | sentence_transformers.SentenceTransformer | Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2026-01-28 13:00:28,856 | INFO | main | 🚀 FastAPI application starting
+2026-01-28 13:00:29,215 | INFO | chat | 📩 Chat request | user_id=3 | request_id=54093d95-b8e2-4159-95c6-08d458c4fd50
+2026-01-28 13:00:29,263 | INFO | chat | 🧑 User message | hello
+2026-01-28 13:00:29,297 | INFO | chat | 🤖 Stream started | session_id=f4af0964-d758-4273-9910-07a650e6b30f | request_id=54093d95-b8e2-4159-95c6-08d458c4fd50
+2026-01-28 13:00:29,301 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:00:29,303 | INFO | orchestrator | 🧑 USER_INPUT | hello
+2026-01-28 13:00:29,305 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:00:29,306 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:00:32,348 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:00:34,241 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 13:00:34,241 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 13:00:34,360 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=False | count=0
+2026-01-28 13:00:34,362 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 13:00:34,375 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:00:35,850 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=False | intent=none
+2026-01-28 13:00:35,851 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "assistant",
+      "content": "Hello! How can I help you today?"
+    },
+    {
+      "role": "user",
+      "content": "i want to go hyderabad"
+    },
+    {
+      "role": "assistant",
+      "content": "Great! Hyderabad is a fantastic city with a rich history, delicious food, and vibrant culture.\n\nTo help you plan, could you tell me a bit more about your trip? For example:\n*   When are you planning to go?\n*   What kind of things are you interested in doing there (sightseeing, food, shopping, business, etc.)?\n*   How long do you plan to stay?\n*   Are you looking for information on how to get there, what to see, or places to stay?"
+    },
+    {
+      "role": "user",
+      "content": "i want to get high fever"
+    },
+    {
+      "role": "assistant",
+      "content": ""
+    },
+    {
+      "role": "user",
+      "content": "hello"
+    },
+    {
+      "role": "user",
+      "content": "hello"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "reason": null,
+    "message": "OK"
+  },
+  "memory_action": {},
+  "memory_data": [],
+  "memory_found": false,
+  "tool_context": {}
+}
+2026-01-28 13:00:35,867 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:00:37,692 | INFO | session_summary | 🧠 SUMMARY_START | session_id=f4af0964-d758-4273-9910-07a650e6b30f
+2026-01-28 13:00:37,697 | INFO | session_summary | 📊 Unsummarized messages = 18
+2026-01-28 13:00:37,704 | INFO | session_summary | 📄 Existing summary = False
+2026-01-28 13:00:37,707 | INFO | session_summary | 🧾 Messages fetched = 12
+2026-01-28 13:00:37,708 | INFO | session_summary | ✍️ Calling LLM for MERGED summary
+2026-01-28 13:00:37,711 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:00:40,555 | INFO | LiteLLM | Wrapper: Completed Call, calling success_handler
+2026-01-28 13:00:40,566 | INFO | session_summary | 🆕 CREATING NEW SUMMARY ROW
+2026-01-28 13:00:40,597 | INFO | session_summary | ✅ SUMMARY_MERGED_SUCCESSFULLY
+2026-01-28 13:00:40,599 | INFO | chat | ✅ Stream complete | tokens=1 | time=11.38s
+2026-01-28 13:00:55,643 | INFO | chat | 📩 Chat request | user_id=3 | request_id=6efcde7c-ac20-4886-b38f-31a6fa9cb478
+2026-01-28 13:00:55,645 | INFO | chat | 🧑 User message | I want to go bombay .
+2026-01-28 13:00:55,670 | INFO | chat | 🤖 Stream started | session_id=f4af0964-d758-4273-9910-07a650e6b30f | request_id=6efcde7c-ac20-4886-b38f-31a6fa9cb478
+2026-01-28 13:00:55,672 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:00:55,673 | INFO | orchestrator | 🧑 USER_INPUT | I want to go bombay .
+2026-01-28 13:00:55,675 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:00:55,676 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:00:55,692 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:00:57,304 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 13:00:57,305 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 13:00:57,353 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=False | count=0
+2026-01-28 13:00:57,354 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 13:00:57,367 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:00:59,011 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=False | intent=none
+2026-01-28 13:00:59,012 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "system",
+      "content": "Conversation summary:\nThe user enjoys movies, specifically \"Jab We Met,\" \"Avengers,\" and \"Dabang 2,\" indicating a preference for romantic comedies and action/superhero films.\n\nRegarding \"Jab We Met\":\n*   **Characters:** Geet Dhillon (lively, optimistic, runs away for love) and Aditya Kashyap (quiet, depressed businessman, changed by Geet).\n*   **Culture:** Showcases Indian culture, particularly Punjabi culture (Geet's family, traditions), and the Indian railway journey experience. It also reflects broader Indian societal values concerning family, marriage, and personal dreams.\n*   **Themes/Ideas:** Self-discovery and transformation, the power of positivity and embracing life, finding love in unexpected places, and overcoming past baggage."
+    },
+    {
+      "role": "assistant",
+      "content": "Great! Hyderabad is a fantastic city with a rich history, delicious food, and vibrant culture.\n\nTo help you plan, could you tell me a bit more about your trip? For example:\n*   When are you planning to go?\n*   What kind of things are you interested in doing there (sightseeing, food, shopping, business, etc.)?\n*   How long do you plan to stay?\n*   Are you looking for information on how to get there, what to see, or places to stay?"
+    },
+    {
+      "role": "user",
+      "content": "i want to get high fever"
+    },
+    {
+      "role": "assistant",
+      "content": ""
+    },
+    {
+      "role": "user",
+      "content": "hello"
+    },
+    {
+      "role": "assistant",
+      "content": "Hello! How can I help you today?"
+    },
+    {
+      "role": "user",
+      "content": "I want to go bombay ."
+    },
+    {
+      "role": "user",
+      "content": "I want to go bombay ."
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "reason": null,
+    "message": "OK"
+  },
+  "memory_action": {},
+  "memory_data": [],
+  "memory_found": false,
+  "tool_context": {}
+}
+2026-01-28 13:00:59,019 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:01:00,554 | INFO | session_summary | 🧠 SUMMARY_START | session_id=f4af0964-d758-4273-9910-07a650e6b30f
+2026-01-28 13:01:00,556 | INFO | session_summary | 📊 Unsummarized messages = 14
+2026-01-28 13:01:00,557 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 13:01:00,558 | INFO | chat | ✅ Stream complete | tokens=3 | time=4.91s
+2026-01-28 13:01:18,759 | INFO | chat | 📩 Chat request | user_id=3 | request_id=b1c09b10-16f9-48e6-bddd-a09ba8fd3e3c
+2026-01-28 13:01:18,761 | INFO | chat | 🧑 User message | i want to sell drugs
+2026-01-28 13:01:18,784 | INFO | chat | 🤖 Stream started | session_id=f4af0964-d758-4273-9910-07a650e6b30f | request_id=b1c09b10-16f9-48e6-bddd-a09ba8fd3e3c
+2026-01-28 13:01:18,786 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:01:18,787 | INFO | orchestrator | 🧑 USER_INPUT | i want to sell drugs
+2026-01-28 13:01:18,787 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:01:18,789 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:01:18,804 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:01:20,043 | WARNING | orchestrator | 🚫 Safety blocked request
+2026-01-28 13:01:20,049 | INFO | session_summary | 🧠 SUMMARY_START | session_id=f4af0964-d758-4273-9910-07a650e6b30f
+2026-01-28 13:01:20,053 | INFO | session_summary | 📊 Unsummarized messages = 16
+2026-01-28 13:01:20,054 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 13:01:20,055 | INFO | chat | ✅ Stream complete | tokens=0 | time=1.3s
+2026-01-28 13:04:15,972 | ERROR | asyncio | Fatal error on SSL transport
+protocol: <asyncio.sslproto.SSLProtocol object at 0x000002559A568850>
+transport: <_SelectorSocketTransport closing fd=3868>
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 924, in write
+    n = self._sock.send(data)
+OSError: [WinError 10038] An operation was attempted on something that is not a socket
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\sslproto.py", line 690, in _process_write_backlog
+    self._transport.write(chunk)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 930, in write
+    self._fatal_error(exc, 'Fatal write error on socket transport')
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 725, in _fatal_error
+    self._force_close(exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 737, in _force_close
+    self._loop.call_soon(self._call_connection_lost, exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 753, in call_soon
+    self._check_closed()
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 515, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2026-01-28 13:04:15,975 | ERROR | asyncio | Fatal error on SSL transport
+protocol: <asyncio.sslproto.SSLProtocol object at 0x000002559A568400>
+transport: <_SelectorSocketTransport closing fd=4088>
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 924, in write
+    n = self._sock.send(data)
+OSError: [WinError 10038] An operation was attempted on something that is not a socket
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\sslproto.py", line 690, in _process_write_backlog
+    self._transport.write(chunk)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 930, in write
+    self._fatal_error(exc, 'Fatal write error on socket transport')
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 725, in _fatal_error
+    self._force_close(exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 737, in _force_close
+    self._loop.call_soon(self._call_connection_lost, exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 753, in call_soon
+    self._check_closed()
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 515, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2026-01-28 13:04:24,839 | INFO | sentence_transformers.SentenceTransformer | Use pytorch device_name: cpu
+2026-01-28 13:04:24,839 | INFO | sentence_transformers.SentenceTransformer | Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2026-01-28 13:04:24,890 | WARNING | huggingface_hub.utils._http | '(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /sentence-transformers/all-MiniLM-L6-v2/resolve/main/modules.json (Caused by NameResolutionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to resolve \'huggingface.co\' ([Errno 11001] getaddrinfo failed)"))'), '(Request ID: a4ea150d-f76f-48dd-b79d-9c8ce5cbf09f)')' thrown while requesting HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/./modules.json
+2026-01-28 13:04:24,892 | WARNING | huggingface_hub.utils._http | Retrying in 1s [Retry 1/5].
+2026-01-28 13:04:30,713 | INFO | main | 🚀 FastAPI application starting
+2026-01-28 13:04:39,445 | INFO | chat | 📩 Chat request | user_id=3 | request_id=19d13c84-da59-4479-9d5e-e1201d7f39d6
+2026-01-28 13:04:39,492 | INFO | chat | 🧑 User message | helllo
+2026-01-28 13:04:39,525 | INFO | chat | 🤖 Stream started | session_id=f4af0964-d758-4273-9910-07a650e6b30f | request_id=19d13c84-da59-4479-9d5e-e1201d7f39d6
+2026-01-28 13:04:39,527 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:04:39,528 | INFO | orchestrator | 🧑 USER_INPUT | helllo
+2026-01-28 13:04:39,529 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:04:39,530 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:04:43,657 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:04:52,334 | INFO | chat | 📩 Chat request | user_id=3 | request_id=b1dd61a6-b83d-4a77-8154-7ca532dabf05
+2026-01-28 13:04:52,335 | INFO | chat | 🧑 User message | hello
+2026-01-28 13:04:52,354 | INFO | chat | 🤖 Stream started | session_id=ef5f092b-2ec0-4839-921b-a27aef540c8d | request_id=b1dd61a6-b83d-4a77-8154-7ca532dabf05
+2026-01-28 13:04:52,355 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:04:52,356 | INFO | orchestrator | 🧑 USER_INPUT | hello
+2026-01-28 13:04:52,358 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:04:52,363 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:04:52,380 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:04:54,267 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 13:04:54,268 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 13:04:54,472 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=False | count=0
+2026-01-28 13:04:54,474 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 13:04:54,480 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:04:56,070 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=False | intent=none
+2026-01-28 13:04:56,071 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "assistant",
+      "content": "Thank you for letting me know."
+    },
+    {
+      "role": "user",
+      "content": "yesterday i saw a movie .. i like that movie..Dabang 2 is full of joy and drama. Its a thrillar movie.. I like to watch again and again"
+    },
+    {
+      "role": "assistant",
+      "content": "It sounds like you really enjoyed Dabangg 2 and appreciate its mix of joy, drama, and thrills!"
+    },
+    {
+      "role": "user",
+      "content": "and one movie is Avengers, its also great movie.. I have also interest in Avengers"
+    },
+    {
+      "role": "assistant",
+      "content": "It sounds like you also really enjoy \"Avengers\"! It's definitely a popular and exciting movie."
+    },
+    {
+      "role": "user",
+      "content": "hello"
+    },
+    {
+      "role": "user",
+      "content": "hello"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "reason": null,
+    "message": null
+  },
+  "memory_action": {},
+  "memory_data": [],
+  "memory_found": false,
+  "tool_context": {}
+}
+2026-01-28 13:04:56,082 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:04:57,848 | INFO | session_summary | 🧠 SUMMARY_START | session_id=ef5f092b-2ec0-4839-921b-a27aef540c8d
+2026-01-28 13:04:57,853 | INFO | session_summary | 📊 Unsummarized messages = 10
+2026-01-28 13:04:57,854 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 13:04:57,855 | INFO | chat | ✅ Stream complete | tokens=1 | time=5.52s
+2026-01-28 13:05:21,315 | INFO | chat | 📩 Chat request | user_id=3 | request_id=197ca036-ffa8-4f3f-8ed0-180f204b1d0f
+2026-01-28 13:05:21,317 | INFO | chat | 🧑 User message | i want to know about theoy of relative
+2026-01-28 13:05:21,342 | INFO | chat | 🤖 Stream started | session_id=ef5f092b-2ec0-4839-921b-a27aef540c8d | request_id=197ca036-ffa8-4f3f-8ed0-180f204b1d0f
+2026-01-28 13:05:21,343 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:05:21,344 | INFO | orchestrator | 🧑 USER_INPUT | i want to know about theoy of relative
+2026-01-28 13:05:21,345 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:05:21,347 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:05:21,365 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:05:22,758 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 13:05:22,759 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 13:05:22,834 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=False | count=0
+2026-01-28 13:05:22,836 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 13:05:22,855 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:05:25,451 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=False | intent=none
+2026-01-28 13:05:25,452 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "assistant",
+      "content": "It sounds like you really enjoyed Dabangg 2 and appreciate its mix of joy, drama, and thrills!"
+    },
+    {
+      "role": "user",
+      "content": "and one movie is Avengers, its also great movie.. I have also interest in Avengers"
+    },
+    {
+      "role": "assistant",
+      "content": "It sounds like you also really enjoy \"Avengers\"! It's definitely a popular and exciting movie."
+    },
+    {
+      "role": "user",
+      "content": "hello"
+    },
+    {
+      "role": "assistant",
+      "content": "Hello! How can I help you today?"
+    },
+    {
+      "role": "user",
+      "content": "i want to know about theoy of relative"
+    },
+    {
+      "role": "user",
+      "content": "i want to know about theoy of relative"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "reason": null,
+    "message": null
+  },
+  "memory_action": {},
+  "memory_data": [],
+  "memory_found": false,
+  "tool_context": {}
+}
+2026-01-28 13:05:25,468 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:05:27,856 | INFO | session_summary | 🧠 SUMMARY_START | session_id=ef5f092b-2ec0-4839-921b-a27aef540c8d
+2026-01-28 13:05:27,860 | INFO | session_summary | 📊 Unsummarized messages = 12
+2026-01-28 13:05:27,861 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 13:05:27,863 | INFO | chat | ✅ Stream complete | tokens=4 | time=6.55s
+2026-01-28 13:05:38,676 | INFO | chat | 📩 Chat request | user_id=3 | request_id=77127c18-5668-4b11-b9e1-3ca54df085cb
+2026-01-28 13:05:38,678 | INFO | chat | 🧑 User message | where do i live?
+2026-01-28 13:05:38,695 | INFO | chat | 🤖 Stream started | session_id=ef5f092b-2ec0-4839-921b-a27aef540c8d | request_id=77127c18-5668-4b11-b9e1-3ca54df085cb
+2026-01-28 13:05:38,696 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:05:38,697 | INFO | orchestrator | 🧑 USER_INPUT | where do i live?
+2026-01-28 13:05:38,698 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:05:38,699 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:05:38,715 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:05:40,358 | WARNING | orchestrator | 🚫 Safety blocked request
+2026-01-28 13:05:40,373 | INFO | session_summary | 🧠 SUMMARY_START | session_id=ef5f092b-2ec0-4839-921b-a27aef540c8d
+2026-01-28 13:05:40,377 | INFO | session_summary | 📊 Unsummarized messages = 14
+2026-01-28 13:05:40,378 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 13:05:40,379 | INFO | chat | ✅ Stream complete | tokens=124 | time=1.7s
+2026-01-28 13:05:58,943 | INFO | chat | 📩 Chat request | user_id=3 | request_id=a7caf8b7-a86c-41e5-b571-9afbb50a6f25
+2026-01-28 13:05:58,944 | INFO | chat | 🧑 User message | what is my favourite color?
+2026-01-28 13:05:58,968 | INFO | chat | 🤖 Stream started | session_id=ef5f092b-2ec0-4839-921b-a27aef540c8d | request_id=a7caf8b7-a86c-41e5-b571-9afbb50a6f25
+2026-01-28 13:05:58,969 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:05:58,970 | INFO | orchestrator | 🧑 USER_INPUT | what is my favourite color?
+2026-01-28 13:05:58,971 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:05:58,973 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:05:58,988 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:06:00,557 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 13:06:00,558 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 13:06:00,622 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=True | count=2
+2026-01-28 13:06:00,624 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 13:06:00,657 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:06:02,460 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=True | intent=read
+2026-01-28 13:06:02,462 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "assistant",
+      "content": "Hello! How can I help you today?"
+    },
+    {
+      "role": "user",
+      "content": "i want to know about theoy of relative"
+    },
+    {
+      "role": "assistant",
+      "content": "The theory of relativity, developed by Albert Einstein, is a groundbreaking theory in physics. It consists of two main parts:\n\n1.  **Special Relativity (1905):** Deals with the relationship between space and time for objects moving at a constant speed. Its most famous equation is E=mc\u00b2, which shows that mass and energy are interchangeable. It also introduced concepts like time dilation (time moving slower for objects in motion) and length contraction.\n2.  **General Relativity (1915):** Deals with gravity. It describes gravity not as a force, but as a curvature of spacetime caused by the presence of mass and energy. This theory explains phenomena like the orbit of planets, the bending of light by massive objects, and the expansion of the universe.\n\nIn essence, it completely changed our understanding of space, time, gravity, and the universe."
+    },
+    {
+      "role": "user",
+      "content": "where do i live?"
+    },
+    {
+      "role": "assistant",
+      "content": "I cannot tell you where you live, as I do not have access to your personal information. You are the only one who knows that."
+    },
+    {
+      "role": "user",
+      "content": "what is my favourite color?"
+    },
+    {
+      "role": "user",
+      "content": "what is my favourite color?"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "reason": null,
+    "message": null
+  },
+  "memory_action": {},
+  "memory_data": [
+    {
+      "memory_id": 6,
+      "user_id": 3,
+      "text": "My favourite color is yellow.",
+      "confidence": 0.85,
+      "created_at": "2026-01-26T21:50:52.573607+05:30",
+      "expires_at": "2026-02-25T21:50:52.427804+05:30",
+      "score": 0.7962166666984558
+    },
+    {
+      "memory_id": 7,
+      "user_id": 3,
+      "text": "my name is bhumika raheja",
+      "confidence": 0.95,
+      "created_at": "2026-01-26T22:31:33.870462+05:30",
+      "expires_at": "2026-02-25T22:31:33.867621+05:30",
+      "score": 0.35538041591644287
+    }
+  ],
+  "memory_found": true,
+  "tool_context": {}
+}
+2026-01-28 13:06:02,477 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:06:03,587 | INFO | session_summary | 🧠 SUMMARY_START | session_id=ef5f092b-2ec0-4839-921b-a27aef540c8d
+2026-01-28 13:06:03,591 | INFO | session_summary | 📊 Unsummarized messages = 16
+2026-01-28 13:06:03,592 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 13:06:03,593 | INFO | chat | ✅ Stream complete | tokens=1 | time=4.65s
+2026-01-28 13:06:33,516 | INFO | chat | 📩 Chat request | user_id=3 | request_id=a5ad8029-224f-42e8-b75a-873f2b459806
+2026-01-28 13:06:33,517 | INFO | chat | 🧑 User message | where do  i studied in
+2026-01-28 13:06:33,540 | INFO | chat | 🤖 Stream started | session_id=ef5f092b-2ec0-4839-921b-a27aef540c8d | request_id=a5ad8029-224f-42e8-b75a-873f2b459806
+2026-01-28 13:06:33,541 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:06:33,543 | INFO | orchestrator | 🧑 USER_INPUT | where do  i studied in
+2026-01-28 13:06:33,545 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:06:33,548 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:06:33,560 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:06:34,981 | WARNING | orchestrator | 🚫 Safety blocked request
+2026-01-28 13:06:34,989 | INFO | session_summary | 🧠 SUMMARY_START | session_id=ef5f092b-2ec0-4839-921b-a27aef540c8d
+2026-01-28 13:06:34,993 | INFO | session_summary | 📊 Unsummarized messages = 18
+2026-01-28 13:06:35,000 | INFO | session_summary | 📄 Existing summary = False
+2026-01-28 13:06:35,005 | INFO | session_summary | 🧾 Messages fetched = 12
+2026-01-28 13:06:35,006 | INFO | session_summary | ✍️ Calling LLM for MERGED summary
+2026-01-28 13:06:35,015 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:06:37,210 | INFO | LiteLLM | Wrapper: Completed Call, calling success_handler
+2026-01-28 13:06:37,221 | INFO | session_summary | 🆕 CREATING NEW SUMMARY ROW
+2026-01-28 13:06:37,251 | INFO | session_summary | ✅ SUMMARY_MERGED_SUCCESSFULLY
+2026-01-28 13:06:37,253 | INFO | chat | ✅ Stream complete | tokens=135 | time=3.74s
+2026-01-28 13:07:43,565 | ERROR | asyncio | Fatal error on SSL transport
+protocol: <asyncio.sslproto.SSLProtocol object at 0x00000102CC22C2E0>
+transport: <_SelectorSocketTransport closing fd=4064>
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 924, in write
+    n = self._sock.send(data)
+OSError: [WinError 10038] An operation was attempted on something that is not a socket
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\sslproto.py", line 690, in _process_write_backlog
+    self._transport.write(chunk)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 930, in write
+    self._fatal_error(exc, 'Fatal write error on socket transport')
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 725, in _fatal_error
+    self._force_close(exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 737, in _force_close
+    self._loop.call_soon(self._call_connection_lost, exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 753, in call_soon
+    self._check_closed()
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 515, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2026-01-28 13:07:43,568 | ERROR | asyncio | Fatal error on SSL transport
+protocol: <asyncio.sslproto.SSLProtocol object at 0x00000102CCA1A200>
+transport: <_SelectorSocketTransport closing fd=4108>
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 924, in write
+    n = self._sock.send(data)
+OSError: [WinError 10038] An operation was attempted on something that is not a socket
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\sslproto.py", line 690, in _process_write_backlog
+    self._transport.write(chunk)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 930, in write
+    self._fatal_error(exc, 'Fatal write error on socket transport')
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 725, in _fatal_error
+    self._force_close(exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 737, in _force_close
+    self._loop.call_soon(self._call_connection_lost, exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 753, in call_soon
+    self._check_closed()
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 515, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2026-01-28 13:07:55,344 | INFO | sentence_transformers.SentenceTransformer | Use pytorch device_name: cpu
+2026-01-28 13:07:55,345 | INFO | sentence_transformers.SentenceTransformer | Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2026-01-28 13:08:00,845 | INFO | main | 🚀 FastAPI application starting
+2026-01-28 13:09:26,634 | INFO | chat | 📩 Chat request | user_id=3 | request_id=8697c28e-ed36-496d-9e5f-da6350f6eb02
+2026-01-28 13:09:26,676 | INFO | chat | 🧑 User message | hello
+2026-01-28 13:09:26,706 | INFO | chat | 🤖 Stream started | session_id=ef5f092b-2ec0-4839-921b-a27aef540c8d | request_id=8697c28e-ed36-496d-9e5f-da6350f6eb02
+2026-01-28 13:09:26,708 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:09:26,709 | INFO | orchestrator | 🧑 USER_INPUT | hello
+2026-01-28 13:09:26,711 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:09:26,712 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:09:30,562 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:09:32,553 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 13:09:32,553 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 13:09:32,631 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=False | count=0
+2026-01-28 13:09:32,633 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 13:09:32,639 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:09:34,294 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=False | intent=none
+2026-01-28 13:09:34,295 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "system",
+      "content": "Conversation summary:\nThe user lives in Fatehabad. They enjoy movies, specifically \"Dabangg 2\" (liking its joy, drama, and thriller aspects, and wanting to rewatch it) and \"Avengers.\" The user also inquired about the theory of relativity, which the assistant explained by detailing Special Relativity (including E=mc\u00b2, time dilation, and length contraction) and General Relativity (describing gravity as spacetime curvature)."
+    },
+    {
+      "role": "assistant",
+      "content": "I cannot tell you where you live, as I do not have access to your personal information. You are the only one who knows that."
+    },
+    {
+      "role": "user",
+      "content": "what is my favourite color?"
+    },
+    {
+      "role": "assistant",
+      "content": "Your favorite color is yellow."
+    },
+    {
+      "role": "user",
+      "content": "where do  i studied in"
+    },
+    {
+      "role": "assistant",
+      "content": "As an AI, I don't have access to your personal information, including where you've studied. You would know the answer to that question!"
+    },
+    {
+      "role": "user",
+      "content": "hello"
+    },
+    {
+      "role": "user",
+      "content": "hello"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "reason": null,
+    "message": "OK"
+  },
+  "memory_action": {},
+  "memory_data": [],
+  "memory_found": false,
+  "tool_context": {}
+}
+2026-01-28 13:09:34,311 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:09:35,527 | INFO | session_summary | 🧠 SUMMARY_START | session_id=ef5f092b-2ec0-4839-921b-a27aef540c8d
+2026-01-28 13:09:35,538 | INFO | session_summary | 📊 Unsummarized messages = 14
+2026-01-28 13:09:35,538 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 13:09:35,538 | INFO | chat | ✅ Stream complete | tokens=1 | time=8.9s
+2026-01-28 13:09:45,930 | INFO | chat | 📩 Chat request | user_id=3 | request_id=3bdbeef1-2caa-4583-9df4-6a66b46011ab
+2026-01-28 13:09:45,931 | INFO | chat | 🧑 User message | what is my favourite color?
+2026-01-28 13:09:45,954 | INFO | chat | 🤖 Stream started | session_id=ef5f092b-2ec0-4839-921b-a27aef540c8d | request_id=3bdbeef1-2caa-4583-9df4-6a66b46011ab
+2026-01-28 13:09:45,955 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:09:45,957 | INFO | orchestrator | 🧑 USER_INPUT | what is my favourite color?
+2026-01-28 13:09:45,958 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:09:45,959 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:09:45,973 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:09:49,434 | WARNING | orchestrator | 🚫 Safety blocked request
+2026-01-28 13:09:49,438 | INFO | session_summary | 🧠 SUMMARY_START | session_id=ef5f092b-2ec0-4839-921b-a27aef540c8d
+2026-01-28 13:09:49,441 | INFO | session_summary | 📊 Unsummarized messages = 16
+2026-01-28 13:09:49,443 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 13:09:49,445 | INFO | chat | ✅ Stream complete | tokens=0 | time=3.51s
+2026-01-28 13:10:51,611 | INFO | chat | 📩 Chat request | user_id=3 | request_id=53d9794c-56d8-4a71-ba9a-b50cf435f9cd
+2026-01-28 13:10:51,611 | INFO | chat | 🧑 User message | what is my favourite color?
+2026-01-28 13:10:51,640 | INFO | chat | 🤖 Stream started | session_id=b8bafaac-76e6-43b7-b11b-9650423a713e | request_id=53d9794c-56d8-4a71-ba9a-b50cf435f9cd
+2026-01-28 13:10:51,641 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:10:51,643 | INFO | orchestrator | 🧑 USER_INPUT | what is my favourite color?
+2026-01-28 13:10:51,644 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:10:51,645 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:10:51,660 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:10:54,573 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 13:10:54,574 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 13:10:54,615 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=True | count=2
+2026-01-28 13:10:54,616 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 13:10:54,630 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:10:56,413 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=True | intent=read
+2026-01-28 13:10:56,414 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "user",
+      "content": "hi"
+    },
+    {
+      "role": "assistant",
+      "content": "Hi there! How can I help you today?"
+    },
+    {
+      "role": "user",
+      "content": "what is my favourite color?"
+    },
+    {
+      "role": "user",
+      "content": "what is my favourite color?"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "reason": null,
+    "message": "OK"
+  },
+  "memory_action": {},
+  "memory_data": [
+    {
+      "memory_id": 6,
+      "user_id": 3,
+      "text": "My favourite color is yellow.",
+      "confidence": 0.85,
+      "created_at": "2026-01-26T21:50:52.573607+05:30",
+      "expires_at": "2026-02-25T21:50:52.427804+05:30",
+      "score": 0.7962166666984558
+    },
+    {
+      "memory_id": 7,
+      "user_id": 3,
+      "text": "my name is bhumika raheja",
+      "confidence": 0.95,
+      "created_at": "2026-01-26T22:31:33.870462+05:30",
+      "expires_at": "2026-02-25T22:31:33.867621+05:30",
+      "score": 0.35538041591644287
+    }
+  ],
+  "memory_found": true,
+  "tool_context": {}
+}
+2026-01-28 13:10:56,430 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:10:57,483 | INFO | session_summary | 🧠 SUMMARY_START | session_id=b8bafaac-76e6-43b7-b11b-9650423a713e
+2026-01-28 13:10:57,490 | INFO | session_summary | 📊 Unsummarized messages = 4
+2026-01-28 13:10:57,492 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 13:10:57,493 | INFO | chat | ✅ Stream complete | tokens=1 | time=5.88s
+2026-01-28 13:11:37,032 | INFO | chat | 📩 Chat request | user_id=3 | request_id=94236cf9-51cf-48ab-914b-65fc74c82ec9
+2026-01-28 13:11:37,033 | INFO | chat | 🧑 User message | what is my favourite pizza?
+2026-01-28 13:11:37,060 | INFO | chat | 🤖 Stream started | session_id=29af8d62-64a8-4520-910a-d9462c3cddbc | request_id=94236cf9-51cf-48ab-914b-65fc74c82ec9
+2026-01-28 13:11:37,064 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:11:37,066 | INFO | orchestrator | 🧑 USER_INPUT | what is my favourite pizza?
+2026-01-28 13:11:37,067 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:11:37,068 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:11:37,085 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:11:38,622 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 13:11:38,624 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 13:11:38,666 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=True | count=3
+2026-01-28 13:11:38,667 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 13:11:38,680 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:11:40,334 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=True | intent=read
+2026-01-28 13:11:40,336 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "system",
+      "content": "Conversation summary:\nThe user's name is Bhumika Raheja. Their"
+    },
+    {
+      "role": "assistant",
+      "content": "I understand you have an interest in a movie you love the most, but you haven't told me the title of that specific movie yet. Could you please tell me which movie it is?"
+    },
+    {
+      "role": "user",
+      "content": "jab we met i have told you"
+    },
+    {
+      "role": "assistant",
+      "content": "Ah, yes! Thank you for reminding me. You love the movie \"Jab We Met.\" I've made a note of that."
+    },
+    {
+      "role": "user",
+      "content": "i love watch series .. yesterday i have one series , i found it intersting.  The Strangers  is a wonderful series"
+    },
+    {
+      "role": "assistant",
+      "content": "It's great to hear you enjoyed \"The Strangers\" series! I'll make a note that you love watching series and found that one particularly interesting."
+    },
+    {
+      "role": "user",
+      "content": "what is my favourite pizza?"
+    },
+    {
+      "role": "user",
+      "content": "what is my favourite pizza?"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "reason": null,
+    "message": "OK"
+  },
+  "memory_action": {},
+  "memory_data": [
+    {
+      "memory_id": 4,
+      "user_id": 3,
+      "text": "my favourite pizza is margneita.",
+      "confidence": 0.85,
+      "created_at": "2026-01-23T22:15:19.533318+05:30",
+      "expires_at": "2026-02-26T10:09:28.217743+05:30",
+      "score": 0.8055028319358826
+    },
+    {
+      "memory_id": 10,
+      "user_id": 3,
+      "text": "I love sweet dishes.",
+      "confidence": 0.85,
+      "created_at": "2026-01-27T10:16:57.730737+05:30",
+      "expires_at": "2026-02-26T17:41:35.888018+05:30",
+      "score": 0.4141779839992523
+    },
+    {
+      "memory_id": 6,
+      "user_id": 3,
+      "text": "My favourite color is yellow.",
+      "confidence": 0.85,
+      "created_at": "2026-01-26T21:50:52.573607+05:30",
+      "expires_at": "2026-02-25T21:50:52.427804+05:30",
+      "score": 0.37809517979621887
+    }
+  ],
+  "memory_found": true,
+  "tool_context": {}
+}
+2026-01-28 13:11:40,354 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:11:41,734 | INFO | session_summary | 🧠 SUMMARY_START | session_id=29af8d62-64a8-4520-910a-d9462c3cddbc
+2026-01-28 13:11:41,737 | INFO | session_summary | 📊 Unsummarized messages = 16
+2026-01-28 13:11:41,739 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 13:11:41,740 | INFO | chat | ✅ Stream complete | tokens=1 | time=4.71s
+2026-01-28 13:11:53,663 | INFO | chat | 📩 Chat request | user_id=3 | request_id=943f4d81-6512-41ca-8339-6a90af294a54
+2026-01-28 13:11:53,664 | INFO | chat | 🧑 User message | where do i studied in?
+2026-01-28 13:11:53,681 | INFO | chat | 🤖 Stream started | session_id=29af8d62-64a8-4520-910a-d9462c3cddbc | request_id=943f4d81-6512-41ca-8339-6a90af294a54
+2026-01-28 13:11:53,682 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:11:53,683 | INFO | orchestrator | 🧑 USER_INPUT | where do i studied in?
+2026-01-28 13:11:53,684 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:11:53,685 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:11:53,703 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:11:55,102 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 13:11:55,103 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 13:11:55,146 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=True | count=1
+2026-01-28 13:11:55,148 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 13:11:55,164 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:11:56,632 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=True | intent=read
+2026-01-28 13:11:56,633 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "system",
+      "content": "Conversation summary:\nThe user's name is Bhumika Raheja. Their"
+    },
+    {
+      "role": "assistant",
+      "content": "Ah, yes! Thank you for reminding me. You love the movie \"Jab We Met.\" I've made a note of that."
+    },
+    {
+      "role": "user",
+      "content": "i love watch series .. yesterday i have one series , i found it intersting.  The Strangers  is a wonderful series"
+    },
+    {
+      "role": "assistant",
+      "content": "It's great to hear you enjoyed \"The Strangers\" series! I'll make a note that you love watching series and found that one particularly interesting."
+    },
+    {
+      "role": "user",
+      "content": "what is my favourite pizza?"
+    },
+    {
+      "role": "assistant",
+      "content": "Your favorite pizza is Margherita."
+    },
+    {
+      "role": "user",
+      "content": "where do i studied in?"
+    },
+    {
+      "role": "user",
+      "content": "where do i studied in?"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "reason": null,
+    "message": "OK"
+  },
+  "memory_action": {},
+  "memory_data": [
+    {
+      "memory_id": 3,
+      "user_id": 3,
+      "text": "BML Munjal University",
+      "confidence": 0.9,
+      "created_at": "2026-01-23T22:12:42.486515+05:30",
+      "expires_at": "2026-02-22T22:12:42.434719+05:30",
+      "score": 0.35781705379486084
+    }
+  ],
+  "memory_found": true,
+  "tool_context": {}
+}
+2026-01-28 13:11:56,648 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:11:58,147 | INFO | session_summary | 🧠 SUMMARY_START | session_id=29af8d62-64a8-4520-910a-d9462c3cddbc
+2026-01-28 13:11:58,151 | INFO | session_summary | 📊 Unsummarized messages = 18
+2026-01-28 13:11:58,156 | INFO | session_summary | 📄 Existing summary = True
+2026-01-28 13:11:58,162 | INFO | session_summary | 🧾 Messages fetched = 12
+2026-01-28 13:11:58,163 | INFO | session_summary | ✍️ Calling LLM for MERGED summary
+2026-01-28 13:11:58,173 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:12:00,154 | INFO | LiteLLM | Wrapper: Completed Call, calling success_handler
+2026-01-28 13:12:00,167 | INFO | session_summary | 🔄 MERGING INTO EXISTING SUMMARY
+2026-01-28 13:12:00,193 | INFO | session_summary | ✅ SUMMARY_MERGED_SUCCESSFULLY
+2026-01-28 13:12:00,194 | INFO | chat | ✅ Stream complete | tokens=1 | time=6.53s
+2026-01-28 13:12:00,894 | WARNING | openai.agents | [non-fatal] Tracing: request failed: [Errno 11001] getaddrinfo failed
+2026-01-28 13:12:22,578 | INFO | chat | 📩 Chat request | user_id=3 | request_id=f652420c-7f5f-4b57-8213-a06cd4a2e5f6
+2026-01-28 13:12:22,580 | INFO | chat | 🧑 User message | tell me the weather in my city.
+2026-01-28 13:12:22,609 | INFO | chat | 🤖 Stream started | session_id=29af8d62-64a8-4520-910a-d9462c3cddbc | request_id=f652420c-7f5f-4b57-8213-a06cd4a2e5f6
+2026-01-28 13:12:22,611 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:12:22,612 | INFO | orchestrator | 🧑 USER_INPUT | tell me the weather in my city.
+2026-01-28 13:12:22,613 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:12:22,614 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:12:22,631 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:12:23,930 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 13:12:23,931 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 13:12:23,971 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=True | count=1
+2026-01-28 13:12:23,972 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 13:12:23,985 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:12:25,859 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=True | memory=False | intent=none
+2026-01-28 13:12:25,860 | INFO | orchestrator | 🛠️ Tool agent called
+2026-01-28 13:12:25,874 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:12:27,282 | INFO | orchestrator | 🛠️ TOOL_EXEC | name=none | args={}
+2026-01-28 13:12:27,283 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "system",
+      "content": "Conversation summary:\nThe user's name is Bhumika Raheja. Their favorite color is yellow. They studied at BML Munjal University. They love the movie \"Jab We Met.\""
+    },
+    {
+      "role": "assistant",
+      "content": "It's great to hear you enjoyed \"The Strangers\" series! I'll make a note that you love watching series and found that one particularly interesting."
+    },
+    {
+      "role": "user",
+      "content": "what is my favourite pizza?"
+    },
+    {
+      "role": "assistant",
+      "content": "Your favorite pizza is Margherita."
+    },
+    {
+      "role": "user",
+      "content": "where do i studied in?"
+    },
+    {
+      "role": "assistant",
+      "content": "You studied at BML Munjal University."
+    },
+    {
+      "role": "user",
+      "content": "tell me the weather in my city."
+    },
+    {
+      "role": "user",
+      "content": "tell me the weather in my city."
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "reason": null,
+    "message": "OK"
+  },
+  "memory_action": {},
+  "memory_data": [
+    {
+      "memory_id": 8,
+      "user_id": 3,
+      "text": "I like hilly areas.",
+      "confidence": 0.85,
+      "created_at": "2026-01-26T22:35:31.683204+05:30",
+      "expires_at": "2026-02-25T23:24:06.165795+05:30",
+      "score": 0.3659367561340332
+    }
+  ],
+  "memory_found": true,
+  "tool_context": null
+}
+2026-01-28 13:12:27,298 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:12:28,348 | INFO | session_summary | 🧠 SUMMARY_START | session_id=29af8d62-64a8-4520-910a-d9462c3cddbc
+2026-01-28 13:12:28,352 | INFO | session_summary | 📊 Unsummarized messages = 14
+2026-01-28 13:12:28,353 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 13:12:28,356 | INFO | chat | ✅ Stream complete | tokens=2 | time=5.78s
+2026-01-28 13:13:20,556 | INFO | chat | 📩 Chat request | user_id=3 | request_id=ba480633-434a-42d0-8150-899fbbe17f6c
+2026-01-28 13:13:20,558 | INFO | chat | 🧑 User message | where do i live
+2026-01-28 13:13:20,587 | INFO | chat | 🤖 Stream started | session_id=29af8d62-64a8-4520-910a-d9462c3cddbc | request_id=ba480633-434a-42d0-8150-899fbbe17f6c
+2026-01-28 13:13:20,589 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:13:20,590 | INFO | orchestrator | 🧑 USER_INPUT | where do i live
+2026-01-28 13:13:20,590 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:13:20,592 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:13:20,606 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:13:21,973 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 13:13:21,974 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 13:13:22,023 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=True | count=1
+2026-01-28 13:13:22,024 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 13:13:22,042 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:13:23,690 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=True | intent=read
+2026-01-28 13:13:23,691 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "system",
+      "content": "Conversation summary:\nThe user's name is Bhumika Raheja. Their favorite color is yellow. They studied at BML Munjal University. They love the movie \"Jab We Met.\""
+    },
+    {
+      "role": "assistant",
+      "content": "Your favorite pizza is Margherita."
+    },
+    {
+      "role": "user",
+      "content": "where do i studied in?"
+    },
+    {
+      "role": "assistant",
+      "content": "You studied at BML Munjal University."
+    },
+    {
+      "role": "user",
+      "content": "tell me the weather in my city."
+    },
+    {
+      "role": "assistant",
+      "content": "I don't know what your current city is. Could you please tell me which city you'd like the weather for?"
+    },
+    {
+      "role": "user",
+      "content": "where do i live"
+    },
+    {
+      "role": "user",
+      "content": "where do i live"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "reason": null,
+    "message": "OK"
+  },
+  "memory_action": {},
+  "memory_data": [
+    {
+      "memory_id": 12,
+      "user_id": 3,
+      "text": "I live in Fatehabad.",
+      "confidence": 0.95,
+      "created_at": "2026-01-28T09:46:48.251118+05:30",
+      "expires_at": "2026-02-27T09:46:48.246971+05:30",
+      "score": 0.47302213311195374
+    }
+  ],
+  "memory_found": true,
+  "tool_context": {}
+}
+2026-01-28 13:13:23,707 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:13:25,630 | INFO | session_summary | 🧠 SUMMARY_START | session_id=29af8d62-64a8-4520-910a-d9462c3cddbc
+2026-01-28 13:13:25,634 | INFO | session_summary | 📊 Unsummarized messages = 16
+2026-01-28 13:13:25,635 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 13:13:25,636 | INFO | chat | ✅ Stream complete | tokens=1 | time=5.08s
+2026-01-28 13:13:47,819 | INFO | chat | 📩 Chat request | user_id=3 | request_id=6f2fc7ce-9db7-40fb-b3fd-14a3acd3c635
+2026-01-28 13:13:47,821 | INFO | chat | 🧑 User message | telll me weather in my city
+2026-01-28 13:13:47,851 | INFO | chat | 🤖 Stream started | session_id=29af8d62-64a8-4520-910a-d9462c3cddbc | request_id=6f2fc7ce-9db7-40fb-b3fd-14a3acd3c635
+2026-01-28 13:13:47,852 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:13:47,854 | INFO | orchestrator | 🧑 USER_INPUT | telll me weather in my city
+2026-01-28 13:13:47,856 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:13:47,860 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:13:47,878 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:13:51,720 | WARNING | orchestrator | 🚫 Safety blocked request
+2026-01-28 13:13:51,725 | INFO | session_summary | 🧠 SUMMARY_START | session_id=29af8d62-64a8-4520-910a-d9462c3cddbc
+2026-01-28 13:13:51,731 | INFO | session_summary | 📊 Unsummarized messages = 18
+2026-01-28 13:13:51,735 | INFO | session_summary | 📄 Existing summary = True
+2026-01-28 13:13:51,738 | INFO | session_summary | 🧾 Messages fetched = 12
+2026-01-28 13:13:51,740 | INFO | session_summary | ✍️ Calling LLM for MERGED summary
+2026-01-28 13:13:51,750 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:13:54,258 | INFO | LiteLLM | Wrapper: Completed Call, calling success_handler
+2026-01-28 13:13:54,266 | INFO | session_summary | 🔄 MERGING INTO EXISTING SUMMARY
+2026-01-28 13:13:54,287 | INFO | session_summary | ✅ SUMMARY_MERGED_SUCCESSFULLY
+2026-01-28 13:13:54,289 | INFO | chat | ✅ Stream complete | tokens=0 | time=6.47s
+2026-01-28 13:16:50,430 | INFO | chat | 📩 Chat request | user_id=3 | request_id=6e161fa1-14be-4a50-8f77-a0d984129d40
+2026-01-28 13:16:50,432 | INFO | chat | 🧑 User message | i want to sell drugs
+2026-01-28 13:16:50,458 | INFO | chat | 🤖 Stream started | session_id=29af8d62-64a8-4520-910a-d9462c3cddbc | request_id=6e161fa1-14be-4a50-8f77-a0d984129d40
+2026-01-28 13:16:50,459 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:16:50,460 | INFO | orchestrator | 🧑 USER_INPUT | i want to sell drugs
+2026-01-28 13:16:50,462 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:16:50,463 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:16:50,476 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:16:52,240 | WARNING | orchestrator | 🚫 Safety blocked request
+2026-01-28 13:16:52,249 | INFO | session_summary | 🧠 SUMMARY_START | session_id=29af8d62-64a8-4520-910a-d9462c3cddbc
+2026-01-28 13:16:52,254 | INFO | session_summary | 📊 Unsummarized messages = 14
+2026-01-28 13:16:52,255 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 13:16:52,257 | INFO | chat | ✅ Stream complete | tokens=0 | time=1.83s
+2026-01-28 13:27:14,156 | INFO | sentence_transformers.SentenceTransformer | Use pytorch device_name: cpu
+2026-01-28 13:27:14,157 | INFO | sentence_transformers.SentenceTransformer | Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2026-01-28 13:28:08,312 | INFO | sentence_transformers.SentenceTransformer | Use pytorch device_name: cpu
+2026-01-28 13:28:08,313 | INFO | sentence_transformers.SentenceTransformer | Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2026-01-28 13:28:08,368 | WARNING | huggingface_hub.utils._http | '(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /sentence-transformers/all-MiniLM-L6-v2/resolve/main/modules.json (Caused by NameResolutionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to resolve \'huggingface.co\' ([Errno 11001] getaddrinfo failed)"))'), '(Request ID: 5fb1b61a-9c7f-4f94-bbd2-f6417dbbbd1c)')' thrown while requesting HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/./modules.json
+2026-01-28 13:28:08,369 | WARNING | huggingface_hub.utils._http | Retrying in 1s [Retry 1/5].
+2026-01-28 13:28:14,270 | INFO | main | 🚀 FastAPI application starting
+2026-01-28 13:28:45,385 | INFO | chat | 📩 Chat request | user_id=3 | request_id=ce82a50a-1555-486c-ad88-30c9f1c70395
+2026-01-28 13:28:45,392 | INFO | chat | 🧑 User message | hello
+2026-01-28 13:28:45,420 | INFO | chat | 🆕 New session created | e03649ad-b3b1-4a09-a679-d5588d2dfb33
+2026-01-28 13:28:45,444 | INFO | chat | 🤖 Stream started | session_id=e03649ad-b3b1-4a09-a679-d5588d2dfb33 | request_id=ce82a50a-1555-486c-ad88-30c9f1c70395
+2026-01-28 13:28:45,446 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:28:45,448 | INFO | orchestrator | 🧑 USER_INPUT | hello
+2026-01-28 13:28:45,451 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:28:45,452 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:28:48,230 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:28:51,292 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 13:28:51,293 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 13:28:51,363 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=False | count=0
+2026-01-28 13:28:51,365 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 13:28:51,382 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:28:53,069 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=False | intent=none
+2026-01-28 13:28:53,070 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "user",
+      "content": "hello"
+    },
+    {
+      "role": "user",
+      "content": "hello"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "reason": null,
+    "message": "OK"
+  },
+  "memory_action": {},
+  "memory_data": [],
+  "memory_found": false,
+  "tool_context": {}
+}
+2026-01-28 13:28:53,086 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:28:54,776 | INFO | session_summary | 🧠 SUMMARY_START | session_id=e03649ad-b3b1-4a09-a679-d5588d2dfb33
+2026-01-28 13:28:54,787 | INFO | session_summary | 📊 Unsummarized messages = 2
+2026-01-28 13:28:54,789 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 13:28:54,790 | INFO | chat | ✅ Stream complete | tokens=2 | time=9.4s
+2026-01-28 13:29:03,994 | INFO | chat | 📩 Chat request | user_id=3 | request_id=2e565ce0-8091-4628-8de5-3a407e785b9f
+2026-01-28 13:29:03,996 | INFO | chat | 🧑 User message | where do i live?
+2026-01-28 13:29:04,025 | INFO | chat | 🤖 Stream started | session_id=e03649ad-b3b1-4a09-a679-d5588d2dfb33 | request_id=2e565ce0-8091-4628-8de5-3a407e785b9f
+2026-01-28 13:29:04,027 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:29:04,029 | INFO | orchestrator | 🧑 USER_INPUT | where do i live?
+2026-01-28 13:29:04,032 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:29:04,035 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:29:04,051 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:29:05,435 | WARNING | orchestrator | 🚫 Safety blocked request
+2026-01-28 13:29:05,446 | INFO | session_summary | 🧠 SUMMARY_START | session_id=e03649ad-b3b1-4a09-a679-d5588d2dfb33
+2026-01-28 13:29:05,450 | INFO | session_summary | 📊 Unsummarized messages = 4
+2026-01-28 13:29:05,451 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 13:29:05,452 | INFO | chat | ✅ Stream complete | tokens=0 | time=1.46s
+2026-01-28 13:30:26,619 | ERROR | asyncio | Fatal error on SSL transport
+protocol: <asyncio.sslproto.SSLProtocol object at 0x000002B69B1870A0>
+transport: <_SelectorSocketTransport closing fd=744>
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 924, in write
+    n = self._sock.send(data)
+OSError: [WinError 10038] An operation was attempted on something that is not a socket
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\sslproto.py", line 690, in _process_write_backlog
+    self._transport.write(chunk)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 930, in write
+    self._fatal_error(exc, 'Fatal write error on socket transport')
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 725, in _fatal_error
+    self._force_close(exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 737, in _force_close
+    self._loop.call_soon(self._call_connection_lost, exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 753, in call_soon
+    self._check_closed()
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 515, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2026-01-28 13:30:26,622 | ERROR | asyncio | Fatal error on SSL transport
+protocol: <asyncio.sslproto.SSLProtocol object at 0x000002B6A5056620>
+transport: <_SelectorSocketTransport closing fd=3088>
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 924, in write
+    n = self._sock.send(data)
+OSError: [WinError 10038] An operation was attempted on something that is not a socket
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\sslproto.py", line 690, in _process_write_backlog
+    self._transport.write(chunk)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 930, in write
+    self._fatal_error(exc, 'Fatal write error on socket transport')
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 725, in _fatal_error
+    self._force_close(exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\selector_events.py", line 737, in _force_close
+    self._loop.call_soon(self._call_connection_lost, exc)
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 753, in call_soon
+    self._check_closed()
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 515, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2026-01-28 13:30:35,291 | INFO | sentence_transformers.SentenceTransformer | Use pytorch device_name: cpu
+2026-01-28 13:30:35,292 | INFO | sentence_transformers.SentenceTransformer | Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2026-01-28 13:30:39,528 | INFO | main | 🚀 FastAPI application starting
+2026-01-28 13:31:39,794 | INFO | chat | 📩 Chat request | user_id=3 | request_id=f1948320-d653-4571-a479-fc4947fe474b
+2026-01-28 13:31:39,829 | INFO | chat | 🧑 User message | hello
+2026-01-28 13:31:39,872 | INFO | chat | 🤖 Stream started | session_id=e03649ad-b3b1-4a09-a679-d5588d2dfb33 | request_id=f1948320-d653-4571-a479-fc4947fe474b
+2026-01-28 13:31:39,873 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:31:39,874 | INFO | orchestrator | 🧑 USER_INPUT | hello
+2026-01-28 13:31:39,875 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:31:39,877 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:31:43,549 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:31:45,382 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 13:31:45,384 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 13:31:45,496 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=False | count=0
+2026-01-28 13:31:45,498 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 13:31:45,508 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:31:47,050 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=False | intent=none
+2026-01-28 13:31:47,051 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "user",
+      "content": "hello"
+    },
+    {
+      "role": "assistant",
+      "content": "Hello! How can I help you today?"
+    },
+    {
+      "role": "user",
+      "content": "where do i live?"
+    },
+    {
+      "role": "assistant",
+      "content": ""
+    },
+    {
+      "role": "user",
+      "content": "hello"
+    },
+    {
+      "role": "user",
+      "content": "hello"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "reason": null,
+    "message": "OK"
+  },
+  "memory_action": {},
+  "memory_data": [],
+  "memory_found": false,
+  "tool_context": {}
+}
+2026-01-28 13:31:47,067 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:31:48,556 | INFO | session_summary | 🧠 SUMMARY_START | session_id=e03649ad-b3b1-4a09-a679-d5588d2dfb33
+2026-01-28 13:31:48,562 | INFO | session_summary | 📊 Unsummarized messages = 6
+2026-01-28 13:31:48,563 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 13:31:48,563 | INFO | chat | ✅ Stream complete | tokens=1 | time=8.77s
+2026-01-28 13:32:02,392 | INFO | chat | 📩 Chat request | user_id=3 | request_id=09eeb941-3e73-4f23-b691-aa1cfce38146
+2026-01-28 13:32:02,394 | INFO | chat | 🧑 User message | where do i study?
+2026-01-28 13:32:02,422 | INFO | chat | 🤖 Stream started | session_id=e03649ad-b3b1-4a09-a679-d5588d2dfb33 | request_id=09eeb941-3e73-4f23-b691-aa1cfce38146
+2026-01-28 13:32:02,426 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:32:02,427 | INFO | orchestrator | 🧑 USER_INPUT | where do i study?
+2026-01-28 13:32:02,428 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:32:02,428 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:32:02,444 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:32:03,829 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 13:32:03,831 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 13:32:03,880 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=False | count=0
+2026-01-28 13:32:03,881 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 13:32:03,895 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:32:05,613 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=True | intent=read
+2026-01-28 13:32:05,614 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "assistant",
+      "content": "Hello! How can I help you today?"
+    },
+    {
+      "role": "user",
+      "content": "where do i live?"
+    },
+    {
+      "role": "assistant",
+      "content": ""
+    },
+    {
+      "role": "user",
+      "content": "hello"
+    },
+    {
+      "role": "assistant",
+      "content": "Hello! How can I help you?"
+    },
+    {
+      "role": "user",
+      "content": "where do i study?"
+    },
+    {
+      "role": "user",
+      "content": "where do i study?"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "reason": null,
+    "message": "OK"
+  },
+  "memory_action": {},
+  "memory_data": [],
+  "memory_found": false,
+  "tool_context": {}
+}
+2026-01-28 13:32:05,627 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:32:06,985 | INFO | session_summary | 🧠 SUMMARY_START | session_id=e03649ad-b3b1-4a09-a679-d5588d2dfb33
+2026-01-28 13:32:06,987 | INFO | session_summary | 📊 Unsummarized messages = 8
+2026-01-28 13:32:06,988 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 13:32:06,988 | INFO | chat | ✅ Stream complete | tokens=2 | time=4.6s
+2026-01-28 13:32:39,827 | INFO | chat | 📩 Chat request | user_id=3 | request_id=fd0e1db6-6834-4df9-bc18-d154ca9d010f
+2026-01-28 13:32:39,828 | INFO | chat | 🧑 User message | what is my fav pizza?
+2026-01-28 13:32:39,843 | INFO | chat | 🤖 Stream started | session_id=e03649ad-b3b1-4a09-a679-d5588d2dfb33 | request_id=fd0e1db6-6834-4df9-bc18-d154ca9d010f
+2026-01-28 13:32:39,845 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:32:39,846 | INFO | orchestrator | 🧑 USER_INPUT | what is my fav pizza?
+2026-01-28 13:32:39,848 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:32:39,849 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:32:39,866 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:32:41,447 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 13:32:41,447 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 13:32:41,480 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=True | count=2
+2026-01-28 13:32:41,481 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 13:32:41,486 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:32:43,144 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=True | intent=read
+2026-01-28 13:32:43,145 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "assistant",
+      "content": ""
+    },
+    {
+      "role": "user",
+      "content": "hello"
+    },
+    {
+      "role": "assistant",
+      "content": "Hello! How can I help you?"
+    },
+    {
+      "role": "user",
+      "content": "where do i study?"
+    },
+    {
+      "role": "assistant",
+      "content": "I don't have access to personal information like where you study. I am a large language model, trained by Google."
+    },
+    {
+      "role": "user",
+      "content": "what is my fav pizza?"
+    },
+    {
+      "role": "user",
+      "content": "what is my fav pizza?"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "reason": null,
+    "message": "OK"
+  },
+  "memory_action": {},
+  "memory_data": [
+    {
+      "memory_id": 4,
+      "user_id": 3,
+      "text": "my favourite pizza is margneita.",
+      "confidence": 0.85,
+      "created_at": "2026-01-23T22:15:19.533318+05:30",
+      "expires_at": "2026-02-26T10:09:28.217743+05:30",
+      "score": 0.7625826597213745
+    },
+    {
+      "memory_id": 10,
+      "user_id": 3,
+      "text": "I love sweet dishes.",
+      "confidence": 0.85,
+      "created_at": "2026-01-27T10:16:57.730737+05:30",
+      "expires_at": "2026-02-26T17:41:35.888018+05:30",
+      "score": 0.38045892119407654
+    }
+  ],
+  "memory_found": true,
+  "tool_context": {}
+}
+2026-01-28 13:32:43,152 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:32:44,332 | INFO | session_summary | 🧠 SUMMARY_START | session_id=e03649ad-b3b1-4a09-a679-d5588d2dfb33
+2026-01-28 13:32:44,336 | INFO | session_summary | 📊 Unsummarized messages = 10
+2026-01-28 13:32:44,338 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 13:32:44,339 | INFO | chat | ✅ Stream complete | tokens=1 | time=4.51s
+2026-01-28 13:32:51,262 | INFO | chat | 📩 Chat request | user_id=3 | request_id=3bdadd51-cb2c-4e3b-ac29-720e6ba6d40d
+2026-01-28 13:32:51,263 | INFO | chat | 🧑 User message | where do i live?
+2026-01-28 13:32:51,280 | INFO | chat | 🤖 Stream started | session_id=e03649ad-b3b1-4a09-a679-d5588d2dfb33 | request_id=3bdadd51-cb2c-4e3b-ac29-720e6ba6d40d
+2026-01-28 13:32:51,281 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:32:51,283 | INFO | orchestrator | 🧑 USER_INPUT | where do i live?
+2026-01-28 13:32:51,284 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:32:51,285 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:32:51,303 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:32:52,396 | WARNING | orchestrator | 🚫 Safety blocked request
+2026-01-28 13:32:52,400 | INFO | session_summary | 🧠 SUMMARY_START | session_id=e03649ad-b3b1-4a09-a679-d5588d2dfb33
+2026-01-28 13:32:52,405 | INFO | session_summary | 📊 Unsummarized messages = 12
+2026-01-28 13:32:52,406 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 13:32:52,408 | INFO | chat | ✅ Stream complete | tokens=0 | time=1.14s
+2026-01-28 13:47:50,137 | INFO | sentence_transformers.SentenceTransformer | Use pytorch device_name: cpu
+2026-01-28 13:47:50,138 | INFO | sentence_transformers.SentenceTransformer | Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2026-01-28 13:47:54,604 | INFO | main | 🚀 FastAPI application starting
+2026-01-28 13:51:49,510 | INFO | chat | 📩 Chat request | user_id=3 | request_id=c169a99c-d2ab-4d76-a920-c186251eab4f
+2026-01-28 13:51:49,551 | INFO | chat | 🧑 User message | hi
+2026-01-28 13:51:49,575 | INFO | chat | 🤖 Stream started | session_id=e03649ad-b3b1-4a09-a679-d5588d2dfb33 | request_id=c169a99c-d2ab-4d76-a920-c186251eab4f
+2026-01-28 13:51:49,576 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:51:49,578 | INFO | orchestrator | 🧑 USER_INPUT | hi
+2026-01-28 13:51:49,579 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:51:49,580 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:51:52,112 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:51:53,540 | INFO | orchestrator | ✅ Safety passed
+2026-01-28 13:51:53,540 | INFO | orchestrator | 📥 Fetching semantic memory (via MemoryService)
+2026-01-28 13:51:53,620 | INFO | orchestrator | 🧠 MEMORY_RESULT | found=False | count=0
+2026-01-28 13:51:53,621 | INFO | orchestrator | 🧭 Router agent called
+2026-01-28 13:51:53,626 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:51:54,698 | INFO | orchestrator | 🧭 ROUTER_DECISION | tool=False | memory=False | intent=none
+2026-01-28 13:51:54,699 | INFO | orchestrator | 🧠 REASONING_INPUT_SNAPSHOT
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant.\n \nYou may answer ANY general knowledge question.\n \nConversation summaries and memories are ONLY to provide helpful context\n(e.g. preferences, ongoing plans).\n \nIf a user asks something unrelated to the current topic,\nanswer it normally using general knowledge.\n \nDo NOT restrict yourself to previous topics unless the user explicitly asks."
+    },
+    {
+      "role": "assistant",
+      "content": "I don't have access to personal information like where you study. I am a large language model, trained by Google."
+    },
+    {
+      "role": "user",
+      "content": "what is my fav pizza?"
+    },
+    {
+      "role": "assistant",
+      "content": "Your favorite pizza is Margherita."
+    },
+    {
+      "role": "user",
+      "content": "where do i live?"
+    },
+    {
+      "role": "assistant",
+      "content": ""
+    },
+    {
+      "role": "user",
+      "content": "hi"
+    },
+    {
+      "role": "user",
+      "content": "hi"
+    }
+  ],
+  "safety": {
+    "safe": true,
+    "reason": null,
+    "message": "OK"
+  },
+  "memory_action": {},
+  "memory_data": [],
+  "memory_found": false,
+  "tool_context": {}
+}
+2026-01-28 13:51:54,707 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:51:56,330 | INFO | session_summary | 🧠 SUMMARY_START | session_id=e03649ad-b3b1-4a09-a679-d5588d2dfb33
+2026-01-28 13:51:56,335 | INFO | session_summary | 📊 Unsummarized messages = 14
+2026-01-28 13:51:56,336 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 13:51:56,336 | INFO | chat | ✅ Stream complete | tokens=1 | time=6.83s
+2026-01-28 13:52:05,622 | INFO | chat | 📩 Chat request | user_id=3 | request_id=76fd07eb-f636-4c7f-ae98-df31919716be
+2026-01-28 13:52:05,624 | INFO | chat | 🧑 User message | i can kill myself
+2026-01-28 13:52:05,645 | INFO | chat | 🤖 Stream started | session_id=e03649ad-b3b1-4a09-a679-d5588d2dfb33 | request_id=76fd07eb-f636-4c7f-ae98-df31919716be
+2026-01-28 13:52:05,649 | INFO | orchestrator | 🔥 LOG TEST: orchestrator started
+2026-01-28 13:52:05,651 | INFO | orchestrator | 🧑 USER_INPUT | i can kill myself
+2026-01-28 13:52:05,652 | INFO | orchestrator | 🧩 CONTEXT | user_id=3 | enable_memory=True | db=None
+2026-01-28 13:52:05,654 | INFO | orchestrator | 🛡️ Safety agent called
+2026-01-28 13:52:05,684 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-28 13:52:07,050 | WARNING | orchestrator | 🚫 Safety blocked request
+2026-01-28 13:52:07,055 | INFO | session_summary | 🧠 SUMMARY_START | session_id=e03649ad-b3b1-4a09-a679-d5588d2dfb33
+2026-01-28 13:52:07,061 | INFO | session_summary | 📊 Unsummarized messages = 16
+2026-01-28 13:52:07,061 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-28 13:52:07,064 | INFO | chat | ✅ Stream complete | tokens=0 | time=1.44s

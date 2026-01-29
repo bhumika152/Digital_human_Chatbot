@@ -12,6 +12,8 @@ from digital_human_sdk.app.intelligence.our_agents.tool_agent import tool_agent
 from digital_human_sdk.app.intelligence.our_agents.reasoning_agent import reasoning_agent
 from digital_human_sdk.app.intelligence.tools.tool_executor import ToolExecutor
 from digital_human_sdk.app.intelligence.utils.json_utils import safe_json_loads
+from digital_human_sdk.app.intelligence.contracts.safety_schema import SafetySchema
+from digital_human_sdk.app.intelligence.safety.safety_agent import safety_response
 from services.memory_service import MemoryService
 #from services.memory_service import fetch_semantic_memory
 
@@ -56,8 +58,9 @@ async def run_digital_human_chat(
         getattr(context, "db", None),
     )
 
+
     # --------------------------------------------------
-    # 2️⃣ SAFETY
+    # 2️⃣ SAFETY (AUTHORITATIVE)
     # --------------------------------------------------
     logger.info("🛡️ Safety agent called")
 
@@ -68,19 +71,39 @@ async def run_digital_human_chat(
         max_turns=1,
     )
 
-    safety_payload = safe_json_loads(
-        safety_raw.final_output,
-        default={"safe": True, "message": None},
-    )
+    parsed = safe_json_loads(safety_raw.final_output, default={})
 
-    if not safety_payload.get("safe"):
+    try:
+        safety_llm = SafetySchema(**parsed)
+        safety_payload = safety_response(
+            safe=safety_llm.safe,
+            reason=safety_llm.reason,
+        )
+    except Exception:
+        logger.exception("🚨 Invalid safety JSON")
+        safety_payload = safety_response(
+            safe=False,
+            reason="Invalid safety response",
+        )
+
+    if not safety_payload["safe"]:
         logger.warning("🚫 Safety blocked request")
-        for ch in safety_payload.get("message", ""):
-            yield {"type": "token", "value": ch}
+    # 🔥 stream like normal LLM output
+        # for ch in safety_payload["message"]:
+        #     yield {
+        #         "type": "token",
+        #         "value": ch,
+        #     }
+
+        # return
+        yield {
+            "type": "token",
+            "value": safety_payload["message"],
+        }
         return
 
-    logger.info("✅ Safety passed")
 
+    logger.info("✅ Safety passed")
     # --------------------------------------------------
     # 3️⃣ MEMORY READ
     # --------------------------------------------------
