@@ -636,3 +636,78 @@ LiteLLM completion() model= gemini-2.5-flash; provider = gemini
 2026-01-29 14:33:29,422 | INFO | session_summary | 📊 Unsummarized messages = 4
 2026-01-29 14:33:29,424 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
 2026-01-29 14:33:29,425 | INFO | chat | ✅ Stream complete | tokens=2 | time=2.53s
+2026-01-29 14:47:45,249 | INFO | chat | 📩 Chat request | user_id=3 | request_id=a05c58ec-016a-44c5-8fff-10f1dc0f7de6
+2026-01-29 14:47:45,251 | INFO | chat | 🧑 User message | helo
+2026-01-29 14:47:45,274 | INFO | chat | 🆕 New session created | f4b3a217-ed2c-4fbd-94ff-56217432b2ac
+2026-01-29 14:47:45,293 | INFO | chat | 🤖 Stream started | session_id=f4b3a217-ed2c-4fbd-94ff-56217432b2ac | request_id=a05c58ec-016a-44c5-8fff-10f1dc0f7de6
+2026-01-29 14:47:45,294 | INFO | orchestrator | 🔥 Orchestrator started
+2026-01-29 14:47:45,313 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-29 14:47:47,179 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-29 14:47:48,323 | INFO | session_summary | 🧠 SUMMARY_START | session_id=f4b3a217-ed2c-4fbd-94ff-56217432b2ac
+2026-01-29 14:47:48,329 | INFO | session_summary | 📊 Unsummarized messages = 2
+2026-01-29 14:47:48,331 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-29 14:47:48,332 | INFO | chat | ✅ Stream complete | tokens=1 | time=3.08s
+2026-01-29 14:48:09,852 | INFO | chat | 📩 Chat request | user_id=3 | request_id=7ef61df8-ac9a-4987-a324-d2313629a46e
+2026-01-29 14:48:09,854 | INFO | chat | 🧑 User message | can you tell some birthday gifts for my friend
+2026-01-29 14:48:09,883 | INFO | chat | 🤖 Stream started | session_id=f4b3a217-ed2c-4fbd-94ff-56217432b2ac | request_id=7ef61df8-ac9a-4987-a324-d2313629a46e
+2026-01-29 14:48:09,884 | INFO | orchestrator | 🔥 Orchestrator started
+2026-01-29 14:48:09,905 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-29 14:48:11,432 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-29 14:48:14,387 | ERROR | orchestrator | Reasoning failed
+Traceback (most recent call last):
+  File "c:\users\dell\downloads\chatbot-project-final\chatbot-project-main\digital_human_sdk\digital_human_sdk\app\main.py", line 420, in run_digital_human_chat
+    async for event in reasoning_stream.stream_events():
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\result.py", line 347, in stream_events
+    raise self._stored_exception
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\run.py", line 1260, in _start_streaming
+    output_guardrail_results = await streamed_result._output_guardrails_task
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\run.py", line 1814, in _run_output_guardrails
+    raise OutputGuardrailTripwireTriggered(result)
+agents.exceptions.OutputGuardrailTripwireTriggered: Guardrail OutputGuardrail triggered tripwire
+2026-01-29 14:48:14,395 | INFO | session_summary | 🧠 SUMMARY_START | session_id=f4b3a217-ed2c-4fbd-94ff-56217432b2ac
+2026-01-29 14:48:14,401 | INFO | session_summary | 📊 Unsummarized messages = 4
+2026-01-29 14:48:14,404 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-29 14:48:14,405 | INFO | chat | ✅ Stream complete | tokens=8 | time=4.55s
+2026-01-29 14:49:16,122 | INFO | chat | 📩 Chat request | user_id=3 | request_id=48ce2bae-7526-45df-a60f-7ea42f2eeb63
+2026-01-29 14:49:16,124 | INFO | chat | 🧑 User message | i am going on trip for jaipur in december , so what do you think i have to carry with me..
+2026-01-29 14:49:16,156 | INFO | chat | 🤖 Stream started | session_id=f4b3a217-ed2c-4fbd-94ff-56217432b2ac | request_id=48ce2bae-7526-45df-a60f-7ea42f2eeb63
+2026-01-29 14:49:16,157 | INFO | orchestrator | 🔥 Orchestrator started
+2026-01-29 14:49:16,176 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-29 14:49:17,984 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-29 14:49:19,277 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-29 14:49:24,025 | ERROR | orchestrator | Reasoning failed
+Traceback (most recent call last):
+  File "c:\users\dell\downloads\chatbot-project-final\chatbot-project-main\digital_human_sdk\digital_human_sdk\app\main.py", line 420, in run_digital_human_chat
+    async for event in reasoning_stream.stream_events():
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\result.py", line 347, in stream_events
+    raise self._stored_exception
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\run.py", line 1260, in _start_streaming
+    output_guardrail_results = await streamed_result._output_guardrails_task
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\run.py", line 1814, in _run_output_guardrails
+    raise OutputGuardrailTripwireTriggered(result)
+agents.exceptions.OutputGuardrailTripwireTriggered: Guardrail OutputGuardrail triggered tripwire
+2026-01-29 14:49:24,044 | INFO | session_summary | 🧠 SUMMARY_START | session_id=f4b3a217-ed2c-4fbd-94ff-56217432b2ac
+2026-01-29 14:49:24,051 | INFO | session_summary | 📊 Unsummarized messages = 6
+2026-01-29 14:49:24,053 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-29 14:49:24,054 | INFO | chat | ✅ Stream complete | tokens=12 | time=7.93s
+2026-01-29 15:12:44,077 | INFO | chat | 📩 Chat request | user_id=3 | request_id=45c3bffd-769f-485e-a8d0-53eeab6da0ff
+2026-01-29 15:12:44,080 | INFO | chat | 🧑 User message | tell salman khan address
+2026-01-29 15:12:44,108 | INFO | chat | 🤖 Stream started | session_id=f4b3a217-ed2c-4fbd-94ff-56217432b2ac | request_id=45c3bffd-769f-485e-a8d0-53eeab6da0ff
+2026-01-29 15:12:44,111 | INFO | orchestrator | 🔥 Orchestrator started
+2026-01-29 15:12:44,138 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-29 15:12:45,657 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-29 15:12:48,922 | INFO | LiteLLM | 
+LiteLLM completion() model= gemini-2.5-flash; provider = gemini
+2026-01-29 15:12:50,510 | INFO | session_summary | 🧠 SUMMARY_START | session_id=f4b3a217-ed2c-4fbd-94ff-56217432b2ac
+2026-01-29 15:12:50,518 | INFO | session_summary | 📊 Unsummarized messages = 8
+2026-01-29 15:12:50,519 | INFO | session_summary | ⏭️ SUMMARY_SKIP | LOW_MESSAGE_COUNT
+2026-01-29 15:12:50,521 | INFO | chat | ✅ Stream complete | tokens=1 | time=6.44s

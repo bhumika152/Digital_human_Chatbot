@@ -18,7 +18,7 @@ BLOCKED_TOPICS = [
     "illegal drugs",
 ]
 
-MAX_OUTPUT_CHARS = 800
+MAX_OUTPUT_CHARS = 5000
 
 
 def matches_blocked_pattern(text: str) -> bool:

@@ -61,3 +61,25 @@ Traceback (most recent call last):
   File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\run.py", line 1814, in _run_output_guardrails
     raise OutputGuardrailTripwireTriggered(result)
 agents.exceptions.OutputGuardrailTripwireTriggered: Guardrail OutputGuardrail triggered tripwire
+2026-01-29 14:48:14,387 | ERROR | orchestrator | Reasoning failed
+Traceback (most recent call last):
+  File "c:\users\dell\downloads\chatbot-project-final\chatbot-project-main\digital_human_sdk\digital_human_sdk\app\main.py", line 420, in run_digital_human_chat
+    async for event in reasoning_stream.stream_events():
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\result.py", line 347, in stream_events
+    raise self._stored_exception
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\run.py", line 1260, in _start_streaming
+    output_guardrail_results = await streamed_result._output_guardrails_task
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\run.py", line 1814, in _run_output_guardrails
+    raise OutputGuardrailTripwireTriggered(result)
+agents.exceptions.OutputGuardrailTripwireTriggered: Guardrail OutputGuardrail triggered tripwire
+2026-01-29 14:49:24,025 | ERROR | orchestrator | Reasoning failed
+Traceback (most recent call last):
+  File "c:\users\dell\downloads\chatbot-project-final\chatbot-project-main\digital_human_sdk\digital_human_sdk\app\main.py", line 420, in run_digital_human_chat
+    async for event in reasoning_stream.stream_events():
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\result.py", line 347, in stream_events
+    raise self._stored_exception
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\run.py", line 1260, in _start_streaming
+    output_guardrail_results = await streamed_result._output_guardrails_task
+  File "C:\Users\DELL\Downloads\chatbot-project-final\chatbot-project-main\backend\venv\lib\site-packages\agents\run.py", line 1814, in _run_output_guardrails
+    raise OutputGuardrailTripwireTriggered(result)
+agents.exceptions.OutputGuardrailTripwireTriggered: Guardrail OutputGuardrail triggered tripwire
