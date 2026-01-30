@@ -20,6 +20,83 @@ import uuid
 
 
 # =========================
+# KNOWLEDGE BASE (ADMIN DOCS)
+# =========================
+class KnowledgeBaseEmbedding(Base):
+    __tablename__ = "knowledge_base_embeddings"
+
+    kb_id = Column(
+        BigInteger,
+        primary_key=True,
+        autoincrement=True
+    )
+
+    document_id = Column(
+        UUID(as_uuid=True),
+        default=uuid.uuid4,
+        nullable=False,
+        index=True
+    )
+
+    document_title = Column(
+        String(255),
+        nullable=False
+    )
+
+    document_type = Column(
+        String(50),
+        nullable=False
+    )
+    # FAQ | POLICY | TERMS | GUIDELINE | SUPPORT
+
+    industry = Column(
+        String(100),
+        nullable=True,
+        index=True
+    )
+
+    language = Column(
+        String(10),
+        default="en"
+    )
+
+    content = Column(
+        Text,
+        nullable=False
+    )
+
+    # Using FLOAT[] instead of pgvector
+    embedding = Column(
+        ARRAY(Float),
+        nullable=False
+    )
+
+    extra_metadata = Column("metadata", JSONB)
+
+    version = Column(
+        Integer,
+        default=1
+    )
+
+    is_active = Column(
+        Boolean,
+        default=True,
+        nullable=False
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False
+    )
+
+    updated_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+        nullable=False
+    )
+# =========================
 # USERS
 # =========================
 class User(Base):
