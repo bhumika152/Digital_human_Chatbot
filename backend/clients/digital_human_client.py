@@ -21,7 +21,12 @@ class DigitalHumanClient:
 
         async with httpx.AsyncClient(
             base_url=self.base_url,
-            timeout=httpx.Timeout(connect=10.0, read=None),
+            timeout=httpx.Timeout(
+                connect=10.0,
+                read=None,
+                write=10.0,
+                pool=10.0,
+            ),
         ) as client:
             async with client.stream(
                 "POST",
@@ -32,6 +37,8 @@ class DigitalHumanClient:
                 response.raise_for_status()
 
                 async for line in response.aiter_lines():
-                    if not line:
+                    if not line.startswith("data:"):
                         continue
-                    yield json.loads(line)
+
+                    payload = line.removeprefix("data:").strip()
+                    yield json.loads(payload)
