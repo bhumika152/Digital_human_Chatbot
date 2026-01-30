@@ -12,7 +12,7 @@ Return STRICT JSON ONLY in the following format:
 {
   "use_memory": true | false,
   "use_tool": true | false,
-  "tool_name": "weather" | "calculator" | "web_search" | "browser" | "none",
+  "tool_name": "weather" | "calculator" | "web_search" | "browser" | "property" | "none",
   "tool_arguments": { } | null,
   "intent": "read" | "write" | "none",
   "memory_key": "string | null"

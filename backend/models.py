@@ -14,9 +14,11 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import UUID, JSONB, ARRAY
 from sqlalchemy.orm import relationship
-from pgvector.sqlalchemy import Vector
+#from pgvector.sqlalchemy import Vector
 from database import Base
 import uuid
+from sqlalchemy import TIMESTAMP
+from datetime import datetime
 
 
 # =========================
@@ -319,3 +321,46 @@ class SessionSummary(Base):
     # 🔗 Relationships
     session = relationship("ChatSession", back_populates="summary")
     user = relationship("User",back_populates="summary")
+
+class Property(Base):
+    __tablename__ = "properties"
+ 
+    property_id = Column(BigInteger, primary_key=True, index=True)
+    title = Column(Text, nullable=False)
+    city = Column(Text, nullable=False)
+    locality = Column(Text, nullable=False)
+    purpose = Column(Text, nullable=False)   # rent / buy
+    price = Column(BigInteger, nullable=False)
+    bhk = Column(Integer)
+    area_sqft = Column(Integer)
+    is_legal = Column(Boolean, nullable=False)
+    owner_name = Column(Text, nullable=False)
+    contact_phone = Column(BigInteger, nullable=False)
+    owner_user_id = Column(
+        BigInteger,
+        ForeignKey("users.user_id", ondelete="CASCADE"),
+        nullable=False
+    )
+    created_at = Column(TIMESTAMP, server_default=func.now())
+ 
+
+class PropertyEnquiry(Base):
+    __tablename__ = "property_enquiries"
+
+    enquiry_id = Column(BigInteger, primary_key=True, index=True)
+
+    property_id = Column(
+        BigInteger,
+        ForeignKey("properties.property_id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    buyer_user_id = Column(
+        BigInteger,
+        ForeignKey("users.user_id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    message = Column(Text)
+    status = Column(Text, default="pending")
+    created_at = Column(DateTime, default=datetime.utcnow)

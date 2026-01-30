@@ -1,6 +1,7 @@
 from fastapi import Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+import property
 from digital_human_sdk.app.intelligence.logging_config import setup_logging
 setup_logging()
  
@@ -102,7 +103,6 @@ app.include_router(chat.chat_router)
 app.include_router(chat.user_router)
 
 
-# Include property router
-# app.include_router(property.property_router)
+app.include_router(property.property_router)
 
 
