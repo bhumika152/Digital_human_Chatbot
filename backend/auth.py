@@ -12,6 +12,8 @@ from models import User, UserConfig, MemoryStore
 from schemas import SignupRequest, LoginRequest, TokenResponse
 from utils import create_access_token, SECRET_KEY, ALGORITHM
 from database import get_db
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
 # from fastapi.security import OAuth2PasswordRequestForm
 
 
@@ -22,14 +24,18 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 # --------------------
 # AUTH Dependency
 # --------------------
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+security = HTTPBearer()
 
-def get_current_user(token: str = Depends(oauth2_scheme)) -> int:
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+) -> int:
     try:
+        token = credentials.credentials   # "Bearer" ke baad wala token
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return int(payload["user_id"])
     except (JWTError, KeyError, ValueError):
-        raise HTTPException(status_code=401, detail="Invalid token")
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+
 
 # --------------------
 # SIGNUP
