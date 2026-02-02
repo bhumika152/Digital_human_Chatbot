@@ -27,6 +27,15 @@ def setup_logging():
     )
 
     # ---------------------------
+    # Root Logger
+    # ---------------------------
+    root = logging.getLogger()
+    root.setLevel(logging.DEBUG)
+
+    # 🔥 CRITICAL: reset existing handlers (uvicorn, reload, etc.)
+    root.handlers.clear()
+
+    # ---------------------------
     # File Handlers
     # ---------------------------
     app_handler = RotatingFileHandler(
@@ -54,21 +63,9 @@ def setup_logging():
     error_handler.setFormatter(formatter)
 
     # ---------------------------
-    # Console Handler
+    # Attach handlers
     # ---------------------------
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.INFO)
-    console_handler.setFormatter(formatter)
-
-    # ---------------------------
-    # Root Logger
-    # ---------------------------
-    root = logging.getLogger()
-    root.setLevel(logging.DEBUG)
-
-    if not root.handlers:
-        root.addHandler(app_handler)
-        root.addHandler(info_handler)
-        root.addHandler(debug_handler)
-        root.addHandler(error_handler)
-        root.addHandler(console_handler)
+    root.addHandler(app_handler)
+    root.addHandler(info_handler)
+    root.addHandler(debug_handler)
+    root.addHandler(error_handler)
