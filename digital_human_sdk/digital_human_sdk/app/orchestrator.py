@@ -13,6 +13,11 @@ from digital_human_sdk.app.intelligence.our_agents.reasoning_agent import reason
 from digital_human_sdk.app.intelligence.tools.tool_executor import ToolExecutor
 from digital_human_sdk.app.intelligence.utils.json_utils import safe_json_loads
 
+try:
+    from agents.exceptions import GuardrailTripwire
+except ImportError:
+    GuardrailTripwire = None
+
 
 logger = logging.getLogger("orchestrator")
 
@@ -72,31 +77,6 @@ async def run_digital_human_chat(
     )
 
     # --------------------------------------------------
-    # 2️⃣ SAFETY
-    # --------------------------------------------------
-    logger.info("🛡️ Safety agent called")
-
-    safety_raw = await Runner.run(
-        safe_agent,
-        user_input,
-        context=context,
-        max_turns=1,
-    )
-
-    safety_payload = safe_json_loads(
-        safety_raw.final_output,
-        default={"safe": True, "message": None},
-    )
-
-    if not safety_payload.get("safe"):
-        logger.warning("🚫 Safety blocked request")
-        for ch in safety_payload.get("message", ""):
-            yield {"type": "token", "value": ch}
-        return
-
-    logger.info("✅ Safety passed")
-
-    # --------------------------------------------------
     # 3️⃣ MEMORY READ
     # --------------------------------------------------
     memory_data = []
@@ -114,125 +94,245 @@ async def run_digital_human_chat(
         memory_found,
         len(memory_data),
     )
-
     # --------------------------------------------------
-    # 4️⃣ ROUTER
+    # 5️⃣ KNOWLEDGE BASE READ (SAME AS MEMORY)
     # --------------------------------------------------
-    logger.info("🧭 Router agent called")
+    kb_data = []
+    kb_found = False
 
-    router_raw = await Runner.run(
-        router_agent,
-        router_input,
-        context=context,
-        max_turns=1,
-    )
-
-    router = safe_json_loads(router_raw.final_output, default={})
-
-    use_tool = router.get("use_tool", False)
-    use_memory = router.get("use_memory", False)
-    intent = router.get("intent")
+    if context and context.enable_rag:
+        logger.info("📚 Fetching knowledge base (via context)")
+        kb_data = getattr(context, "kb_data", [])
+        kb_found = bool(kb_data)
 
     logger.info(
-        "🧭 ROUTER_DECISION | tool=%s | memory=%s | intent=%s",
-        use_tool,
-        use_memory,
-        intent,
+        "📚 KB_RESULT | found=%s | count=%d",
+        kb_found,
+        len(kb_data),
     )
 
-    memory_action = {}
-    tool_context = {}
+     
     # --------------------------------------------------
-    # 5️⃣ MEMORY WRITE (EVENT EMIT ONLY)
+    # 3️⃣ ROUTER
     # --------------------------------------------------
-    if use_memory and intent == "write" and enable_memory:
-        logger.info("🧠 Memory agent called (WRITE)")
-
-        mem_raw = await Runner.run(
-            memory_agent,
-            router_input,
+    router_decision = {
+        "use_tool": False,
+        "use_memory": False,
+        "intent": "none",
+    }
+ 
+    try:
+        router_payload = {
+            "user_input": user_input,
+            "existing_memory": memory_data,
+            "knowledge_base": kb_data,
+        }
+ 
+        logger.info("🧭 Running router agent")
+ 
+        router_raw = await Runner.run(
+            router_agent,
+            json.dumps(router_payload),
             context=context,
             max_turns=1,
         )
+ 
+        parsed = safe_json_loads(router_raw.final_output, default={})
+        logger.info(f"🧭 Router output: {parsed}")
+ 
+        if isinstance(parsed, dict):
+            router_decision.update(parsed)
+ 
+    except Exception as e:
+        if GuardrailTripwire and isinstance(e, GuardrailTripwire) and e.tripwire_triggered:
+            logger.warning("🚫 Router guardrail triggered")
+            yield {"type": "token", "value": "Sorry, I can’t help with that request."}
+            return
+ 
+        logger.exception("❌ Router failed")
+ 
+       # --------------------------------------------------
 
-        memory_action = safe_json_loads(mem_raw.final_output, default={})
-        action_type = memory_action.get("action")
-
-        logger.info(
-            "🧠 MEMORY_DECISION | %s",
-            json.dumps(memory_action, indent=2),
-        )
-
-        if action_type in ALLOWED_MEMORY_ACTIONS and action_type != "none":
-            # 🔥 ONLY EMIT EVENT
-            yield {
-                "type": "memory_event",
-                "payload": memory_action,
-            }
-
-        # Orchestrator should NOT keep memory
-        memory_action = {}
-
+    # 4️⃣ MEMORY WRITE (FIXED)
 
     # --------------------------------------------------
-    # 6️⃣ TOOL
-    # --------------------------------------------------
-    if use_tool:
-        logger.info("🛠️ Tool agent called")
 
-        tool_raw = await Runner.run(
-            tool_agent,
-            router_input,
-            context=context,
-        )
+    if (
 
-        tool_payload = safe_json_loads(tool_raw.final_output, default={})
-        tool_name = tool_payload.get("tool", "none")
-        tool_args = tool_payload.get("arguments", {})
+        router_decision.get("use_memory")
 
-        logger.info("🛠️ TOOL_EXEC | name=%s | args=%s", tool_name, tool_args)
+        and router_decision.get("intent") == "write"
+
+        and context
+
+        and getattr(context, "enable_memory", False)
+
+    ):
 
         try:
-            tool_result = ToolExecutor.execute(tool_name, tool_args)
-            tool_context = (
-                tool_result.model_dump()
-                if hasattr(tool_result, "model_dump")
-                else tool_result
-            )
-        except Exception as exc:
-            logger.exception("🔥 Tool execution failed")
-            tool_context = {"error": str(exc)}
 
+            mem_raw = await Runner.run(
+
+                memory_agent,
+
+                json.dumps(
+
+                    {
+
+                        "user_input": user_input,
+
+                        "existing_memory": memory_data,
+
+                    }
+
+                ),
+
+                context=context,
+
+                max_turns=1,
+
+            )
+ 
+            memory_action = safe_json_loads(mem_raw.final_output, default={})
+
+            action_type = memory_action.get("action")
+ 
+            logger.info("🧠 Memory action: %s", memory_action)
+ 
+            # 🔧 FIX: allow update & delete (no dedupe)
+
+            if action_type in {"save", "update", "delete"}:
+
+                yield {"type": "memory_event", "payload": memory_action}
+ 
+        except Exception:
+
+            logger.exception("❌ Memory write failed")
+ 
     # --------------------------------------------------
-    # 7️⃣ REASONING
+    # 5️⃣ TOOL EXECUTION (WITH VALIDATION)
+    # --------------------------------------------------
+    tool_context = {}
+ 
+    if router_decision.get("use_tool"):
+        try:
+            logger.info("🛠️ Tool execution started")
+ 
+            tool_raw = await Runner.run(
+                tool_agent,
+                router_input,
+                context=context,
+                max_turns=1,
+            )
+ 
+            tool_payload = safe_json_loads(tool_raw.final_output, default={})
+            logger.info(f"🛠️ Tool payload: {tool_payload}")
+ 
+            tool_name = tool_payload.get("tool")
+            tool_arguments = tool_payload.get("arguments", {})
+            action = tool_arguments.get("action")
+ 
+            # 🔍 PROPERTY VALIDATION BEFORE SAVE
+            if tool_name == "property" and action == "add":
+                payload = tool_arguments.get("payload", {})
+                missing_fields = get_missing_fields(
+                    payload, REQUIRED_PROPERTY_FIELDS
+                )
+ 
+                if missing_fields:
+                    logger.warning(
+                        f"⛔ Missing property fields: {missing_fields}"
+                    )
+ 
+                    pretty_fields = ", ".join(missing_fields)
+ 
+                    yield {
+                        "type": "token",
+                        "value": (
+                            f"Before I save the property, I still need: **{pretty_fields}**.\n"
+                            "Please provide these details."
+                        ),
+                    }
+                    return
+ 
+            # 🔐 JWT INJECTION
+            auth_token = None
+            if context and hasattr(context, "auth_token"):
+                auth_token = context.auth_token
+ 
+            if auth_token:
+                masked = auth_token[:15] + "..."
+                logger.info(f"🔐 JWT attached: {masked}")
+                tool_arguments["auth_token"] = auth_token
+            else:
+                logger.warning("⚠️ No JWT found for tool call")
+
+            # 🔁 Normalize property budget field
+            if tool_name == "property":
+                if "max_budget" in tool_arguments and "budget" not in tool_arguments:
+                    tool_arguments["budget"] = tool_arguments.pop("max_budget")
+ 
+            tool_context = ToolExecutor.execute(
+                tool_name,
+                tool_arguments,
+            )
+ 
+            logger.info(f"🛠️ Tool response: {tool_context}")
+ 
+            if hasattr(tool_context, "model_dump"):
+                tool_context = tool_context.model_dump()
+ 
+        except Exception:
+            logger.exception("❌ Tool execution failed")
+            tool_context = {"error": "Tool execution failed"}
+ 
+    # --------------------------------------------------
+    # 6️⃣ REASONING
     # --------------------------------------------------
     reasoning_input = {
         "messages": llm_messages,
-        "safety": safety_payload,
-        "memory_action": memory_action,
-        "memory_data": memory_data,
-        "memory_found": memory_found,
+        "memory": memory_data,
         "tool_context": tool_context,
+        "knowledge_base": kb_data,
+        "kb_found": kb_found,
     }
-
-    logger.info(
-        "🧠 REASONING_INPUT_SNAPSHOT\n%s",
-        json.dumps(reasoning_input, indent=2, default=str),
-    )
-
-    reasoning_stream = Runner.run_streamed(
-        reasoning_agent,
-        json.dumps(reasoning_input),
-        context=context,
-    )
-
+ 
+    emitted = False
+ 
+    try:
+        logger.info("🧠 Reasoning started")
+ 
+        reasoning_stream = Runner.run_streamed(
+            reasoning_agent,
+            json.dumps(reasoning_input),
+            context=context,
+        )
+ 
+        async for event in reasoning_stream.stream_events():
+            if (
+                event.type == "raw_response_event"
+                and isinstance(event.data, ResponseTextDeltaEvent)
+            ):
+                emitted = True
+                yield {"type": "token", "value": event.data.delta}
+ 
+    except Exception as e:
+        if GuardrailTripwire and isinstance(e, GuardrailTripwire) and e.tripwire_triggered:
+            logger.warning("🚫 Reasoning guardrail triggered")
+            yield {"type": "token", "value": "I can’t share that information."}
+            return
+ 
+        logger.exception("❌ Reasoning failed")
+        yield {"type": "token", "value": "Something went wrong. Please try again."}
+ 
     # --------------------------------------------------
-    # 8️⃣ STREAM TOKENS
+    # 7️⃣ FALLBACK
     # --------------------------------------------------
-    async for event in reasoning_stream.stream_events():
-        if (
-            event.type == "raw_response_event"
-            and isinstance(event.data, ResponseTextDeltaEvent)
-        ):
-            yield {"type": "token", "value": event.data.delta}
+    if not emitted:
+        logger.warning("⚠️ No tokens emitted")
+        yield {"type": "token", "value": "I’m here 😊 What would you like to do next?"}
+ 
+    logger.info("✅ Orchestrator completed")
+ 
+ 
 

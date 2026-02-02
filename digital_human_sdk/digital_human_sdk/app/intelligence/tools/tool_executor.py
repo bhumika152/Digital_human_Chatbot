@@ -3,14 +3,17 @@ from .implementations import (
     browser_search_tool,
     serpapi_search_tool,
     math_tool,
+    property_tool,   # 👈 ADD
 )
- 
+
 TOOL_REGISTRY = {
     "weather": weather_tool,
     "calculator": math_tool,
     "web_search": serpapi_search_tool,
     "browser": browser_search_tool,
+    "property": property_tool,   # 👈 ADD
 }
+
  
 class ToolExecutor:
     @staticmethod

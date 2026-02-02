@@ -23,6 +23,8 @@ async def stream_chat(payload: dict):
     enable_rag=flags.get("enable_rag", True),
     router_context=flags.get("router_context"),
     memory_data=flags.get("memory_data", []),
+    kb_data=flags.get("kb_data", []),
+    kb_found=flags.get("kb_found", False),
 )
     async def event_stream():
         try:

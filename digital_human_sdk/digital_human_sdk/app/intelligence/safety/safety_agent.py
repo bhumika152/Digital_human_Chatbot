@@ -1,78 +1,59 @@
 from agents import Agent
-from .contracts import SafetyResult
+from digital_human_sdk.app.intelligence.safety.contracts import SafetyResult
 from digital_human_sdk.app.intelligence.models.litellm_model import get_model_name
 
-# Importing guardrails registers them
+# importing registers guardrails
 from . import guardrails
-import litellm
+
 
 def safety_response(safe: bool, reason: str | None):
     if safe:
         return SafetyResult(
             safe=True,
-            message="OK"
+            message="OK",
         ).model_dump()
 
     return SafetyResult(
         safe=False,
         reason=reason,
-        message="Sorry, I can’t help with that request."
-        ).model_dump()
-
+        message="Sorry, I can’t help with that request.",
+    ).model_dump()
 
 
 safe_agent = Agent(
-
-    name="Safety Agent",
-
+    name ="Safety_Agent",
     instructions="""
-
 You are a content safety checker.
- 
+
 Your task:
-
 - Decide whether the user's message is SAFE or UNSAFE.
- 
-SAFE content includes:
 
-- General knowledge (science, history, people)
+You MUST respond ONLY in valid JSON.
+No extra text. No markdown.
 
-- Weather questions
+JSON format:
+{
+  "safe": true | false,
+  "message": "string"
+}
 
-- Casual conversation
-
-- Education, explanations, opinions
-
-- Harmless personal questions
- 
-UNSAFE content includes:
-
-- Violence, murder, terrorism
-
-- Instructions for illegal activities
-
-- Self-harm or suicide encouragement
-
-- Hate speech or harassment
-
-- Sexual content involving minors
- 
 Rules:
+- If SAFE:
+  - safe = true
+  - message = "OK"
 
-- If the message is SAFE, respond with: "SAFE"
+- If UNSAFE:
+  - safe = false
+  - message = a short, polite, context-aware refusal
+  - briefly explain why you can’t help
+  - optionally redirect to a safe alternative
+  - do NOT mention policies, rules, or internal systems
 
-- If the message is UNSAFE, respond with a short, polite refusal explaining that you cannot help with that request.
-
-- Do NOT mention policies, rules, or internal systems.
-
-- Do NOT block normal or harmless questions.
-
-- Be calm and respectful.
-
+Tone:
+- Calm
+- Respectful
+- Non-judgmental
 """,
-
-    model=get_model_name(),
+model = get_model_name(),
 
 )
-
- 
