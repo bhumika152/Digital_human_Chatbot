@@ -150,7 +150,10 @@ const EditProfileUI: React.FC<{
    CHAT PAGE
 ========================================================== */
 
-export const ChatPage: React.FC<{ user: User | null; onLogout: () => void }> = ({ user, onLogout }) => {
+export const ChatPage: React.FC<{ user: User | null; onLogout: () => void }> = ({
+  user,
+  onLogout
+}) => {
 
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -160,31 +163,34 @@ export const ChatPage: React.FC<{ user: User | null; onLogout: () => void }> = (
   const [profileUser, setProfileUser] = useState<User | null>(user);
 
   const PAGE_SIZE = 20;
-  const [offset, setOffset] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
 
-  /* LOAD SIDEBAR */
+  /* =======================
+     LOAD SIDEBAR SESSIONS
+  ======================== */
   useEffect(() => {
     if (!user) return;
     chatService.getSessions().then(setSessions);
   }, [user]);
 
-  /* LOAD HISTORY — 🔥 FIXED */
+  /* =======================
+     LOAD CHAT HISTORY
+     (DO NOT overwrite optimistic UI)
+  ======================== */
   useEffect(() => {
     if (!currentSessionId) return;
-    if (messages.length > 0) return; // 🔥 DO NOT OVERWRITE OPTIMISTIC UI
+    if (messages.length > 0) return;
 
     const load = async () => {
       const history = await chatService.getMessages(currentSessionId, PAGE_SIZE, 0);
       setMessages(history);
-      setOffset(history.length);
-      setHasMore(history.length === PAGE_SIZE);
     };
 
     load();
   }, [currentSessionId]);
 
-  /* SEND MESSAGE — 🔥 CORE FIX */
+  /* =======================
+     SEND MESSAGE
+  ======================== */
   const handleSendMessage = async (content: string) => {
     if (!content.trim() || !user) return;
 
@@ -221,7 +227,11 @@ export const ChatPage: React.FC<{ user: User | null; onLogout: () => void }> = (
         (chunk) => {
           fullResponse += chunk;
           setMessages(prev =>
-            prev.map(m => m.request_id === assistantId ? { ...m, content: fullResponse } : m)
+            prev.map(m =>
+              m.request_id === assistantId
+                ? { ...m, content: fullResponse }
+                : m
+            )
           );
         },
         (newSessionId) => {
@@ -232,21 +242,57 @@ export const ChatPage: React.FC<{ user: User | null; onLogout: () => void }> = (
       setSessions(await chatService.getSessions());
     } catch {
       setMessages(prev =>
-        prev.map(m => m.request_id === assistantId ? { ...m, content: "Error" } : m)
+        prev.map(m =>
+          m.request_id === assistantId
+            ? { ...m, content: "Error" }
+            : m
+        )
       );
     } finally {
       setIsTyping(false);
     }
   };
 
+  /* =======================
+     DELETE CHAT (🔥 FIX)
+  ======================== */
+  const handleDeleteChat = async (sessionId: string) => {
+    try {
+      await chatService.deleteSession(sessionId);
+
+      // remove from sidebar
+      setSessions(prev =>
+        prev.filter(s => s.session_id !== sessionId)
+      );
+
+      // if current chat deleted → reset UI
+      if (currentSessionId === sessionId) {
+        setCurrentSessionId(null);
+        setMessages([]);
+      }
+
+      toast.success("Chat deleted");
+    } catch {
+      toast.error("Failed to delete chat");
+    }
+  };
+
   return (
     <div className="flex h-screen">
+      <ToastContainer />
+
       <Sidebar
-        chats={sessions.map(s => ({ id: s.session_id, title: s.session_title }))}
+        chats={sessions.map(s => ({
+          id: s.session_id,
+          title: s.session_title
+        }))}
         currentChatId={currentSessionId}
         onSelectChat={setCurrentSessionId}
-        onNewChat={() => { setCurrentSessionId(null); setMessages([]); }}
-        onDeleteChat={() => {}}
+        onNewChat={() => {
+          setCurrentSessionId(null);
+          setMessages([]);
+        }}
+        onDeleteChat={handleDeleteChat}  
         isOpen={true}
         toggleSidebar={() => {}}
         onLogout={onLogout}
