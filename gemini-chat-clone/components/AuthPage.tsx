@@ -2,6 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { AuthMode, User } from '../types';
 import { authService } from '../services/authService';
+import eyeOpen from '../assets/eye-open.svg';
+import eyeClosed from '../assets/eye-closed.svg';
+
+
 
 interface AuthPageProps {
   onAuthSuccess: (user: User) => void;
@@ -193,9 +197,12 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess, initialMode =
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-[#b4b4b4] hover:text-white"
               >
-                {showPassword ? "🙈" : "👁️"}
-              </button>
-            </div>
+                <img
+          src={showPassword ? eyeClosed : eyeOpen}
+          className="w-5 h-5"
+        />
+      </button>
+                  </div>
 
             </div>
           )}

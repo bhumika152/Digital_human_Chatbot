@@ -64,3 +64,37 @@ class ContextBuilder:
         })
  
         return messages
+    
+    def build_router_context(
+        db: Session,
+        session_id,
+        user_input: str
+    ) -> str:
+        parts = []
+
+        # 1️⃣ Summary
+        summary = get_conversation_summary(db, session_id)
+        if summary:
+            parts.append(f"Conversation summary:\n{summary}")
+
+        # 2️⃣ Recent user messages only
+        recent_msgs = (
+            db.query(ChatMessage)
+            .filter(
+                ChatMessage.session_id == session_id,
+                ChatMessage.role == "user"
+            )
+            .order_by(ChatMessage.created_at.desc())
+            .limit(3)
+            .all()
+        )
+
+        if recent_msgs:
+            parts.append("Recent user messages:")
+            for m in reversed(recent_msgs):
+                parts.append(f"- {m.content}")
+
+        # 3️⃣ Current input
+        parts.append(f"\nCurrent request:\n{user_input}")
+
+        return "\n".join(parts)

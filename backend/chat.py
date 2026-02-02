@@ -15,11 +15,16 @@ from models import ChatSession, ChatMessage,User
 from auth import get_current_user
 from constants import get_user_config
 from services.memory_action_executor import apply_memory_action
-from digital_human_sdk.app.main import run_digital_human_chat
+#from digital_human_sdk.app.main import run_digital_human_chat
 from context.context_builder import ContextBuilder
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import Boolean
- 
+
+from clients.digital_human_client import DigitalHumanClient
+import os
+from services.memory_service import MemoryService
+
+
 # ==========================================================
 # Router & Logger
 # ==========================================================
@@ -40,11 +45,11 @@ class UpdateProfileRequest(BaseModel):
  
  
 logger = logging.getLogger("chat")
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(message)s",
-)
- 
+# logging.basicConfig(
+#     level=logging.INFO,
+#     format="%(asctime)s | %(levelname)s | %(message)s",
+# )
+
 # ==========================================================
 # DB Dependency
 # ==========================================================
@@ -146,7 +151,14 @@ async def chat(
         session_id=session.session_id,
         user_input=user_text,
     )
- 
+
+    router_context = ContextBuilder.build_router_context(
+        db=db,
+        session_id=session.session_id,
+        user_input=user_text,
+)
+
+
     agent_context = {
         "user_id": user_id,
         "session_id": session.session_id,
@@ -169,8 +181,12 @@ async def chat(
         db_factory=SessionLocal,   # 🔑 SAFE FOR STREAMING
         logger=logger,
     )
-   
- 
+    
+    semantic_memory = MemoryService.read(
+        user_id=user_id,
+        query=router_context,
+        limit=3,
+    )
     # ==========================================================
     # STREAM RESPONSE
     # ==========================================================
@@ -185,11 +201,20 @@ async def chat(
             session_id,
             request_id,
         )
- 
+        dh_client = DigitalHumanClient(os.getenv("DIGITAL_HUMAN_BASE_URL"))
         try:
-            async for event in run_digital_human_chat(
-                llm_messages=llm_context,
-                context=agent_context,
+            async for event in dh_client.stream_chat(
+                user_input=user_text,
+                llm_context=llm_context,
+                flags = {
+                "user_id": int(user_id),
+                "session_id": str(session.session_id), 
+                "enable_memory": bool(agent_context.enable_memory),
+                "enable_tools": bool(agent_context.enable_tools),
+                "enable_rag": bool(agent_context.enable_rag),
+                "router_context": router_context,
+                "memory_data": semantic_memory,
+            }
             ):
                 event_type = event.get("type")
  
@@ -201,24 +226,24 @@ async def chat(
                         or event.get("memory_action")
                         or event.get("data")
                     )
- 
+
                     # Handle wrapped payloads
                     if isinstance(memory_action, dict) and "memory_action" in memory_action:
                         memory_action = memory_action["memory_action"]
- 
+
                     if not memory_action:
                         logger.error(
                             "❌ memory_event received without payload | event=%s",
                             event,
                         )
                         continue
- 
+
                     logger.info("🧠 MEMORY_EVENT_RECEIVED | %s", memory_action)
- 
+
                     if not agent_context.enable_memory:
                         logger.info("🧠 Memory disabled — skipping")
                         continue
- 
+
                     db_mem = agent_context.db_factory()
                     try:
                         apply_memory_action(
@@ -228,7 +253,7 @@ async def chat(
                         )
                     finally:
                         db_mem.close()
-               
+                
                 elif event_type == "token":
                     token = event.get("value", "")
                     if token:
