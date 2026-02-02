@@ -216,17 +216,43 @@ class SessionSummary(Base):
         index=True
     )
 
-    embedding = Column(ARRAY(Float), nullable=False)
-
-    meta_data = Column("metadata", JSONB)
-
-    user = relationship("User", back_populates="vectors")
-
-
+    summary_text = Column(Text, nullable=False)
+    
+    summary_type = Column(
+            String,
+            default="auto"
+        )  # auto | manual | system
+    
+    confidence_score = Column(Float, nullable=True)
+    
+    is_active = Column(
+            Boolean,
+            nullable=False,
+            default=True
+        )
+    
+    created_at = Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False
+        )
+    
+    updated_at = Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            onupdate=func.now(),
+            nullable=False
+        )
+    
+        # 🔗 Relationships
+    session = relationship("ChatSession", back_populates="summary")
+    user = relationship("User", back_populates="summary")
+    
 class Property(Base):
     __tablename__ = "properties"
  
-    property_id = Column(BigInteger, primary_key=True, index=True)
+    property_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+
     title = Column(Text, nullable=False)
     city = Column(Text, nullable=False)
     locality = Column(Text, nullable=False)

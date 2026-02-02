@@ -11,19 +11,13 @@ from database import SessionLocal
 from models import User, UserConfig, MemoryStore
 from schemas import SignupRequest, LoginRequest, TokenResponse
 from utils import create_access_token, SECRET_KEY, ALGORITHM
+from database import get_db
 # from fastapi.security import OAuth2PasswordRequestForm
+
+
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
-# --------------------
-# DB Dependency
-# --------------------
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 # --------------------
 # AUTH Dependency

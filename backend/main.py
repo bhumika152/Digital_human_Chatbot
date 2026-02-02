@@ -10,6 +10,7 @@ logger = logging.getLogger("main")
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import auth, chat
+from property import property_router
 from database import Base, engine
 
 # -------------------------------
@@ -104,5 +105,5 @@ app.include_router(chat.user_router)
 
 # Include property router
 # app.include_router(property.property_router)
-
+app.include_router(property_router)
 
