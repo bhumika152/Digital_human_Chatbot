@@ -38,10 +38,21 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isT
     el.addEventListener("scroll", handleScroll);
     return () => el.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // ✅ Session change hone par direct bottom jump
+useEffect(() => {
+  const el = chatScrollRef.current;
+  if (!el) return;
+ 
+  setTimeout(() => {
+    el.scrollTop = el.scrollHeight;
+  }, 0);
+ 
+}, [chat?.id]);
  
  
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
   };
  
   useEffect(() => {
@@ -67,7 +78,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isT
         {/* 👇 YE SCROLL CONTAINER HAI */}
       <div
         ref={chatScrollRef}
-        className="flex-1 overflow-y-auto no-scrollbar scroll-smooth"
+        className="flex-1 overflow-y-auto no-scrollbar"
       >
         {!chat || chat.messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center p-8">
