@@ -28,25 +28,25 @@ TypeScript
 
 Modern UI stack
 
-🚀 Running the Project (Local Setup)
+#🚀 Running the Project (Local Setup)
 
 🔹 Backend – Core API (Port 8000)
 
 cd backend
 
-# Create virtual environment (ONCE)
+Create virtual environment (ONCE)
 
 py -3.10 -m venv venv
 
-# Activate venv
+Activate venv
 venv\Scripts\activate
 
 python --version   # Python 3.10.x
 
-# Install dependencies (ONCE)
+Install dependencies (ONCE)
 pip install -r requirements.txt
 
-# Run backend server
+ Run backend server
 uvicorn main:app --reload --port 8000
 
 
@@ -70,10 +70,10 @@ http://127.0.0.1:8001
 🎨 Frontend – Main App
 cd frontend
 
-# Install dependencies (ONCE)
+Install dependencies (ONCE)
 npm install
 
-# Start dev server
+Start dev server
 npm run dev
 
 
