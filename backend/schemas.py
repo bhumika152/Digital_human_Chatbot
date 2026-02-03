@@ -123,14 +123,46 @@ class PropertyResponse(BaseModel):
 # --------------------
 # PROPERTY SCHEMAS
 # --------------------
+# class PropertyCreateRequest(BaseModel):
+#     title: str
+#     city: str
+#     locality: str
+#     purpose: str
+#     price: int
+#     bhk: int
+#     area_sqft: int
+#     is_legal: bool = False
+#     owner_name: str
+#     contact_phone: str
+
+class PropertySearchRequest(BaseModel):
+    city: str
+    purpose: Optional[str] = None
+    max_budget: int
+    bhk: Optional[int] = None
+    locality: Optional[str] = None
+
 class PropertyCreateRequest(BaseModel):
     title: str
     city: str
-    locality: str
+    locality: Optional[str]=None
     purpose: str
     price: int
     bhk: int
-    area_sqft: int
-    is_legal: bool = False
+    area_sqft: Optional[int] = None
+    is_legal: bool = True
     owner_name: str
     contact_phone: str
+ 
+class PropertyUpdateRequest(BaseModel):
+    title: Optional[str] = None
+    city: Optional[str] = None
+    locality: Optional[str] = None
+    purpose: Optional[str] = None
+    price: Optional[int] = None
+    bhk: Optional[int] = None
+    area_sqft: Optional[int] = None
+    is_legal: Optional[bool] = None
+    owner_name: Optional[str] = None
+    contact_phone: Optional[str] = None
+ 
