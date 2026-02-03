@@ -1,6 +1,6 @@
 from agents import Agent
-from digital_human_sdk.app.intelligence.safety.contracts import SafetyResult
-from digital_human_sdk.app.intelligence.models.litellm_model import get_model_name
+from app.intelligence.safety.contracts import SafetyResult
+from app.intelligence.models.litellm_model import get_model_name
 
 # importing registers guardrails
 from . import guardrails

@@ -2,7 +2,7 @@ from fastapi import Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 import property
-from digital_human_sdk.app.intelligence.logging_config import setup_logging
+from constants.logging_config import setup_logging
 setup_logging()
  
 import logging
