@@ -28,9 +28,9 @@ TypeScript
 
 Modern UI stack
 
-#🚀 Running the Project (Local Setup)
+# 🚀 Running the Project (Local Setup)
 
-🔹 Backend – Core API (Port 8000)
+# 🔹 Backend – Core API (Port 8000)
 
 cd backend
 
@@ -53,7 +53,7 @@ uvicorn main:app --reload --port 8000
 📍 Available at:
 http://127.0.0.1:8000
 
-🔹 Backend – Digital Human SDK (Port 8001)
+# 🔹 Backend – Digital Human SDK (Port 8001)
 
 cd backend
 
@@ -67,7 +67,7 @@ uvicorn digital_human_sdk.app.main:app --port 8001
 📍 Available at:
 http://127.0.0.1:8001
 
-🎨 Frontend – Main App
+# 🎨 Frontend – Main App
 cd frontend
 
 Install dependencies (ONCE)
