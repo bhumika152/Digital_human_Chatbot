@@ -5,13 +5,13 @@ from typing import Any, Optional
 from agents import Runner
 from openai.types.responses import ResponseTextDeltaEvent
 
-from digital_human_sdk.app.intelligence.safety.safety_agent import safe_agent
-from digital_human_sdk.app.intelligence.our_agents.router_agent import router_agent
-from digital_human_sdk.app.intelligence.our_agents.memory_agent import memory_agent
-from digital_human_sdk.app.intelligence.our_agents.tool_agent import tool_agent
-from digital_human_sdk.app.intelligence.our_agents.reasoning_agent import reasoning_agent
-from digital_human_sdk.app.intelligence.tools.tool_executor import ToolExecutor
-from digital_human_sdk.app.intelligence.utils.json_utils import safe_json_loads
+from app.intelligence.safety.safety_agent import safe_agent
+from app.intelligence.our_agents.router_agent import router_agent
+from app.intelligence.our_agents.memory_agent import memory_agent
+from app.intelligence.our_agents.tool_agent import tool_agent
+from app.intelligence.our_agents.reasoning_agent import reasoning_agent
+from app.intelligence.tools.tool_executor import ToolExecutor
+from app.intelligence.utils.json_utils import safe_json_loads
 
 try:
     from agents.exceptions import GuardrailTripwire

@@ -284,11 +284,12 @@ async def chat(
                         token_count += 1
                         full_response += token
                         # ✅ SSE FORMAT
-                        yield f"{token}\n\n"
+                        # yield f"{token}\n\n"
+                        yield token
  
         except Exception:
             logger.exception("🔥 Streaming failed")
-            yield "data: [ERROR]\n\n"
+            # yield "data: [ERROR]\n\n"
             return
  
         # --------------------
@@ -319,7 +320,7 @@ async def chat(
  
     return StreamingResponse(
         stream_response(),
-        media_type="text/event-stream",
+        media_type="text/plain",
         headers={
             "X-Session-Id": session_id,
             "X-Request-Id": request_id,

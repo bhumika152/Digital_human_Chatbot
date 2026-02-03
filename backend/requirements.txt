@@ -16,5 +16,5 @@ pytest>=7.0
 typing-extensions>=4.5
 python-dotenv
 sentence-transformers
-sklearn
+scikit-learn
 torch
