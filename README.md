@@ -38,15 +38,14 @@ Create virtual environment (ONCE)
 
 py -3.10 -m venv venv
 
-Activate venv
 venv\Scripts\activate
 
-python --version   # Python 3.10.x
+python --version  
 
-Install dependencies (ONCE)
+-->Install dependencies (ONCE)
+
 pip install -r requirements.txt
 
- Run backend server
 uvicorn main:app --reload --port 8000
 
 
@@ -68,12 +67,15 @@ uvicorn digital_human_sdk.app.main:app --port 8001
 http://127.0.0.1:8001
 
 # 🎨 Frontend – Main App
+
 cd frontend
 
 Install dependencies (ONCE)
+
 npm install
 
 Start dev server
+
 npm run dev
 
 
