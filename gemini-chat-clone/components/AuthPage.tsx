@@ -2,6 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { AuthMode, User } from '../types';
 import { authService } from '../services/authService';
+import eyeOpen from '../assets/eye-open.svg';
+import eyeClosed from '../assets/eye-closed.svg';
+
+
 
 interface AuthPageProps {
   onAuthSuccess: (user: User) => void;
@@ -28,6 +32,9 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess, initialMode =
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
 
   // Sync mode only if initialMode prop changes (e.g. user manually toggles login/signup elsewhere)
   useEffect(() => {
@@ -175,14 +182,28 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess, initialMode =
                   </button>
                 )}
               </div>
+                        <div className="relative">
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-[#212121] border border-[#424242] rounded-lg px-4 py-2 focus:ring-2 focus:ring-white outline-none transition"
+                className="w-full bg-[#212121] border border-[#424242] rounded-lg px-4 py-2 pr-10 focus:ring-2 focus:ring-white outline-none transition"
                 placeholder="Enter password"
               />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#b4b4b4] hover:text-white"
+              >
+                <img
+          src={showPassword ? eyeClosed : eyeOpen}
+          className="w-5 h-5"
+        />
+      </button>
+                  </div>
+
             </div>
           )}
 

@@ -11,6 +11,7 @@ logger = logging.getLogger("main")
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import auth, chat
+from property import property_router
 from database import Base, engine
 
 # -------------------------------

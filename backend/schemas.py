@@ -119,3 +119,29 @@ class UpdateProfileRequest(BaseModel):
         if not re.fullmatch(r"[A-Za-z0-9 ]*", v):
             raise ValueError("Bio can contain only letters, numbers, and spaces.")
         return v
+    
+class PropertyResponse(BaseModel):
+    property_id: int
+    title: str
+    city: str
+    locality: str
+    purpose: str
+    price: int
+
+    class Config:
+        true_attributes = True
+
+# --------------------
+# PROPERTY SCHEMAS
+# --------------------
+class PropertyCreateRequest(BaseModel):
+    title: str
+    city: str
+    locality: str
+    purpose: str
+    price: int
+    bhk: int
+    area_sqft: int
+    is_legal: bool = False
+    owner_name: str
+    contact_phone: str

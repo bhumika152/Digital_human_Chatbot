@@ -33,7 +33,7 @@ const App: React.FC = () => {
   //   return savedUser ? 'chat' : 'auth';
   // });
  
-  const [view, setView] = useState<AppView>('auth');
+  const [view, setView] = useState<'loading' | AppView>('loading');
  
   useEffect(() => {
     const initUser = async () => {
@@ -93,6 +93,11 @@ const App: React.FC = () => {
     localStorage.clear(); // Complete wipe to prevent stale 'User' display
     setView('auth');
   };
+
+  if (view === 'loading') {
+    return null;
+}
+
  
    return (
     <div className="min-h-screen bg-[#0d0d0d] text-[#ececec]">

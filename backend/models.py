@@ -1,4 +1,5 @@
 
+import datetime
 from sqlalchemy import (
     Column,
     String,
@@ -291,34 +292,34 @@ class SessionSummary(Base):
     )
 
     summary_text = Column(Text, nullable=False)
-
+    
     summary_type = Column(
-        String,
-        default="auto"
-    )  # auto | manual | system
-
+            String,
+            default="auto"
+        )  # auto | manual | system
+    
     confidence_score = Column(Float, nullable=True)
-
+    
     is_active = Column(
-        Boolean,
-        nullable=False,
-        default=True
-    )
-
+            Boolean,
+            nullable=False,
+            default=True
+        )
+    
     created_at = Column(
-        DateTime(timezone=True),
-        server_default=func.now(),
-        nullable=False
-    )
-
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False
+        )
+    
     updated_at = Column(
-        DateTime(timezone=True),
-        server_default=func.now(),
-        onupdate=func.now(),
-        nullable=False
-    )
-
-    # 🔗 Relationships
+            DateTime(timezone=True),
+            server_default=func.now(),
+            onupdate=func.now(),
+            nullable=False
+        )
+    
+        # 🔗 Relationships
     session = relationship("ChatSession", back_populates="summary")
     user = relationship("User",back_populates="summary")
 
