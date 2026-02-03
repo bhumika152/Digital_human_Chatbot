@@ -16,6 +16,7 @@ def search_properties(
     city: str,
     purpose: str,
     budget: int,
+    limit: int =10,
     db: Session = Depends(get_db),
 ):
     results = (
@@ -25,6 +26,7 @@ def search_properties(
             Property.purpose == purpose,
             Property.price <= budget,
         )
+        .limit(limit)
         .all()
     )
  
