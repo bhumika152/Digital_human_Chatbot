@@ -28,68 +28,56 @@ TypeScript
 
 Modern UI stack
 
-# 🚀 Running the Project (Local Setup)
-STEP-BY-STEP COMMANDS
+🚀 Running the Project (Local Setup)
 
-1️⃣ Go to backend folder
+🔹 Backend – Core API (Port 8000)
 
 cd backend
 
-
-
-2️⃣ Create virtual environment (ONCE)
+# Create virtual environment (ONCE)
 
 py -3.10 -m venv venv
 
-✔ Python 3.10.x only (3.10.9 / 3.10.13 both fine)
-
-
-
-3️⃣ Activate venv
-
+# Activate venv
 venv\Scripts\activate
 
-python --version# Python 3.10.x 
+python --version   # Python 3.10.x
 
-
-
-4️⃣ Install backend dependencies (ONCE)
-
+# Install dependencies (ONCE)
 pip install -r requirements.txt
 
-
-
-5️⃣ Install Digital Human SDK (editable mode – ONCE)
-
-pip install -e ../digital_human_sdk
-
-
-
-6️⃣ Run backend server
-
+# Run backend server
 uvicorn main:app --reload --port 8000
 
 
-📍 Backend will be available at:
-
+📍 Available at:
 http://127.0.0.1:8000
 
-🎨 Frontend Setup
-1️⃣ Navigate to the frontend directory
+🔹 Backend – Digital Human SDK (Port 8001)
+
+cd backend
+
+venv\Scripts\activate
+
+cd ..
+
+uvicorn digital_human_sdk.app.main:app --port 8001
+
+
+📍 Available at:
+http://127.0.0.1:8001
+
+🎨 Frontend – Main App
 cd frontend
 
-2️⃣ Install dependencies
-
-(Required only the first time or when packages change)
-
+# Install dependencies (ONCE)
 npm install
 
-3️⃣ Start the frontend development server
+# Start dev server
 npm run dev
 
 
-📍 Frontend will be available at:
-
+📍 Available at:
 http://localhost:3000
 
 # 📁 Project Structure (Simplified)
