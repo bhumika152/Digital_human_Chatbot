@@ -38,8 +38,8 @@ class Constraints(BaseModel):
     response_style: str
 
 class ChatRequest(BaseModel):
-    request_id: str
-    conversation_id: str
+    request_id: int
+    conversation_id: int
     message: Message
     recent_messages: List[Message]
     session: SessionInfo

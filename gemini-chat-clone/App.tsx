@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'; // useEffect add
 import { chatService } from './services/chatService'; //
-import { Routes, Route, Navigate } from "react-router-dom"; // change
+// import { Routes, Route, Navigate } from "react-router-dom"; // change
 import { AuthPage } from './components/AuthPage';
 import { ChatPage } from './components/ChatPage';
 import { User, AppView } from './types';
-import { useLocation } from "react-router-dom";
+import { useLocation ,useNavigate} from "react-router-dom";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,7 +14,11 @@ import "react-toastify/dist/ReactToastify.css";
  * App component manages the global state: Authentication and App View.
  */
 const App: React.FC = () => {
-  const hasToken = new URLSearchParams(window.location.search).has('token');
+  const location = useLocation();
+  const navigate = useNavigate();
+
+// const hasToken = new URLSearchParams(location.search).has('token');
+
  
   // const [currentUser, setCurrentUser] = useState<User | null>(() => {
   //   const savedUser = localStorage.getItem('chat_clone_user');
@@ -86,7 +90,9 @@ const App: React.FC = () => {
     localStorage.setItem('chat_clone_user', JSON.stringify(normalizedUser));
     setView('chat');
    
-    window.history.replaceState({}, document.title, window.location.pathname);
+    // window.history.replaceState({}, document.title, window.location.pathname);
+    navigate(location.pathname, { replace: true });
+
   };
  
   const handleLogout = () => {
