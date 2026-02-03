@@ -4,7 +4,8 @@ import { Routes, Route, Navigate } from "react-router-dom"; // change
 import { AuthPage } from './components/AuthPage';
 import { ChatPage } from './components/ChatPage';
 import { User, AppView } from './types';
- 
+import { useLocation } from "react-router-dom";
+
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
  
