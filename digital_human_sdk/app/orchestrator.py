@@ -23,6 +23,102 @@ logger = logging.getLogger("orchestrator")
 
 ALLOWED_MEMORY_ACTIONS = {"save", "update", "delete", "none"}
 
+
+REQUIRED_PROPERTY_FIELDS = [
+    "title",
+    "city",
+    "locality",
+    "purpose",
+    "price",
+    "bhk",
+    "area_sqft",
+    "is_legal",
+    "owner_name",
+    "contact_phone",
+]
+
+PROPERTY_FIELD_ALIASES = {
+    "title": ["title", "name"],
+    "city": ["city"],
+    "locality": ["locality", "region", "location"],
+    "purpose": ["purpose"],
+    "price": ["price", "budget"],
+    "bhk": ["bhk", "configuration"],
+    "area_sqft": ["area_sqft", "area", "sqt"],
+    "is_legal": ["is_legal", "availability", "is_rented"],
+    "owner_name": ["owner_name", "contact_person"],
+    "contact_phone": ["contact_phone", "owner_contact", "contact_number"],
+}
+
+def normalize_property_payload(data: dict) -> dict:
+    normalized = {}
+
+    for canonical, aliases in PROPERTY_FIELD_ALIASES.items():
+        for alias in aliases:
+            if alias in data and data[alias] not in (None, ""):
+                value = data[alias]
+
+                # conversions
+                if canonical == "bhk" and isinstance(value, str):
+                    value = int("".join(filter(str.isdigit, value)))
+
+                if canonical == "area_sqft" and isinstance(value, str):
+                    value = int("".join(filter(str.isdigit, value)))
+
+                if canonical == "is_legal":
+                    value = bool(value)
+
+                normalized[canonical] = value
+                break
+
+    return normalized
+
+
+def get_missing_fields(payload: dict, required: list) -> list:
+    missing = []
+    for field in required:
+        if field not in payload:
+            missing.append(field)
+            continue
+
+        val = payload[field]
+
+        if isinstance(val, str) and not val.strip():
+            missing.append(field)
+        elif field in {"price", "bhk", "area_sqft"} and val <= 0:
+            missing.append(field)
+        elif field == "is_legal" and not isinstance(val, bool):
+            missing.append(field)
+
+    return missing
+
+
+def extract_property_fields(text: str) -> dict:
+    text_l = text.lower()
+    data = {}
+
+    # BHK
+    if "bhk" in text_l:
+        data["bhk"] = int("".join(filter(str.isdigit, text_l)))
+
+    # Area
+    if "sqft" in text_l or "sqt" in text_l:
+        data["area_sqft"] = int("".join(filter(str.isdigit, text_l)))
+
+    # Price
+    if "rs" in text_l or "₹" in text_l:
+        data["price"] = int("".join(filter(str.isdigit, text_l)))
+
+    # Legal
+    if "true" in text_l or "false" in text_l:
+        data["is_legal"] = "true" in text_l
+
+    # Title (fallback)
+    if "property" in text_l:
+        data["title"] = "Rental Property"
+
+    return data
+
 # --------------------------------------------------
 # CORE CHAT ORCHESTRATOR
 # --------------------------------------------------
@@ -31,7 +127,12 @@ async def run_digital_human_chat(
     llm_messages: list,
     context: Optional[Any] = None,
 ):
-    
+    if context:
+        if not hasattr(context, "pending_action"):
+            context.pending_action = None
+        if not hasattr(context, "partial_payload"):
+            context.partial_payload = {}
+
     enable_memory = bool(getattr(context, "enable_memory", False))
     enable_tools = bool(getattr(context, "enable_tools", False))
     enable_rag = bool(getattr(context, "enable_rag", False))
@@ -47,6 +148,14 @@ async def run_digital_human_chat(
         for msg in reversed(llm_messages)
         if msg["role"] == "user"
     )
+
+    if context and getattr(context, "pending_action", None) == "add_property":
+        incoming = normalize_property_payload(router_args or {})
+        incoming.update(normalize_property_payload(extract_property_fields(user_input)))
+
+        for k, v in incoming.items():
+            if k not in context.partial_payload:
+                context.partial_payload[k] = v
 
     router_input = user_input
 
@@ -142,6 +251,31 @@ async def run_digital_human_chat(
  
         if isinstance(parsed, dict):
             router_decision.update(parsed)
+
+        # 🚦 INIT ADD PROPERTY FLOW
+        # --------------------------------------------------
+        if (
+            router_decision.get("use_tool")
+            and router_decision.get("tool_name") == "property"
+            and router_decision.get("tool_arguments", {}).get("action") == "add"
+        ):
+            context.pending_action = "add_property"
+
+            # Merge ALL router extracted fields safely
+            router_args = router_decision.get("tool_arguments", {})
+            for key, value in {
+            "title": router_args.get("title"),
+            "city": router_args.get("city"),
+            "locality": router_args.get("locality"),
+            "purpose": router_args.get("purpose"),
+            "price": router_args.get("price") or router_args.get("budget"),
+            "bhk": router_args.get("bhk"),
+            "area_sqft": router_args.get("area_sqft") or router_args.get("sqt"),
+            "owner_name": router_args.get("owner_name"),
+            "contact_phone": router_args.get("contact") or router_args.get("contact_phone"),
+        }.items():
+                if value is not None and key not in context.partial_payload:
+                    context.partial_payload[key] = value
  
     except Exception as e:
         if GuardrailTripwire and isinstance(e, GuardrailTripwire) and e.tripwire_triggered:
@@ -208,13 +342,89 @@ async def run_digital_human_chat(
         except Exception:
 
             logger.exception("❌ Memory write failed")
+    
+    # --------------------------------------------------
+    # 🧩 PROPERTY SLOT FILLING (MUST BE HERE)
+    # --------------------------------------------------
+    if context and context.pending_action == "add_property":
+        missing = get_missing_fields(
+            context.partial_payload,
+            REQUIRED_PROPERTY_FIELDS
+        )
+
+        if missing:
+            pretty = "\n".join(
+                f"• {f.replace('_', ' ').title()}"
+                for f in missing
+            )
+
+            yield {
+                "type": "token",
+                "value": (
+                    "Sure 👍 I’ll help you add the property.\n\n"
+                    "Please provide the following details:\n"
+                    f"{pretty}"
+                ),
+            }
+            return
+
  
     # --------------------------------------------------
     # 5️⃣ TOOL EXECUTION (WITH VALIDATION)
     # --------------------------------------------------
     tool_context = {}
+
+    can_execute_property_add = (
+        context.pending_action == "add_property"
+        and not get_missing_fields(
+            context.partial_payload,
+            REQUIRED_PROPERTY_FIELDS
+        )
+    )
+
+    if can_execute_property_add:
+        logger.info("🛠️ Executing property.add")
+
+    if not getattr(context, "auth_token", None):
+        yield {
+            "type": "token",
+            "value": "🔐 Please log in to add a property."
+        }
+        return
+    
+    tool_context = ToolExecutor.execute(
+        "property",
+        {
+            "action": "add",
+            "payload": context.partial_payload,
+            "auth_token": context.auth_token,
+        }
+    )
+
+    if tool_context.get("error"):
+        yield {
+            "type": "token",
+            "value": f"❌ Failed to add property: {tool_context.get('error')}"
+        }
+        return
+    
+    if tool_context.get("property_id"):
+        yield {
+            "type": "token",
+            "value": (
+                "✅ Property added successfully!\n"
+                f"Property ID: {tool_context['property_id']}"
+            )
+        }
+
+        # 🧹 CLEAR STATE
+        context.pending_action = None
+        context.partial_payload = {}
+        return
+
+    logger.info("🧾 Property tool response: %s", tool_context)
  
-    if router_decision.get("use_tool"):
+    if router_decision.get("use_tool") or can_execute_property_add:
         try:
             logger.info("🛠️ Tool execution started")
  
@@ -230,6 +440,14 @@ async def run_digital_human_chat(
  
             tool_name = tool_payload.get("tool")
             tool_arguments = tool_payload.get("arguments", {})
+
+            if can_execute_property_add:
+                tool_name = "property"
+                tool_arguments = {
+                    "action": "add",
+                    "payload": context.partial_payload,
+                }
+
             action = tool_arguments.get("action")
  
             # 🔍 PROPERTY VALIDATION BEFORE SAVE
@@ -276,6 +494,10 @@ async def run_digital_human_chat(
                 tool_name,
                 tool_arguments,
             )
+
+            if can_execute_property_add and not tool_context.get("error"):
+                context.pending_action = None
+                context.partial_payload = {}
  
             logger.info(f"🛠️ Tool response: {tool_context}")
  
