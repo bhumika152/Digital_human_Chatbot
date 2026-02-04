@@ -519,16 +519,21 @@ def fetch_properties_by_region(
         Property.city.ilike(f"%{city}%")
     )
  
+ 
     if locality:
         query = query.filter(Property.locality.ilike(f"%{locality}%"))
+ 
  
     if purpose:
         query = query.filter(Property.purpose == purpose)
  
+ 
     if max_budget:
         query = query.filter(Property.price <= max_budget)
  
+ 
     results = query.all()
+ 
  
     return {
         "count": len(results),
@@ -564,8 +569,10 @@ def update_property(
     for key, value in update_data.items():
         setattr(property_obj, key, value)
  
+ 
     db.commit()
     db.refresh(property_obj)
+ 
  
     return {
         "message": "Property updated successfully",
@@ -595,7 +602,22 @@ def delete_property(
             status_code=404,
             detail="Property not found or unauthorized",
         )
+    property_obj = (
+        db.query(Property)
+        .filter(
+            Property.property_id == property_id,
+            Property.owner_user_id == user_id,
+        )
+        .first()
+    )
  
+    if not property_obj:
+        raise HTTPException(
+            status_code=404,
+            detail="Property not found or unauthorized",
+        )
+ 
+    db.delete(property_obj)
     db.delete(property_obj)
     db.commit()
  

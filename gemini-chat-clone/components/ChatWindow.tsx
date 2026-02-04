@@ -1,5 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Message } from '../types';
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
  
 interface ChatWindowProps {
   chat: { id: string, messages: Message[] } | undefined;
@@ -131,15 +134,22 @@ useEffect(() => {
         <div className="font-bold text-sm uppercase tracking-wide text-[#b4b4b4]">
           {message.role === 'user' ? 'You' : 'Assistant'}
         </div>
-        <div className="text-base text-[#ececec] whitespace-pre-wrap leading-relaxed">
-          {message.content || (isTyping && message.request_id.startsWith('temp') ? (
-            <span className="flex gap-1 h-6 items-center">
-              <span className="w-1 h-1 bg-white rounded-full animate-bounce"></span>
-              <span className="w-1 h-1 bg-white rounded-full animate-bounce [animation-delay:0.2s]"></span>
-              <span className="w-1 h-1 bg-white rounded-full animate-bounce [animation-delay:0.4s]"></span>
-            </span>
-          ) : null)}
-        </div>
+        <div className="text-base text-[#ececec] leading-relaxed prose prose-invert max-w-none">
+  {message.content ? (
+    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+      {message.content}
+    </ReactMarkdown>
+  ) : (
+    isTyping && message.request_id.startsWith('assistant') && (
+      <span className="flex gap-1 h-6 items-center">
+        <span className="w-1 h-1 bg-white rounded-full animate-bounce"></span>
+        <span className="w-1 h-1 bg-white rounded-full animate-bounce [animation-delay:0.2s]"></span>
+        <span className="w-1 h-1 bg-white rounded-full animate-bounce [animation-delay:0.4s]"></span>
+      </span>
+    )
+  )}
+</div>
+
       </div>
     </div>
   ))}

@@ -23,6 +23,8 @@ from sqlalchemy import Boolean
 from clients.digital_human_client import DigitalHumanClient
 import os
 from services.memory_service import MemoryService
+from services.knowledge_base_service import KnowledgeBaseService
+from fastapi import Request
 
 
 # ==========================================================
@@ -67,6 +69,7 @@ def get_db():
 @chat_router.post("")
 async def chat(
     payload: dict,
+    request: Request,
     user_id: int = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
@@ -167,6 +170,8 @@ async def chat(
         "enable_rag": user_config.get("enable_rag", True),
         "db_factory": SessionLocal,
         "logger": logger,
+        "request": request,
+        
     }
  
     # --------------------
@@ -180,6 +185,7 @@ async def chat(
         enable_rag=user_config.get("enable_rag", True),
         db_factory=SessionLocal,   # 🔑 SAFE FOR STREAMING
         logger=logger,
+        request= request,
     )
     
     semantic_memory = MemoryService.read(
@@ -187,6 +193,22 @@ async def chat(
         query=router_context,
         limit=3,
     )
+
+    kb_data = []
+    kb_found = False
+ 
+    try:
+        kb_data = KnowledgeBaseService.read(
+            query=router_context,
+            limit=5,
+            document_types=["FAQ", "POLICY"],
+            industry="fintech",
+        )
+        kb_found = bool(kb_data)
+        logger.info(f"📚 KB found: {kb_found}")
+    except Exception:
+        logger.exception("❌ Knowledge base read failed")
+
     # ==========================================================
     # STREAM RESPONSE
     # ==========================================================
@@ -214,6 +236,8 @@ async def chat(
                 "enable_rag": bool(agent_context.enable_rag),
                 "router_context": router_context,
                 "memory_data": semantic_memory,
+                "kb_data": kb_data,
+                "kb_found": kb_found,
             }
             ):
                 event_type = event.get("type")
@@ -260,11 +284,12 @@ async def chat(
                         token_count += 1
                         full_response += token
                         # ✅ SSE FORMAT
-                        yield f"{token}\n\n"
+                        # yield f"{token}\n\n"
+                        yield token
  
         except Exception:
             logger.exception("🔥 Streaming failed")
-            yield "data: [ERROR]\n\n"
+            # yield "data: [ERROR]\n\n"
             return
  
         # --------------------
@@ -295,7 +320,7 @@ async def chat(
  
     return StreamingResponse(
         stream_response(),
-        media_type="text/event-stream",
+        media_type="text/plain",
         headers={
             "X-Session-Id": session_id,
             "X-Request-Id": request_id,

@@ -1,15 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { User, Message, ChatSession } from '../types';
-import { Sidebar } from './Sidebar';
-import { ChatWindow } from './ChatWindow';
-import { chatService } from '../services/chatService';
- 
-import { toast } from "react-toastify";
+import React, { useEffect, useState } from "react";
+import { User, Message, ChatSession } from "../types";
+import { Sidebar } from "./Sidebar";
+import { ChatWindow } from "./ChatWindow";
+import { chatService } from "../services/chatService";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
 import { confirmToast } from "../utils/confirmToast";
- 
- 
+
 /* ==========================================================
     EDIT PROFILE UI COMPONENT
 ========================================================== */
@@ -354,122 +351,68 @@ const EditProfileUI: React.FC<{
   );
 };
  
- 
- 
 interface ChatPageProps {
   user: User | null;
   onLogout: () => void;
 }
  
 export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
-  console.log("ChatPage rendered on:", window.location.pathname); // changes
-  // 🔑 SINGLE SOURCE OF TRUTH
-  // const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+  const PAGE_SIZE = 20;
+ 
+  /* =========================
+     CORE STATE
+  ========================== */
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(() => {
-    return localStorage.getItem("active_session_id");
+    const id = localStorage.getItem("active_session_id");
+    return id;
   });
+ 
+  const [sessionSource, setSessionSource] =
+    useState<"sidebar" | "send" | "restore" | null>(() => {
+      return localStorage.getItem("active_session_id") ? "restore" : null;
+    });
  
   const [messages, setMessages] = useState<Message[]>([]);
   const [sessions, setSessions] = useState<ChatSession[]>([]);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
-  const [showEditProfile, setShowEditProfile] = useState(false); // changes
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  const [showEditProfile, setShowEditProfile] = useState(false); 
   const [profileUser, setProfileUser] = useState<User | null>(user);
   const [isRestoringSession, setIsRestoringSession] = useState(true);
  
-  // useEffect(() => {
-  //   setProfileUser(user);
-  // }, [user]);
-  // 👇 👇 👇
-  const PAGE_SIZE = 20;
-  const [offset, setOffset] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
- 
-  //    // ✅👇 YAHAN ADD KARO (TEMP TEST)
-  //   useEffect(() => {
-  //   const fakeMessages = Array.from({ length: 40 }, (_, i) => ({
-  //     request_id: `fake-${i}`,
-  //     session_id: 'test',
-  //     role: i % 2 === 0 ? 'user' : 'assistant',
-  //     content: `Fake message ${i}`,
-  //     created_at: new Date().toISOString(),
-  //   }));
- 
-  //   // 🔥 ONLY LAST 20 LOAD FIRST
-  //   setMessages(fakeMessages.slice(20));
-  //   setOffset(20);
-  //   setHasMore(true);
-  // }, []);
- 
-  // // ✅ 3. 🔥 YAHI ADD KARNA HAI (TESTING FUNCTION)
-  //   const loadMoreMessages = async () => {
-  //     const older = Array.from({ length: 20 }, (_, i) => ({
-  //       request_id: `old-${i}`,
-  //       session_id: 'test',
-  //       role: i % 2 === 0 ? 'user' : 'assistant',
-  //       content: `OLDER message ${i}`,
-  //       created_at: new Date().toISOString(),
-  //     }));
- 
-  //     setMessages(prev => [...older, ...prev]);
-  //     // setHasMore(false); // 👈 ek hi baar load
-  //   };
-  /* ----------------------------
-     LOAD SIDEBAR SESSIONS  
-  ---------------------------- */
+  /* =========================
+     LOAD SIDEBAR SESSIONS
+  ========================== */
   useEffect(() => {
     if (!user) return;
  
     chatService
       .getSessions()
       .then(setSessions)
-      .catch(err => console.error('Failed to load sessions', err));
+      .catch(() => toast.error("Failed to load chats"));
   }, [user]);
  
-  //  RESTORE ACTIVE SESSION ON PAGE REFRESH
-  // useEffect(() => {
-  //   const savedSessionId = localStorage.getItem("active_session_id");
- 
-  //   if (savedSessionId) {
-  //     setCurrentSessionId(savedSessionId);
-  //   }
-  // }, []);
- 
-  /* ----------------------------
-   LOAD CHAT HISTORY ON SIDEBAR CLICK
-  ---------------------------- */
+  /* =========================
+     LOAD CHAT HISTORY
+     (SINGLE SOURCE OF TRUTH)
+  ========================== */
   useEffect(() => {
-    if (!currentSessionId) return;
- 
-    const loadMessages = async () => {
-      try {
-        const history = await chatService.getMessages(
-          currentSessionId,
-          PAGE_SIZE,
-          0
-        );
- 
-        setMessages(history);          // latest 20
-        setOffset(PAGE_SIZE);          // next page should skip these
-        setHasMore(history.length === PAGE_SIZE);
- 
- 
-      } catch (err) {
-        console.error('Failed to load chat history', err);
-      }
-    };
- 
-    loadMessages();
-  }, [currentSessionId]);
- 
-  useEffect(() => {
-    // NEW CHAT case → no session to restore
     if (!currentSessionId) {
       setIsRestoringSession(false);
       return;
     }
  
-    const loadMessages = async () => {
+    // 🔥 First message flow → keep optimistic UI
+    if (sessionSource === "send") {
+      setSessionSource(null);
+      setIsRestoringSession(false);
+      return;
+    }
+ 
+    const loadHistory = async () => {
       try {
         const history = await chatService.getMessages(
           currentSessionId,
@@ -478,43 +421,39 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
         );
  
         setMessages(history);
-        setOffset(PAGE_SIZE);
+        setOffset(history.length);
         setHasMore(history.length === PAGE_SIZE);
-      } catch (err) {
-        console.error('Failed to load chat history', err);
+      } catch {
+        toast.error("Failed to load chat history");
       } finally {
-        setIsRestoringSession(false); // 🔥 session ready
+        setIsRestoringSession(false);
+        setSessionSource(null);
       }
     };
  
-    loadMessages();
+    loadHistory();
   }, [currentSessionId]);
  
- 
-  /* ----------------------------
-     LOAD OLDER MESSAGES (PAGINATION)
-  ---------------------------- */
+  /* =========================
+     PAGINATION (OLDER MESSAGES)
+  ========================== */
   const loadMoreMessages = async () => {
     if (!currentSessionId || !hasMore) return;
  
     try {
-      const olderMessages = await chatService.getMessages(
+      const older = await chatService.getMessages(
         currentSessionId,
         PAGE_SIZE,
         offset
       );
  
-      setMessages(prev => [...olderMessages, ...prev]);
-      setOffset(prev => prev + olderMessages.length);
-      setHasMore(olderMessages.length === PAGE_SIZE);
- 
- 
- 
-    } catch (err) {
-      console.error('Failed to load older messages', err);
+      setMessages(prev => [...older, ...prev]);
+      setOffset(prev => prev + older.length);
+      setHasMore(older.length === PAGE_SIZE);
+    } catch {
+      console.error("Pagination failed");
     }
   };
- 
  
   useEffect(() => {
     const handler = () => {
@@ -525,47 +464,19 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
     return () => window.removeEventListener("loadMoreMessages", handler);
   }, [hasMore, offset, currentSessionId]);
  
- 
- 
-  /* ----------------------------
-     NEW CHAT
-  ---------------------------- */
-  const handleNewChat = async () => {
-    try {
-      // 🔥 BACKEND ME NEW SESSION CREATE
- 
-      setCurrentSessionId(null);   // 🔥 VERY IMPORTANT
-      setMessages([]);             // 🔥 CLEAR UI
-      setOffset(0);
-      setHasMore(true);
-      // IMPORTANT: active session remove
-      localStorage.removeItem("active_session_id");
- 
-      // 🔄 refresh sidebar
-      const updatedSessions = await chatService.getSessions();
-      setSessions(updatedSessions);
-    } catch (err) {
-      console.error("Failed to create new chat", err);
-    }
-  };
- 
-  /* ----------------------------
-     SEND MESSAGE (CORE FIX)
-  ---------------------------- */
+  /* =========================
+     SEND MESSAGE
+  ========================== */
   const handleSendMessage = async (content: string) => {
     if (!content.trim() || !user) return;
  
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-      alert('Please login again');
-      return;
-    }
+    const token = localStorage.getItem("access_token");
+    if (!token) return;
  
-    // 👤 show user message instantly
     const userMsg: Message = {
-      request_id: 'user-' + Date.now(),
-      session_id: currentSessionId ?? '',
-      role: 'user',
+      request_id: `user-${Date.now()}`,
+      session_id: currentSessionId ?? "",
+      role: "user",
       content,
       created_at: new Date().toISOString(),
     };
@@ -573,46 +484,37 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
     setMessages(prev => [...prev, userMsg]);
     setIsTyping(true);
  
-    // 🤖 assistant placeholder
-    const assistantTempId = 'assistant-' + Date.now();
+    const assistantId = `assistant-${Date.now()}`;
     setMessages(prev => [
       ...prev,
       {
-        request_id: assistantTempId,
-        session_id: currentSessionId ?? '',
-        role: 'assistant',
-        content: '',
+        request_id: assistantId,
+        session_id: currentSessionId ?? "",
+        role: "assistant",
+        content: "",
         created_at: new Date().toISOString(),
       },
     ]);
  
-    try {
-      let fullResponse = '';
+    let fullResponse = "";
  
+    try {
       await chatService.sendChatMessageStreaming(
         token,
-        currentSessionId, //  SAME session id reuse hoti hai
+        currentSessionId,
         content,
-        (chunk) => {
+        chunk => {
           fullResponse += chunk;
- 
           setMessages(prev =>
             prev.map(m =>
-              m.request_id === assistantTempId
+              m.request_id === assistantId
                 ? { ...m, content: fullResponse }
                 : m
             )
           );
         },
-        // (newSessionId) => {
-        //   // 🔑 ONLY FIRST MESSAGE ME SAVE HOGA
-        //   setCurrentSessionId(prev => prev ?? newSessionId);
-        //   //  // FIRST MESSAGE KE BAAD HI SESSION SAVE HOGA
-        //   // if (!currentSessionId) {
-        //   // localStorage.setItem("active_session_id", newSessionId);
-        //   // }
-        // }
-        (newSessionId) => {
+        newSessionId => {
+          setSessionSource("send"); // 🔥 KEY FIX
           setCurrentSessionId(prev => {
             if (!prev) {
               localStorage.setItem("active_session_id", newSessionId);
@@ -621,19 +523,14 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
             return prev;
           });
         }
-       
- 
       );
  
-      // 🔄 refresh sidebar
-      const updatedSessions = await chatService.getSessions();
-      setSessions(updatedSessions);
- 
-    } catch (err) {
+      setSessions(await chatService.getSessions());
+    } catch {
       setMessages(prev =>
         prev.map(m =>
-          m.request_id === assistantTempId
-            ? { ...m, content: 'Error connecting to backend' }
+          m.request_id === assistantId
+            ? { ...m, content: "Error generating response" }
             : m
         )
       );
@@ -642,9 +539,20 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
     }
   };
  
-  /* ----------------------------
+  /* =========================
+     NEW CHAT
+  ========================== */
+  const handleNewChat = () => {
+    setCurrentSessionId(null);
+    setMessages([]);
+    setOffset(0);
+    setHasMore(true);
+    localStorage.removeItem("active_session_id");
+  };
+ 
+  /* =========================
      DELETE CHAT
-  ---------------------------- */
+  ========================== */
   const handleDeleteChat = (sessionId: string) => {
     confirmToast("Delete this chat?", async () => {
       try {
@@ -655,20 +563,22 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
         );
  
         if (currentSessionId === sessionId) {
-          setCurrentSessionId(null);
-          setMessages([]);
+          handleNewChat();
         }
  
         toast.success("Chat deleted");
-      } catch (err) {
-        console.error("Delete failed", err);
-        toast.error("Unable to delete chat");
+      } catch {
+        toast.error("Delete failed");
       }
     });
   };
  
+  /* =========================
+     RENDER
+  ========================== */
   return (
     <div className="flex h-screen overflow-hidden">
+      <ToastContainer />
  
       <Sidebar
         chats={sessions.map(s => ({
@@ -676,116 +586,44 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
           title: s.session_title,
         }))}
         currentChatId={currentSessionId}
-        // onSelectChat={(id) => setCurrentSessionId(id)}
         onSelectChat={(id) => {
-          setIsRestoringSession(true);   // 🔥 ADD THIS
+          if (id === currentSessionId) return;
+          setSessionSource("sidebar");
+          setIsRestoringSession(true);
           setCurrentSessionId(id);
-          localStorage.setItem("active_session_id", id); //
-          //SAVE
+          localStorage.setItem("active_session_id", id);
         }}
- 
         onNewChat={handleNewChat}
         onDeleteChat={handleDeleteChat}
         isOpen={isSidebarOpen}
         toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
         onLogout={onLogout}
-        user={profileUser} // changes
-        onEditProfile={() => setShowEditProfile(true)} // changes1
+        user={profileUser}
+        onEditProfile={() => setShowEditProfile(true)}
+
       />
  
- 
-      {/* <ChatWindow
-        chat={{
-          id: currentSessionId ?? 'new',
-          messages,
-        }}
+      {showEditProfile ? (
+      <EditProfileUI
+        onClose={() => setShowEditProfile(false)}
+        onProfileUpdated={(updatedUser) => setProfileUser(updatedUser)}
+      />
+    ) : isRestoringSession ? (
+      <div className="flex-1 bg-[#0f0f0f]" />
+    ) : (
+      <ChatWindow
+        chat={
+          currentSessionId || messages.length > 0
+            ? { id: currentSessionId ?? "new", messages }
+            : undefined
+        }
         onSendMessage={handleSendMessage}
         isTyping={isTyping}
         isSidebarOpen={isSidebarOpen}
-        hasMore={hasMore}                 // 👈 MUST
-        onLoadMore={loadMoreMessages}     // 👈 MUST
-      /> */}
- 
-      {showEditProfile ? (
-        <EditProfileUI
-          onClose={() => setShowEditProfile(false)}
-          onProfileUpdated={(updatedUser) => setProfileUser(updatedUser)}
-        />
-      ) : isRestoringSession ? (
-        // 🖤 BLANK SCREEN DURING RESTORE (NO HOME FLASH)
-        <div className="flex-1 bg-[#0f0f0f]" />
-      // ) : (
-      //   <ChatWindow
-      //     key={currentSessionId ?? 'new-chat'}
-      //     chat={
-      //       currentSessionId
-      //         ? { id: currentSessionId, messages }
-      //         : undefined
-      //     }
-      //     onSendMessage={handleSendMessage}
-      //     isTyping={isTyping}
-      //     isSidebarOpen={isSidebarOpen}
-      //   />
-      // )
-    ) : (() => {
-      const shouldShowChat =
-        currentSessionId !== null || messages.length > 0;
- 
-      return (
-        <ChatWindow
-          key={currentSessionId ?? 'new-chat'}
-          chat={
-            shouldShowChat
-              ? { id: currentSessionId ?? 'new', messages }
-              : undefined
-          }
-          onSendMessage={handleSendMessage}
-          isTyping={isTyping}
-          isSidebarOpen={isSidebarOpen}
-        />
-      );
-  })()
- 
-    }
- 
- 
-      {/* {showEditProfile ? (
-  <EditProfileUI
-  onClose={() => setShowEditProfile(false)}
-  onProfileUpdated={(updatedUser) => setProfileUser(updatedUser)}
-   />
-) : (
-//   <ChatWindow
-//   key={currentSessionId ?? 'new-chat'} // 🔥 MAGIC LINE
-//   chat={{
-//     id: currentSessionId ?? 'new',
-//     messages,
-//   }}
-//   onSendMessage={handleSendMessage}
-//   isTyping={isTyping}
-//   isSidebarOpen={isSidebarOpen}
-// />
-<ChatWindow
-  key={currentSessionId ?? 'new-chat'}
-  chat={
-    currentSessionId
-      ? { id: currentSessionId, messages }
-      : undefined
-  }
-  onSendMessage={handleSendMessage}
-  isTyping={isTyping}
-  isSidebarOpen={isSidebarOpen}
-/>
- 
- 
- 
- 
-)} */}
- 
- 
- 
- 
+      />
+    )}
     </div>
   );
 };
+ 
  

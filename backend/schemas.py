@@ -60,6 +60,17 @@ class ResetPasswordRequest(BaseModel):
     new_password: str
 
 
+class PropertyCreateRequest(BaseModel):
+    title: str
+    city: str
+    locality: Optional[str] = None
+    purpose: str               # "rent" or "buy"
+    price: int
+    bhk: int
+    area_sqft: int
+    is_legal: bool
+    owner_name: str
+    contact_phone: str
 # --------------------
 # UPDATE PROFILE
 # --------------------
