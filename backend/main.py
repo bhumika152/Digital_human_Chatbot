@@ -2,7 +2,11 @@ from fastapi import Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 import property
-from constants.logging_config import setup_logging
+from logging_config import setup_logging
+from dotenv import load_dotenv
+
+
+load_dotenv()
 setup_logging()
  
 import logging
