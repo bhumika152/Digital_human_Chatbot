@@ -4,18 +4,13 @@ from pathlib import Path
 from datetime import date
 import os
 
-# --------------------------------------------------
-# SERVICE IDENTITY
-# --------------------------------------------------
-SERVICE_NAME = os.getenv("SERVICE_NAME", "digital-human")
+SERVICE_NAME = os.getenv("SERVICE_NAME", "backend")
 
-# --------------------------------------------------
-# PATH SETUP
-# --------------------------------------------------
-BASE_DIR = Path(__file__).resolve().parents[3]
+# ✅ REPO ROOT (backend is ONE level below repo)
+REPO_ROOT = Path(__file__).resolve().parents[1]
+
 TODAY = date.today().isoformat()
-
-LOG_DIR = BASE_DIR / "logs" / SERVICE_NAME / TODAY
+LOG_DIR = REPO_ROOT / "logs" / SERVICE_NAME / TODAY
 LOG_DIR.mkdir(parents=True, exist_ok=True)
 
 APP_LOG = LOG_DIR / "app.log"
@@ -24,6 +19,8 @@ ERROR_LOG = LOG_DIR / "error.log"
 
 
 def setup_logging():
+    print("🔥 BACKEND LOG_DIR =", LOG_DIR)  # TEMP: verify
+
     formatter = logging.Formatter(
         "%(asctime)s | %(levelname)s | %(name)s | "
         f"{SERVICE_NAME} | %(message)s"
@@ -31,8 +28,6 @@ def setup_logging():
 
     root = logging.getLogger()
     root.setLevel(logging.DEBUG)
-
-    # 🔥 VERY IMPORTANT
     root.handlers.clear()
 
     def handler(path, level):
