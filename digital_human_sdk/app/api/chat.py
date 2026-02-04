@@ -5,7 +5,7 @@ import json
 import logging
 import time
 
-from digital_human_sdk.app.orchestrator import run_digital_human_chat
+from app.orchestrator import run_digital_human_chat
 
 router = APIRouter(prefix="/v1/chat", tags=["digital-human"])
 

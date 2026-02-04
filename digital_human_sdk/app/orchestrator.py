@@ -169,8 +169,47 @@ User message:
         except Exception:
             logger.exception("❌ Memory write failed")
 
+    # # --------------------------------------------------
+    # # 6️⃣ TOOL EXECUTION (GENERIC)
+    # # --------------------------------------------------
+    # tool_context = {}
+
+    # if router_decision.get("use_tool"):
+    #     try:
+    #         logger.info("🛠️ Tool execution started")
+
+    #         tool_raw = await Runner.run(
+    #             tool_agent,
+    #             router_input,
+    #             context=context,
+    #             max_turns=1,
+    #         )
+
+    #         tool_payload = safe_json_loads(tool_raw.final_output, default={})
+    #         logger.info("🛠️ Tool payload: %s", tool_payload)
+
+    #         tool_name = tool_payload.get("tool")
+    #         tool_arguments = tool_payload.get("arguments", {})
+
+    #         # 🔐 JWT injection (generic)
+    #         if context and hasattr(context, "auth_token"):
+    #             tool_arguments["auth_token"] = context.auth_token
+
+    #         tool_context = ToolExecutor.execute(
+    #             tool_name,
+    #             tool_arguments,
+    #         )
+
+    #         if hasattr(tool_context, "model_dump"):
+    #             tool_context = tool_context.model_dump()
+
+    #         logger.info("🛠️ Tool response: %s", tool_context)
+
+    #     except Exception:
+    #         logger.exception("❌ Tool execution failed")
+        #         tool_context = {"error": "Tool execution failed"}
     # --------------------------------------------------
-    # 6️⃣ TOOL EXECUTION
+    # 6️⃣ TOOL EXECUTION (SMART PROPERTY FLOW)
     # --------------------------------------------------
     tool_context = {}
 
@@ -191,9 +230,22 @@ User message:
             tool_name = tool_payload.get("tool")
             tool_arguments = tool_payload.get("arguments", {})
 
+            # 🔐 JWT injection
             if context and hasattr(context, "auth_token"):
                 tool_arguments["auth_token"] = context.auth_token
 
+            # 🏠 PROPERTY ADD FLOW (INTERCEPT)
+            if tool_name == "property" and tool_arguments.get("action") == "add":
+                handled = handle_property_add_flow(
+                    context=context,
+                    tool_arguments=tool_arguments,
+                    
+                )
+                if handled:
+                    yield handled
+                    return
+
+            # 🔁 Normal tool execution
             tool_context = ToolExecutor.execute(
                 tool_name,
                 tool_arguments,
