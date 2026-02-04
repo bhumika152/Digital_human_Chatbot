@@ -5,13 +5,13 @@ from typing import Any, Optional
 from agents import Runner
 from openai.types.responses import ResponseTextDeltaEvent
 
-from app.intelligence.safety.safety_agent import safe_agent
-from app.intelligence.our_agents.router_agent import router_agent
-from app.intelligence.our_agents.memory_agent import memory_agent
-from app.intelligence.our_agents.tool_agent import tool_agent
-from app.intelligence.our_agents.reasoning_agent import reasoning_agent
-from app.intelligence.tools.tool_executor import ToolExecutor
-from app.intelligence.utils.json_utils import safe_json_loads
+from digital_human_sdk.app.intelligence.safety.safety_agent import safe_agent
+from digital_human_sdk.app.intelligence.our_agents.router_agent import router_agent
+from digital_human_sdk.app.intelligence.our_agents.memory_agent import memory_agent
+from digital_human_sdk.app.intelligence.our_agents.tool_agent import tool_agent
+from digital_human_sdk.app.intelligence.our_agents.reasoning_agent import reasoning_agent
+from digital_human_sdk.app.intelligence.tools.tool_executor import ToolExecutor
+from digital_human_sdk.app.intelligence.utils.json_utils import safe_json_loads
 
 try:
     from agents.exceptions import GuardrailTripwire
@@ -38,7 +38,7 @@ async def run_digital_human_chat(
     # --------------------------------------------------
     # 1️⃣ USER INPUT
     # --------------------------------------------------
-    logger.info("🔥 Orchestrator started")
+    logger.info("🔥 LOG TEST: orchestrator started")
 
     user_input = next(
         msg["content"]
@@ -48,6 +48,15 @@ async def run_digital_human_chat(
 
     router_input = user_input
 
+    if getattr(context, "router_context", None):
+        router_input = f"""
+Conversation context:
+{context.router_context}
+
+User message:
+{user_input}
+""".strip()
+
     logger.info("🧑 USER_INPUT | %s", user_input)
     logger.info(
         "🧩 CONTEXT | user_id=%s | enable_memory=%s",
@@ -56,7 +65,7 @@ async def run_digital_human_chat(
     )
 
     # --------------------------------------------------
-    # 2️⃣ MEMORY READ (ALWAYS UPSTREAM)
+    # 2️⃣ MEMORY READ
     # --------------------------------------------------
     memory_data = []
     memory_found = False
@@ -95,10 +104,7 @@ async def run_digital_human_chat(
     router_decision = {
         "use_tool": False,
         "use_memory": False,
-        "tool_name": "none",
-        "tool_arguments": None,
         "intent": "none",
-        "memory_key": None,
     }
 
     try:
@@ -132,7 +138,7 @@ async def run_digital_human_chat(
         logger.exception("❌ Router failed")
 
     # --------------------------------------------------
-    # 5️⃣ MEMORY WRITE (ONLY IF ROUTER ASKS)
+    # 5️⃣ MEMORY WRITE
     # --------------------------------------------------
     if (
         router_decision.get("use_memory")
@@ -164,7 +170,7 @@ async def run_digital_human_chat(
             logger.exception("❌ Memory write failed")
 
     # --------------------------------------------------
-    # 6️⃣ TOOL EXECUTION (GENERIC)
+    # 6️⃣ TOOL EXECUTION
     # --------------------------------------------------
     tool_context = {}
 
@@ -185,7 +191,6 @@ async def run_digital_human_chat(
             tool_name = tool_payload.get("tool")
             tool_arguments = tool_payload.get("arguments", {})
 
-            # 🔐 JWT injection (generic)
             if context and hasattr(context, "auth_token"):
                 tool_arguments["auth_token"] = context.auth_token
 

@@ -3,7 +3,7 @@ from .implementations import (
     browser_search_tool,
     serpapi_search_tool,
     math_tool,
-    property_tool,   # 👈 ADD
+    property_tool,  
 )
 
 TOOL_REGISTRY = {
@@ -11,7 +11,7 @@ TOOL_REGISTRY = {
     "calculator": math_tool,
     "web_search": serpapi_search_tool,
     "browser": browser_search_tool,
-    "property": property_tool,   # 👈 ADD
+    "property": property_tool,   
 }
 
  

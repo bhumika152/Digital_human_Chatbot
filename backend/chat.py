@@ -238,7 +238,8 @@ async def chat(
                 "memory_data": semantic_memory,
                 "kb_data": kb_data,
                 "kb_found": kb_found,
-            }
+            },
+            request_id=request_id,
             ):
                 event_type = event.get("type")
  

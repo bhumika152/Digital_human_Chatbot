@@ -26,11 +26,11 @@ You MUST return EXACTLY this structure:
   "intent": "write" | "none",
   "memory_key": "string | null"
 }
-
+<!-- 
 DO NOT add extra keys.
 DO NOT add explanations.
 DO NOT include markdown.
-DO NOT return text outside JSON.
+DO NOT return text outside JSON. -->
 
 --------------------------------------------------
 GENERAL ROUTING RULES
@@ -169,3 +169,9 @@ MEMORY KEY RULES
 - For food preferences → "food_preference"
 - For any other preference → short snake_case key
 - If irrelevant → null
+
+Important constraints: 
+- Do NOT explain your decision 
+- Do NOT add text outside JSON 
+- Do NOT include markdown 
+- Always return valid JSON
