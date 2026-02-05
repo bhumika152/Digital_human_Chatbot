@@ -107,7 +107,7 @@ def signup_help():
 def login(data: LoginRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == data.email).first()
     if not user:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        raise HTTPException(status_code=401, detail="User not found")
  
     if not bcrypt.checkpw(
         data.password.encode(),

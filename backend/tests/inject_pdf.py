@@ -1,32 +1,34 @@
+# backend/scripts/ingest_single_pdf.py
+
 from pathlib import Path
 from database import SessionLocal
 from services.admin_knowledgeBase.kb_ingestion import ingest_policy_pdf
 
 POLICY_DIR = Path("documents/policy_pdfs")
 
+# 🔴 EXACT PDF NAME HERE
+TARGET_PDF_NAME = "FTP2023_Chapter03.pdf"
+
 def main():
     db = SessionLocal()
 
     try:
-        pdfs = list(POLICY_DIR.glob("*.pdf"))
+        pdf_path = POLICY_DIR / TARGET_PDF_NAME
 
-        if not pdfs:
-            print("❌ No PDFs found")
+        if not pdf_path.exists():
+            print(f"❌ PDF not found: {TARGET_PDF_NAME}")
             return
 
-        print(f"📥 Found {len(pdfs)} PDFs\n")
+        print(f"📥 Ingesting ONLY: {pdf_path.name}")
 
-        for pdf in pdfs:
-            print(f"➡️ Ingesting: {pdf.name}")
+        ingest_policy_pdf(
+            db=db,
+            file_path=pdf_path,
+            document_type="POLICY",
+            industry="fintech",
+        )
 
-            ingest_policy_pdf(
-                db=db,
-                file_path=pdf,
-                document_type="POLICY",
-                industry="fintech",
-            )
-
-        print("\n✅ PDF injection completed")
+        print("✅ PDF injection completed")
 
     finally:
         db.close()

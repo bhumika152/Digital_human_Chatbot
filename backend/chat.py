@@ -190,7 +190,7 @@ async def chat(
     
     semantic_memory = MemoryService.read(
         user_id=user_id,
-        query=router_context,
+        query=user_text,
         limit=3,
     )
 
