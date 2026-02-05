@@ -38,18 +38,15 @@ def browser_search_tool(params: dict):
         "html_length": len(r.text)
     }
  
-# ---------------- SERPAPI SEARCH ----------------
 def serpapi_search_tool(params: dict):
     query = params.get("query")
     api_key = os.getenv("SERPAPI_API_KEY")
- 
+
     if not api_key:
         return {"error": "SERPAPI_API_KEY not set"}
- 
-    url = "https://serpapi.com/search.json"
- 
+
     r = requests.get(
-        url,
+        "https://serpapi.com/search.json",
         params={
             "q": query,
             "engine": "google",
@@ -58,22 +55,23 @@ def serpapi_search_tool(params: dict):
         },
         timeout=10
     )
- 
+
     data = r.json()
- 
-    # Normalize output
-    results = []
+
+    response = []
     for item in data.get("organic_results", []):
-        results.append({
-            "title": item.get("title"),
-            "link": item.get("link"),
-            "snippet": item.get("snippet")
-        })
- 
+        title = item.get("title")
+        link = item.get("link")
+        snippet = item.get("snippet")
+
+        response.append(
+            f"🔗 **[{title}]({link})**\n{snippet}\n"
+        )
+
     return {
-        "query": query,
-        "results": results
+        "answer": "\n".join(response)
     }
+
  
  
 # ---------------- MATH ----------------

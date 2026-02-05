@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from dotenv import load_dotenv
-from digital_human_sdk.app.intelligence.logging_config import setup_logging
+
+from app.api.chat import router as chat_router
+from app.intelligence.logging_config import setup_logging
 
 load_dotenv()
 setup_logging()   # 👈 MUST be called BEFORE app starts
