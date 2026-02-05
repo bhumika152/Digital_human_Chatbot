@@ -113,7 +113,14 @@ useEffect(() => {
              
   {/* 💬 CHAT MESSAGES */}
   {chat.messages.map((message) => (
-    <div key={message.request_id} className="flex gap-4">
+    // <div key={message.request_id} className="flex gap-4">
+    <div
+  key={message.request_id}
+  className={`flex gap-4 ${
+    message.role === "user" ? "justify-end" : "justify-start"
+  }`}
+>
+
       <div
         className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
           message.role === 'user' ? 'bg-indigo-600' : 'bg-emerald-600'
@@ -130,11 +137,19 @@ useEffect(() => {
         )}
       </div>
  
-      <div className="flex-1 space-y-1 overflow-hidden">
+      {/* <div className="flex-1 space-y-1 overflow-hidden"> */}
+      <div className="flex flex-col max-w-[80%]">
+
         <div className="font-bold text-sm uppercase tracking-wide text-[#b4b4b4]">
           {message.role === 'user' ? 'You' : 'Assistant'}
         </div>
-        <div className="text-base text-[#ececec] leading-relaxed prose prose-invert max-w-none">
+        {/* <div className="text-base text-[#ececec] leading-relaxed prose prose-invert max-w-none"> */}
+        <div
+  className={`text-base text-[#ececec] leading-relaxed prose prose-invert px-4 py-2 rounded-2xl bg-[#1e1e1e] ${
+    message.role === "user" ? "ml-auto" : ""
+  }`}
+>
+
   {message.content ? (
     <ReactMarkdown remarkPlugins={[remarkGfm]}>
       {message.content}
