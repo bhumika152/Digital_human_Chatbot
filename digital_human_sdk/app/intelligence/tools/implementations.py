@@ -78,7 +78,6 @@ def serpapi_search_tool(params: dict):
 
     r = requests.get(
         "https://serpapi.com/search.json",
-        "https://serpapi.com/search.json",
         params={
             "q": query,
             "engine": "google",

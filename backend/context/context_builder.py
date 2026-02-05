@@ -39,7 +39,7 @@ class ContextBuilder:
         if summary:
             messages.append({
                 "role": "system",
-                "content": f"Conversation summary:\n{summary}"
+                "content": f"Compressed conversation so far:\n{summary}"
             })
  
         # 3️⃣ Recent messages

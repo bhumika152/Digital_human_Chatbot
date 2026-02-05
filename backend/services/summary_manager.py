@@ -11,26 +11,31 @@ import logging
 logger = logging.getLogger("session_summary")
 
 SUMMARY_PROMPT = """
-You are a memory compression system.
+You are a conversation compression engine.
 
 TASK:
-Update the existing conversation summary using the new dialogue below.
+Produce a SHORTER version of the conversation so far by
+merging the existing summary with the new dialogue.
 
 RULES:
-- Preserve facts, decisions, preferences, and open tasks
-- Preserve key events and discussion topics
-- Remove chit-chat and repetition
-- Do NOT invent new information
-- Keep the summary concise and factual
+- Preserve ALL important topics discussed
+- Preserve user questions and assistant answers in brief form
+- Preserve decisions, plans, and conclusions
+- Remove repetition, filler, and chit-chat
+- DO NOT drop entire topics unless trivial
+- DO NOT invent new information
 
-EXISTING SUMMARY:
+INPUTS:
+
+PREVIOUS SUMMARY:
 {old_summary}
 
-NEW DIALOGUE:
+NEW CONVERSATION CHUNK:
 {dialogue}
 
 OUTPUT:
-Updated summary only.
+A concise merged summary representing the full conversation so far.
+
 """
 
 

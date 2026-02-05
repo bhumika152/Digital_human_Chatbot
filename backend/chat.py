@@ -144,6 +144,7 @@ async def chat(
         session_id=session.session_id,
         role="user",
         content=user_text,
+        is_summarized=False,
         )
     )
     db.commit()
@@ -303,13 +304,15 @@ async def chat(
                     session_id=session.session_id,
                     role="assistant",
                     content=full_response,
+                    is_summarized=False,   
                 )
             )
             db_final.commit()
- 
+
+            
             from services.summary_manager import maybe_update_summary
             maybe_update_summary(db_final, session.session_id)
- 
+
             elapsed = round(time.perf_counter() - start_time, 2)
             logger.info(
                 "✅ Stream complete | tokens=%s | time=%ss",
