@@ -3,7 +3,35 @@ import requests
 from dotenv import load_dotenv
 load_dotenv()
 import math
- 
+from bs4 import BeautifulSoup
+from urllib.parse import urlparse
+import re
+
+
+def fetch_page_content(url: str, max_chars: int = 3000) -> str:
+    try:
+        headers = {
+            "User-Agent": "Mozilla/5.0 (DigitalHumanBot/1.0)"
+        }
+        r = requests.get(url, headers=headers, timeout=8)
+
+        if r.status_code != 200:
+            return ""
+
+        soup = BeautifulSoup(r.text, "html.parser")
+
+        # Remove scripts/styles
+        for tag in soup(["script", "style", "noscript"]):
+            tag.decompose()
+
+        text = soup.get_text(separator=" ")
+        text = re.sub(r"\s+", " ", text).strip()
+
+        return text[:max_chars]
+
+    except Exception:
+        return ""
+    
 # ---------------- WEATHER ----------------
 def weather_tool(params: dict):
     city = params.get("city")
@@ -37,13 +65,16 @@ def browser_search_tool(params: dict):
         "query": query,
         "html_length": len(r.text)
     }
- 
+
+# ---------------- SERPAPI SEARCH ----------------
 def serpapi_search_tool(params: dict):
     query = params.get("query")
     api_key = os.getenv("SERPAPI_API_KEY")
 
+
     if not api_key:
         return {"error": "SERPAPI_API_KEY not set"}
+
 
     r = requests.get(
         "https://serpapi.com/search.json",
@@ -51,26 +82,32 @@ def serpapi_search_tool(params: dict):
             "q": query,
             "engine": "google",
             "api_key": api_key,
-            "num": 5
+            "num": 10
         },
         timeout=10
     )
 
+
     data = r.json()
 
-    response = []
-    for item in data.get("organic_results", []):
-        title = item.get("title")
-        link = item.get("link")
-        snippet = item.get("snippet")
+    enriched_results = []
 
-        response.append(
-            f"🔗 **[{title}]({link})**\n{snippet}\n"
-        )
+    for item in data.get("organic_results", [])[:10]:
+        link = item.get("link")
+        content = fetch_page_content(link)
+
+        enriched_results.append({
+            "title": item.get("title"),
+            "link": link,
+            "snippet": item.get("snippet"),
+            "content": content
+        })
 
     return {
-        "answer": "\n".join(response)
+        "query": query,
+        "results": enriched_results
     }
+
 
  
  

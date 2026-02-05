@@ -44,6 +44,11 @@ def save_message(
     )
     db.add(msg)
     db.commit()
+
+    maybe_update_summary(db, session_id)
+
+    return msg
+
    
     
 def get_recent_messages(
