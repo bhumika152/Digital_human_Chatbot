@@ -71,10 +71,13 @@ def serpapi_search_tool(params: dict):
     query = params.get("query")
     api_key = os.getenv("SERPAPI_API_KEY")
 
+
     if not api_key:
         return {"error": "SERPAPI_API_KEY not set"}
 
+
     r = requests.get(
+        "https://serpapi.com/search.json",
         "https://serpapi.com/search.json",
         params={
             "q": query,
@@ -84,6 +87,7 @@ def serpapi_search_tool(params: dict):
         },
         timeout=10
     )
+
 
     data = r.json()
 
@@ -104,6 +108,7 @@ def serpapi_search_tool(params: dict):
         "query": query,
         "results": enriched_results
     }
+
 
  
  
