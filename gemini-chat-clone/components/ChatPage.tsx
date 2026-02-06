@@ -373,6 +373,8 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
     });
  
   const [messages, setMessages] = useState<Message[]>([]);
+  const loadedIdsRef = React.useRef<Set<string>>(new Set());
+
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
@@ -420,7 +422,15 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
           0
         );
  
-        setMessages(history);
+        // setMessages(history);
+        setMessages(() => {
+  loadedIdsRef.current.clear(); // naya session ya fresh load
+
+  history.forEach(m => loadedIdsRef.current.add(m.request_id));
+
+  return history;
+});
+
         setOffset(history.length);
         setHasMore(history.length === PAGE_SIZE);
       } catch {
@@ -447,7 +457,15 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
         offset
       );
  
-      setMessages(prev => [...older, ...prev]);
+      // setMessages(prev => [...older, ...prev]);
+      setMessages(prev => {
+  const uniqueOlder = older.filter(m => !loadedIdsRef.current.has(m.request_id));
+
+  uniqueOlder.forEach(m => loadedIdsRef.current.add(m.request_id));
+
+  return [...uniqueOlder, ...prev];
+});
+
       setOffset(prev => prev + older.length);
       setHasMore(older.length === PAGE_SIZE);
     } catch {
@@ -480,11 +498,12 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
       content,
       created_at: new Date().toISOString(),
     };
- 
+    loadedIdsRef.current.add(userMsg.request_id);   // ✅ TRACK USER MSG
     setMessages(prev => [...prev, userMsg]);
     setIsTyping(true);
- 
+    
     const assistantId = `assistant-${Date.now()}`;
+    loadedIdsRef.current.add(assistantId);          // ✅ TRACK ASSISTANT MSG
     setMessages(prev => [
       ...prev,
       {
@@ -505,13 +524,37 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
         content,
         chunk => {
           fullResponse += chunk;
-          setMessages(prev =>
-            prev.map(m =>
-              m.request_id === assistantId
-                ? { ...m, content: fullResponse }
-                : m
-            )
-          );
+          // setMessages(prev =>
+          //   prev.map(m =>
+          //     m.request_id === assistantId
+          //       ? { ...m, content: fullResponse }
+          //       : m
+          //   )
+          // );
+          setMessages(prev => {
+  const exists = prev.some(m => m.request_id === assistantId);
+
+  if (!exists) {
+    // If somehow missing, add it back instead of creating duplicate later
+    return [
+      ...prev,
+      {
+        request_id: assistantId,
+        session_id: currentSessionId ?? "",
+        role: "assistant",
+        content: fullResponse,
+        created_at: new Date().toISOString(),
+      }
+    ];
+  }
+
+  return prev.map(m =>
+    m.request_id === assistantId
+      ? { ...m, content: fullResponse }
+      : m
+  );
+});
+
         },
         newSessionId => {
           setSessionSource("send"); // 🔥 KEY FIX
