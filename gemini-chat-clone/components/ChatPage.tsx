@@ -505,13 +505,37 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
         content,
         chunk => {
           fullResponse += chunk;
-          setMessages(prev =>
-            prev.map(m =>
-              m.request_id === assistantId
-                ? { ...m, content: fullResponse }
-                : m
-            )
-          );
+          // setMessages(prev =>
+          //   prev.map(m =>
+          //     m.request_id === assistantId
+          //       ? { ...m, content: fullResponse }
+          //       : m
+          //   )
+          // );
+          setMessages(prev => {
+  const exists = prev.some(m => m.request_id === assistantId);
+
+  if (!exists) {
+    // If somehow missing, add it back instead of creating duplicate later
+    return [
+      ...prev,
+      {
+        request_id: assistantId,
+        session_id: currentSessionId ?? "",
+        role: "assistant",
+        content: fullResponse,
+        created_at: new Date().toISOString(),
+      }
+    ];
+  }
+
+  return prev.map(m =>
+    m.request_id === assistantId
+      ? { ...m, content: fullResponse }
+      : m
+  );
+});
+
         },
         newSessionId => {
           setSessionSource("send"); // 🔥 KEY FIX
