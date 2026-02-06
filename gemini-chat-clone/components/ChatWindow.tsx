@@ -144,27 +144,21 @@ useEffect(() => {
           {message.role === 'user' ? 'You' : 'Assistant'}
         </div>
         {/* <div className="text-base text-[#ececec] leading-relaxed prose prose-invert max-w-none"> */}
-        {/* <div
+        <div
   className={`text-base text-[#ececec] leading-relaxed prose prose-invert px-4 py-2 rounded-2xl bg-[#1e1e1e] ${
     message.role === "user" ? "ml-auto" : ""
   }`}
-> */}
+>
+
 {/* <div
   className={`
     text-base leading-relaxed prose prose-invert
     ${message.role === "assistant"
       ? "text-[#e6e6e6]"
-      : "px-4 py-2 rounded-2xl bg-indigo-600 text-white ml-auto"}
-  `}
-> */}
-<div
-  className={`
-    text-base leading-relaxed max-w-[75%]
-    ${message.role === "assistant"
-      ? "text-[#e6e6e6] bg-transparent p-0"
       : "px-4 py-2 rounded-2xl bg-[#1e1e1e] text-white ml-auto"}
   `}
->
+> */}
+
 
 
 
