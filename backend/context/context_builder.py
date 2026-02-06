@@ -45,7 +45,10 @@ class ContextBuilder:
         # 3️⃣ Recent messages
         recent_msgs = (
             db.query(ChatMessage)
-            .filter(ChatMessage.session_id == session_id)
+            .filter(
+                ChatMessage.session_id == session_id,
+                ChatMessage.is_summarized.is_(False)
+            )
             .order_by(ChatMessage.created_at.desc())
             .limit(MAX_RECENT_MESSAGES)
             .all()
