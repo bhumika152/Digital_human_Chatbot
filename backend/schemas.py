@@ -60,17 +60,17 @@ class ResetPasswordRequest(BaseModel):
     new_password: str
 
 
-class PropertyCreateRequest(BaseModel):
-    title: str
-    city: str
-    locality: Optional[str] = None
-    purpose: str               # "rent" or "buy"
-    price: int
-    bhk: int
-    area_sqft: int
-    is_legal: bool
-    owner_name: str
-    contact_phone: str
+# class PropertyCreateRequest(BaseModel):
+#     title: str
+#     city: str
+#     locality: Optional[str] = None
+#     purpose: str               # "rent" or "buy"
+#     price: int
+#     bhk: int
+#     area_sqft: int
+#     is_legal: bool
+#     owner_name: str
+#     contact_phone: str
 # --------------------
 # UPDATE PROFILE
 # --------------------
@@ -146,25 +146,86 @@ class PropertyResponse(BaseModel):
 #     owner_name: str
 #     contact_phone: str
 
-class PropertySearchRequest(BaseModel):
-    city: str
-    purpose: Optional[str] = None
-    max_budget: int
-    bhk: Optional[int] = None
-    locality: Optional[str] = None
+# class PropertySearchRequest(BaseModel):
+#     city: str
+#     purpose: Optional[str] = None
+#     max_budget: int
+#     bhk: Optional[int] = None
+#     locality: Optional[str] = None
 
-class PropertyCreateRequest(BaseModel):
-    title: str
-    city: str
-    locality: Optional[str]=None
-    purpose: str
-    price: int
-    bhk: int
-    area_sqft: Optional[int] = None
-    is_legal: bool = True
-    owner_name: str
-    contact_phone: str
+# class PropertyCreateRequest(BaseModel):
+#     title: str
+#     city: str
+#     locality: Optional[str]=None
+#     purpose: str
+#     price: int
+#     bhk: int
+#     area_sqft: Optional[int] = None
+#     is_legal: bool = True
+#     owner_name: str
+#     contact_phone: str
  
+# class PropertyUpdateRequest(BaseModel):
+#     title: Optional[str] = None
+#     city: Optional[str] = None
+#     locality: Optional[str] = None
+#     purpose: Optional[str] = None
+#     price: Optional[int] = None
+#     bhk: Optional[int] = None
+#     area_sqft: Optional[int] = None
+#     is_legal: Optional[bool] = None
+#     owner_name: Optional[str] = None
+#     contact_phone: Optional[str] = None
+from typing import Optional
+from pydantic import BaseModel, Field, model_validator
+
+
+# --------------------------------------------------
+# 🔍 PROPERTY SEARCH SCHEMA
+# --------------------------------------------------
+class PropertySearchRequest(BaseModel):
+    city: Optional[str] = Field(default=None)
+    purpose: Optional[str] = Field(default=None)  # rent | buy
+    budget: Optional[int] = Field(default=None)
+
+    @model_validator(mode="after")
+    def validate_required_fields(self):
+        missing = []
+
+        if not self.city:
+            missing.append("city")
+        if not self.purpose:
+            missing.append("purpose")
+        if self.budget is None:
+            missing.append("budget")
+
+        if missing:
+            raise ValueError(
+                f"Missing required fields: {', '.join(missing)}"
+            )
+
+        return self
+
+
+# --------------------------------------------------
+# ➕ PROPERTY CREATE SCHEMA
+# --------------------------------------------------
+class PropertyCreateRequest(BaseModel):
+    title: Optional[str] = None
+    city: Optional[str] = None
+    locality: Optional[str] = None
+    purpose: Optional[str] = None  # rent | buy
+    price: Optional[int] = None
+    bhk: Optional[int] = None
+    area_sqft: Optional[int] = None
+    is_legal: Optional[bool] = None
+    owner_name: Optional[str] = None
+    contact_phone: Optional[str] = None
+
+
+# --------------------------------------------------
+# ✏️ PROPERTY UPDATE SCHEMA
+# --------------------------------------------------
 class PropertyUpdateRequest(BaseModel):
     title: Optional[str] = None
     city: Optional[str] = None
@@ -176,4 +237,3 @@ class PropertyUpdateRequest(BaseModel):
     is_legal: Optional[bool] = None
     owner_name: Optional[str] = None
     contact_phone: Optional[str] = None
- 

@@ -319,8 +319,10 @@ from app.intelligence.our_agents.router_agent import router_agent
 from app.intelligence.our_agents.memory_agent import memory_agent
 from app.intelligence.our_agents.tool_agent import tool_agent
 from app.intelligence.our_agents.reasoning_agent import reasoning_agent
+from app.intelligence.tools.property_contract import PROPERTY_ACTION_CONTRACT
 from app.intelligence.tools.tool_executor import ToolExecutor
 from app.intelligence.utils.json_utils import safe_json_loads
+from app.intelligence.tools.property_contract import get_missing_fields
 
 try:
     from agents.exceptions import GuardrailTripwire
@@ -465,12 +467,7 @@ User message:
         try:
             mem_raw = await Runner.run(
                 memory_agent,
-                json.dumps(
-                    {
-                        "user_input": user_input,
-                        "existing_memory": memory_data,
-                    }
-                ),
+                router_input,
                 context=context,
                 max_turns=1,
             )
@@ -512,15 +509,184 @@ User message:
     logger.info("🧠 Tool input enriched with memory")
 
 
+    # # --------------------------------------------------
+    # # 6️⃣ TOOL EXECUTION
+    # # --------------------------------------------------
+    # tool_context = {}
+
+    # if router_decision.get("use_tool"):
+    #     try:
+    #         logger.info("🛠️ Tool execution started")
+
+    #         tool_raw = await Runner.run(
+    #             tool_agent,
+    #             augmented_tool_input,
+    #             context=context,
+    #             max_turns=1,
+    #         )
+
+    #         tool_payload = safe_json_loads(tool_raw.final_output, default={})
+    #         logger.info("🛠️ Tool payload: %s", tool_payload)
+
+    #         tool_name = tool_payload.get("tool")
+    #         tool_arguments = tool_payload.get("arguments", {})
+
+    #         if context and hasattr(context, "auth_token"):
+    #             tool_arguments["auth_token"] = context.auth_token
+
+    #         tool_context = ToolExecutor.execute(
+    #             tool_name,
+    #             tool_arguments,
+    #         )
+
+    #         if hasattr(tool_context, "model_dump"):
+    #             tool_context = tool_context.model_dump()
+
+    #         logger.info("🛠️ Tool response: %s", tool_context)
+
+    #         # --------------------------------------------------
+    #         # 🔗 SAVE LAST BROWSED PAGE CONTEXT FOR FOLLOW-UPS
+    #         # --------------------------------------------------
+    #         if (
+    #             tool_name == "browser"
+    #             and isinstance(tool_context, dict)
+    #             and tool_context.get("content")
+    #         ):
+    #             context.router_context = f"""
+    #         Last browsed URL:
+    #         {tool_context.get("url")}
+
+    #         Extracted page content:
+    #         {tool_context.get("content")[:1200]}
+    #         """.strip()
+
+    #             logger.info("🧭 Saved router_context for follow-up queries")
+
+    #     except Exception:
+    #         logger.exception("❌ Tool execution failed")
+    #         tool_context = {"error": "Tool execution failed"}
+
     # --------------------------------------------------
-    # 6️⃣ TOOL EXECUTION
+    # 6️⃣ TOOL EXECUTION (FINAL + SAFE)
     # --------------------------------------------------
+
+    # tool_context = {}
+
+    # if router_decision.get("use_tool"):
+    #     try:
+    #         logger.info("🛠️ Tool execution started")
+
+    #         # ------------------------------
+    #         # 6.1 RUN TOOL AGENT (LLM → TOOL JSON)
+    #         # ------------------------------
+    #         tool_raw = await Runner.run(
+    #             tool_agent,
+    #             augmented_tool_input,
+    #             context=context,
+    #             max_turns=1,
+    #         )
+
+    #         tool_payload = safe_json_loads(tool_raw.final_output, default={})
+    #         logger.info("🛠️ Tool payload: %s", tool_payload)
+
+    #         tool_name = tool_payload.get("tool")
+    #         tool_arguments = tool_payload.get("arguments", {})
+
+    #         action = tool_arguments.get("action")
+    #         payload = tool_arguments.get("payload", {})
+
+    #         # ------------------------------
+    #         # 6.2 AUTH TOKEN INJECTION
+    #         # ------------------------------
+    #         if context and getattr(context, "auth_token", None):
+    #             tool_arguments["auth_token"] = context.auth_token
+
+    #         # ------------------------------
+    #         # 6.3 MISSING FIELD CHECK (🔥 CORE FIX)
+    #         # ------------------------------
+    #         if tool_name == "property":
+    #             missing_fields = get_missing_fields(
+    #                 PROPERTY_ACTION_CONTRACT,
+    #                 action,
+    #                 payload,
+    #             )
+
+    #             if missing_fields:
+    #                 # 🔒 Save pending state for follow-up
+    #                 context.pending_tool = f"{tool_name}.{action}"
+    #                 context.pending_payload = payload
+
+    #                 ask_message = PROPERTY_ACTION_CONTRACT[action]["ask_message"]
+
+    #                 logger.info(
+    #                     "🧩 Missing fields detected | action=%s | fields=%s",
+    #                     action,
+    #                     missing_fields,
+    #                 )
+
+    #                 yield {
+    #                     "type": "token",
+    #                     "value": (
+    #                         f"{ask_message} "
+    #                         f"{', '.join(missing_fields)}."
+    #                     ),
+    #                 }
+    #                 return  # ⛔ STOP – do NOT hit DB / API
+
+    #         # ------------------------------
+    #         # 6.4 EXECUTE TOOL (SAFE)
+    #         # ------------------------------
+    #         tool_context = ToolExecutor.execute(
+    #             tool_name,
+    #             tool_arguments,
+    #         )
+
+    #         if hasattr(tool_context, "model_dump"):
+    #             tool_context = tool_context.model_dump()
+
+    #         logger.info("🛠️ Tool response: %s", tool_context)
+
+    #         # ------------------------------
+    #         # 6.5 CLEAR PENDING STATE ON SUCCESS
+    #         # ------------------------------
+    #         if isinstance(tool_context, dict) and tool_context.get("success"):
+    #             context.pending_tool = None
+    #             context.pending_payload = {}
+
+    #         # ------------------------------
+    #         # 6.6 SAVE BROWSER CONTEXT (OPTIONAL)
+    #         # ------------------------------
+    #         if (
+    #             tool_name == "browser"
+    #             and isinstance(tool_context, dict)
+    #             and tool_context.get("content")
+    #         ):
+    #             context.router_context = f"""
+    # Last browsed URL:
+    # {tool_context.get("url")}
+
+    # Extracted page content:
+    # {tool_context.get("content")[:1200]}
+    # """.strip()
+
+    #             logger.info("🧭 Saved router_context for follow-up queries")
+
+    #     except Exception:
+    #         logger.exception("❌ Tool execution failed")
+    #         tool_context = {"error": "Tool execution failed"}
+    # --------------------------------------------------
+    # 6️⃣ TOOL EXECUTION (FINAL, SAFE, LOCKED)
+    # --------------------------------------------------
+
     tool_context = {}
 
     if router_decision.get("use_tool"):
         try:
             logger.info("🛠️ Tool execution started")
 
+            # -----------------------------------
+            # 6.1 Run tool agent
+            # -----------------------------------
             tool_raw = await Runner.run(
                 tool_agent,
                 augmented_tool_input,
@@ -534,9 +700,66 @@ User message:
             tool_name = tool_payload.get("tool")
             tool_arguments = tool_payload.get("arguments", {})
 
-            if context and hasattr(context, "auth_token"):
+            # -----------------------------------
+            # 6.2 PROPERTY FLOW LOCK
+            # -----------------------------------
+            if getattr(context, "pending_tool", None):
+                locked_tool, locked_action = context.pending_tool.split(".")
+
+                if tool_name == locked_tool:
+                    # 🔒 FORCE SAME ACTION
+                    tool_arguments["action"] = locked_action
+
+                    # 🔗 MERGE PAYLOAD
+                    old_payload = context.pending_payload or {}
+                    new_payload = tool_arguments.get("payload", {})
+
+                    merged_payload = {**old_payload, **new_payload}
+                    tool_arguments["payload"] = merged_payload
+
+                    logger.info(
+                        "🔒 Locked property flow | action=%s | payload=%s",
+                        locked_action,
+                        merged_payload,
+                    )
+
+            action = tool_arguments.get("action")
+            payload = tool_arguments.get("payload", {})
+
+            # -----------------------------------
+            # 6.3 AUTH TOKEN
+            # -----------------------------------
+            if getattr(context, "auth_token", None):
                 tool_arguments["auth_token"] = context.auth_token
 
+            # -----------------------------------
+            # 6.4 MISSING FIELD CHECK
+            # -----------------------------------
+            if tool_name == "property":
+                missing_fields = get_missing_fields(
+                    PROPERTY_ACTION_CONTRACT,
+                    action,
+                    payload,
+                )
+
+                if missing_fields:
+                    context.pending_tool = f"{tool_name}.{action}"
+                    context.pending_payload = payload
+
+                    ask_message = PROPERTY_ACTION_CONTRACT[action]["ask_message"]
+
+                    yield {
+                        "type": "token",
+                        "value": (
+                            f"{ask_message} "
+                            f"{', '.join(missing_fields)}."
+                        ),
+                    }
+                    return  # ⛔ STOP HERE
+
+            # -----------------------------------
+            # 6.5 EXECUTE TOOL
+            # -----------------------------------
             tool_context = ToolExecutor.execute(
                 tool_name,
                 tool_arguments,
@@ -547,27 +770,17 @@ User message:
 
             logger.info("🛠️ Tool response: %s", tool_context)
 
-            # --------------------------------------------------
-            # 🔗 SAVE LAST BROWSED PAGE CONTEXT FOR FOLLOW-UPS
-            # --------------------------------------------------
-            if (
-                tool_name == "browser"
-                and isinstance(tool_context, dict)
-                and tool_context.get("content")
-            ):
-                context.router_context = f"""
-            Last browsed URL:
-            {tool_context.get("url")}
-
-            Extracted page content:
-            {tool_context.get("content")[:1200]}
-            """.strip()
-
-                logger.info("🧭 Saved router_context for follow-up queries")
+            # -----------------------------------
+            # 6.6 CLEAR LOCK ON SUCCESS
+            # -----------------------------------
+            if tool_name == "property" and tool_context.get("success"):
+                context.pending_tool = None
+                context.pending_payload = {}
 
         except Exception:
             logger.exception("❌ Tool execution failed")
             tool_context = {"error": "Tool execution failed"}
+
 
     # --------------------------------------------------
     # 7️⃣ FINAL REASONING (FIXED)

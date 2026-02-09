@@ -30,14 +30,8 @@ Valid actions:
 - "update"
 - "delete"
 
-SEARCH:
-- action = "search"
-- city (required)
-- purpose (required)
-- budget (required, integer)
-
-ADD / UPDATE:
-- action = "add" | "update"
+SEARCH / ADD / UPDATE:
+- action = "search" | "add" | "update" | "delete"
 - payload (object)
 - payload may be PARTIALLY FILLED
 - NEVER invent missing fields

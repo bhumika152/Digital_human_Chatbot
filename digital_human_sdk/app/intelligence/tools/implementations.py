@@ -141,206 +141,181 @@ def math_tool(params: dict):
     except Exception as e:
         return {"error": str(e)}
 
-
-# # ---------------- PROPERTY TOOL ----------------
-# def property_tool(params: dict):
-#     """
-#     DigitalHuman (8001) → Property Backend (8000)
-#     DB is NOT accessed here.
-#     """
-
-#     PROPERTY_SERVICE_URL = os.getenv(
-#         "PROPERTY_SERVICE_URL",
-#         "http://127.0.0.1:8000"
-#     )
-
-#     action = params.get("action")
-
-#     if not action:
-#         return {"error": "Missing action for property tool"}
-
-#     try:
-#         # 🔍 SEARCH PROPERTY
-#         if action == "search":
-#             r = requests.get(
-#                 f"{PROPERTY_SERVICE_URL}/properties/search",
-#                 params={
-#                     "city": params.get("city"),
-#                     "purpose": params.get("purpose"),
-#                     "budget": params.get("budget"),
-#                 },
-#                 timeout=10,
-#             )
-#             return r.json()
-
-#         # 📍 REGION FILTER
-#         if action == "region":
-#             r = requests.get(
-#                 f"{PROPERTY_SERVICE_URL}/properties/region",
-#                 params={
-#                     "city": params.get("city"),
-#                     "locality": params.get("locality"),
-#                     "purpose": params.get("purpose"),
-#                     "max_budget": params.get("max_budget"),
-#                 },
-#                 timeout=10,
-#             )
-#             return r.json()
-
-#         # ➕ ADD PROPERTY (AUTH REQUIRED)
-#         if action == "add":
-#             r = requests.post(
-#                 f"{PROPERTY_SERVICE_URL}/properties/",
-#                 json=params.get("payload"),
-#                 headers={
-#                     "Authorization": params.get("auth_token", "")
-#                 },
-#                 timeout=10,
-#             )
-#             return r.json()
-
-#         # 🏠 ADD RENT PROPERTY
-#         if action == "rent":
-#             r = requests.post(
-#                 f"{PROPERTY_SERVICE_URL}/properties/rent",
-#                 json=params.get("payload"),
-#                 headers={
-#                     "Authorization": params.get("auth_token", "")
-#                 },
-#                 timeout=10,
-#             )
-#             return r.json()
-
-#         return {"error": f"Unknown property action: {action}"}
-
-#     except requests.exceptions.RequestException as e:
-#         return {"error": str(e)}
 import os
 import logging
 import requests
- 
+
+from app.intelligence.utils.json_utils import safe_json_loads
+
 logger = logging.getLogger("property_tool")
- 
+
 PROPERTY_SERVICE_URL = os.getenv(
     "PROPERTY_SERVICE_URL",
     "http://127.0.0.1:8000"
 )
- 
+
 # --------------------------------------------------
 # PAYLOAD NORMALIZER (LLM → BACKEND CONTRACT)
 # --------------------------------------------------
- 
 def normalize_property_payload(payload: dict) -> dict:
-    """
-    Normalize LLM payload keys to backend PropertyCreateRequest schema
-    """
     return {
-        "title": payload.get("title") or "Untitled Property",
+        "title": payload.get("title"),
         "city": payload.get("city"),
         "locality": payload.get("locality"),
         "purpose": payload.get("purpose"),
         "price": payload.get("price"),
         "bhk": payload.get("bhk"),
-        "area_sqft": payload.get("area_sqft") or payload.get("size_sqft"),
-        "is_legal": payload.get("is_legal", True),
+        "area_sqft": payload.get("area_sqft"),
+        "is_legal": payload.get("is_legal"),
         "owner_name": payload.get("owner_name"),
-        "contact_phone": payload.get("contact_phone") or payload.get("owner_contact"),
+        "contact_phone": payload.get("contact_phone"),
     }
- 
- 
+
+
 # --------------------------------------------------
 # PROPERTY TOOL
 # --------------------------------------------------
- 
 def property_tool(params: dict):
     action = params.get("action")
     auth_token = params.get("auth_token")
- 
+
     headers = {}
     if auth_token:
         headers["Authorization"] = (
             auth_token if auth_token.startswith("Bearer ")
             else f"Bearer {auth_token}"
         )
- 
+
     try:
-        # 🔍 SEARCH PROPERTY
+        # --------------------------------------------------
+        # 🔍 SEARCH PROPERTY (PARTIAL ALLOWED)
+        # --------------------------------------------------
         if action == "search":
+            payload = params.get("payload", {})
+
             r = requests.get(
                 f"{PROPERTY_SERVICE_URL}/properties/search",
                 params={
-                    "city": params.get("city"),
-                    "purpose": params.get("purpose"),
-                    "budget": params.get("budget"),
+                    "city": payload.get("city"),
+                    "purpose": payload.get("purpose"),
+                    "budget": payload.get("budget"),
                 },
                 timeout=10,
             )
-            return r.json()
- 
+
+            parsed = safe_json_loads(r.text, default=None)
+
+            if parsed is None:
+                logger.error(
+                    "❌ Invalid JSON from property service | "
+                    "status=%s | body=%s",
+                    r.status_code,
+                    r.text,
+                )
+                return {
+                    "success": False,
+                    "errors": ["Invalid response from property service"],
+                    "status_code": r.status_code,
+                }
+
+            return parsed
+
+        # --------------------------------------------------
         # ➕ ADD PROPERTY
+        # --------------------------------------------------
         if action == "add":
-            raw_payload = params.get("payload", {})
-            normalized_payload = normalize_property_payload(raw_payload)
- 
-            logger.info(f"📤 Sending property payload: {normalized_payload}")
- 
+            payload = normalize_property_payload(
+                params.get("payload", {})
+            )
+
             r = requests.post(
                 f"{PROPERTY_SERVICE_URL}/properties/",
-                json=normalized_payload,
+                json=payload,
                 headers=headers,
                 timeout=10,
             )
-            return r.json()
- 
+
+            parsed = safe_json_loads(r.text, default=None)
+            if parsed is None:
+                return {
+                    "success": False,
+                    "errors": ["Invalid response from property service"],
+                }
+
+            return parsed
+
+        # --------------------------------------------------
         # ✏️ UPDATE PROPERTY
+        # --------------------------------------------------
         if action == "update":
             property_id = params.get("property_id")
             if not property_id:
-                return {"error": "Missing property_id"}
- 
-            normalized_payload = normalize_property_payload(
-                params.get("payload", {})
-            )
- 
+                return {
+                    "success": False,
+                    "errors": ["property_id is required"],
+                }
+
+            payload = {
+                k: v
+                for k, v in normalize_property_payload(
+                    params.get("payload", {})
+                ).items()
+                if v is not None
+            }
+
             r = requests.put(
                 f"{PROPERTY_SERVICE_URL}/properties/{property_id}",
-                json=normalized_payload,
+                json=payload,
                 headers=headers,
                 timeout=10,
             )
-            return r.json()
- 
+
+            parsed = safe_json_loads(r.text, default=None)
+            if parsed is None:
+                return {
+                    "success": False,
+                    "errors": ["Invalid response from property service"],
+                }
+
+            return parsed
+
+        # --------------------------------------------------
         # ❌ DELETE PROPERTY
+        # --------------------------------------------------
         if action == "delete":
             property_id = params.get("property_id")
             if not property_id:
-                return {"error": "Missing property_id"}
- 
+                return {
+                    "success": False,
+                    "errors": ["property_id is required"],
+                }
+
             r = requests.delete(
                 f"{PROPERTY_SERVICE_URL}/properties/{property_id}",
                 headers=headers,
                 timeout=10,
             )
-            return r.json()
- 
-        # 🌍 REGION FILTER
-        if action == "region":
-            r = requests.get(
-                f"{PROPERTY_SERVICE_URL}/properties/region",
-                params={
-                    "city": params.get("city"),
-                    "locality": params.get("locality"),
-                    "purpose": params.get("purpose"),
-                    "max_budget": params.get("max_budget"),
-                },
-                timeout=10,
-            )
-            return r.json()
- 
-        return {"error": f"Unknown action: {action}"}
- 
+
+            parsed = safe_json_loads(r.text, default=None)
+            if parsed is None:
+                return {
+                    "success": False,
+                    "errors": ["Invalid response from property service"],
+                }
+
+            return parsed
+
+        # --------------------------------------------------
+        # UNKNOWN ACTION
+        # --------------------------------------------------
+        return {
+            "success": False,
+            "errors": [f"Unknown action: {action}"],
+        }
+
     except requests.exceptions.RequestException as e:
         logger.exception("❌ Property service request failed")
-        return {"error": str(e)}
- 
- 
+        return {
+            "success": False,
+            "errors": [str(e)],
+        }

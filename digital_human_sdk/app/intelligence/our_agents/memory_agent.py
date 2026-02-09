@@ -1,4 +1,4 @@
-from digital_human_sdk.app.intelligence.our_agents.base import create_agent
+from app.intelligence.our_agents.base import create_agent
 from pathlib import Path
 
 PROMPT_PATH = Path(__file__).resolve().parents[1] / "prompts" / "memory.md"
