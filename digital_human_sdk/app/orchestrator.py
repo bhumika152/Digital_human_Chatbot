@@ -490,6 +490,29 @@ User message:
             logger.exception("❌ Memory write failed")
 
     # --------------------------------------------------
+    # 🧠 MEMORY-AWARE TOOL INPUT ENRICHMENT
+    # --------------------------------------------------
+    augmented_tool_input = router_input
+
+    if memory_data:
+        memory_text = "\n".join(
+            f"- {m.get('text')}"
+            for m in memory_data
+            if isinstance(m, dict) and m.get("text")
+        )
+
+        augmented_tool_input = f"""
+    User known preferences / memory:
+    {memory_text}
+
+    User request:
+    {user_input}
+    """.strip()
+
+    logger.info("🧠 Tool input enriched with memory")
+
+
+    # --------------------------------------------------
     # 6️⃣ TOOL EXECUTION
     # --------------------------------------------------
     tool_context = {}
@@ -500,7 +523,7 @@ User message:
 
             tool_raw = await Runner.run(
                 tool_agent,
-                router_input,
+                augmented_tool_input,
                 context=context,
                 max_turns=1,
             )
@@ -523,6 +546,24 @@ User message:
                 tool_context = tool_context.model_dump()
 
             logger.info("🛠️ Tool response: %s", tool_context)
+
+            # --------------------------------------------------
+            # 🔗 SAVE LAST BROWSED PAGE CONTEXT FOR FOLLOW-UPS
+            # --------------------------------------------------
+            if (
+                tool_name == "browser"
+                and isinstance(tool_context, dict)
+                and tool_context.get("content")
+            ):
+                context.router_context = f"""
+            Last browsed URL:
+            {tool_context.get("url")}
+
+            Extracted page content:
+            {tool_context.get("content")[:1200]}
+            """.strip()
+
+                logger.info("🧭 Saved router_context for follow-up queries")
 
         except Exception:
             logger.exception("❌ Tool execution failed")
@@ -566,7 +607,7 @@ User message:
     try:
         reasoning_stream = Runner.run_streamed(
             reasoning_agent,
-            final_messages,      # ✅ structured messages
+            final_messages,     
             context=context,
         )
 

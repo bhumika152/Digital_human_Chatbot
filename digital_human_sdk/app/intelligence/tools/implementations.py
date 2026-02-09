@@ -55,16 +55,37 @@ def weather_tool(params: dict):
  
  
 # ---------------- BROWSER SEARCH (NO KEY) ----------------
-def browser_search_tool(params: dict):
+def browser_tool(params: dict):
+    url = params.get("url")
     query = params.get("query")
- 
-    url = "https://duckduckgo.com/html/"
-    r = requests.post(url, data={"q": query}, timeout=10)
- 
-    return {
-        "query": query,
-        "html_length": len(r.text)
-    }
+
+    # Case 1: URL is provided → fetch directly
+    if url:
+        content = fetch_page_content(url)
+        return {
+            "source": "url",
+            "url": url,
+            "content": content
+        }
+
+    # Case 2: Only query is provided → search + fetch
+    if query:
+        search_url = "https://duckduckgo.com/html/"
+        r = requests.post(search_url, data={"q": query}, timeout=10)
+
+        # very basic link extraction
+        soup = BeautifulSoup(r.text, "html.parser")
+        link = soup.find("a", href=True)
+
+        if link:
+            content = fetch_page_content(link["href"])
+            return {
+                "source": "search",
+                "query": query,
+                "content": content
+            }
+
+    return {"error": "No url or query provided"}
 
 # ---------------- SERPAPI SEARCH ----------------
 def serpapi_search_tool(params: dict):
