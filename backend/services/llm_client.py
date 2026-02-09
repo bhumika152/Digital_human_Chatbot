@@ -10,7 +10,7 @@ def call_llm(prompt: str) -> str:
  
     response = completion(
         model=SUMMARY_MODEL,
-        provider="gemini",   # 🔑 REQUIRED
+        provider="gemini",   
         messages=[
             {
                 "role": "system",

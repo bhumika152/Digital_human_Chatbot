@@ -529,24 +529,44 @@ User message:
             tool_context = {"error": "Tool execution failed"}
 
     # --------------------------------------------------
-    # 7️⃣ REASONING
+    # 7️⃣ FINAL REASONING (FIXED)
     # --------------------------------------------------
-    reasoning_input = {
-        "messages": llm_messages,
-        "memory": memory_data,
-        "tool_context": tool_context,
-        "knowledge_base": kb_data,
-        "kb_found": kb_found,
-    }
+    final_messages = []
+
+    # Inject memory as SYSTEM text
+    if memory_data:
+        final_messages.append({
+            "role": "system",
+            "content": "Known user facts:\n"
+                       + "\n".join(f"- {m.get('text')}" for m in memory_data)
+        })
+
+    # Inject tool output as SYSTEM text
+    if tool_context:
+        final_messages.append({
+            "role": "system",
+            "content": f"Tool result:\n{tool_context}"
+        })
+
+    # Add conversation messages directly (NO JSON)
+    final_messages.extend(llm_messages)
+
+    # Safety check (must never fail)
+    for m in final_messages:
+        assert not m["content"].strip().startswith("{\"messages\""), \
+            "❌ JSON payload leaked into LLM messages"
+
+    logger.info(
+        "🧠 FINAL_REASONING_MESSAGES = %d",
+        len(final_messages)
+    )
 
     emitted = False
 
     try:
-        logger.info("🧠 Reasoning started")
-
         reasoning_stream = Runner.run_streamed(
             reasoning_agent,
-            json.dumps(reasoning_input),
+            final_messages,      # ✅ structured messages
             context=context,
         )
 
