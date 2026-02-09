@@ -1,3 +1,4 @@
+from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
@@ -341,7 +342,8 @@ def get_chat_sessions(
 ):
     sessions = (
         db.query(ChatSession)
-        .filter(ChatSession.user_id == user_id)
+        .filter(ChatSession.user_id == user_id,
+                ChatSession.is_active == True )
         .order_by(ChatSession.created_at.desc())
         .all()
     )
@@ -422,29 +424,34 @@ def get_chat_messages(
 # ==========================================================
 # DELETE CHAT SESSION
 # ==========================================================
-# @router.delete("/sessions/{session_id}")
 @chat_router.delete("/sessions/{session_id}")
 def delete_chat_session(
     session_id: str,
     user_id: int = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+
     session = (
         db.query(ChatSession)
         .filter(
             ChatSession.session_id == session_id,
             ChatSession.user_id == user_id,
+            ChatSession.is_active == True   # 🔥 only active
         )
         .first()
     )
- 
+
     if not session:
         raise HTTPException(status_code=404, detail="Chat session not found")
- 
-    db.delete(session)
+
+    # ✅ SOFT DELETE
+    session.is_active = False
+    session.ended_at = datetime.utcnow()
+
     db.commit()
- 
+
     return {"message": "Chat deleted successfully"}
+
 #------------------------------------
 #   Get user data
 #------------------------------------
