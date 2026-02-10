@@ -131,96 +131,32 @@ class PropertyResponse(BaseModel):
     class Config:
         true_attributes = True
 
-# --------------------
-# PROPERTY SCHEMAS
-# --------------------
-# class PropertyCreateRequest(BaseModel):
-#     title: str
-#     city: str
-#     locality: str
-#     purpose: str
-#     price: int
-#     bhk: int
-#     area_sqft: int
-#     is_legal: bool = False
-#     owner_name: str
-#     contact_phone: str
-
-# class PropertySearchRequest(BaseModel):
-#     city: str
-#     purpose: Optional[str] = None
-#     max_budget: int
-#     bhk: Optional[int] = None
-#     locality: Optional[str] = None
-
-# class PropertyCreateRequest(BaseModel):
-#     title: str
-#     city: str
-#     locality: Optional[str]=None
-#     purpose: str
-#     price: int
-#     bhk: int
-#     area_sqft: Optional[int] = None
-#     is_legal: bool = True
-#     owner_name: str
-#     contact_phone: str
- 
-# class PropertyUpdateRequest(BaseModel):
-#     title: Optional[str] = None
-#     city: Optional[str] = None
-#     locality: Optional[str] = None
-#     purpose: Optional[str] = None
-#     price: Optional[int] = None
-#     bhk: Optional[int] = None
-#     area_sqft: Optional[int] = None
-#     is_legal: Optional[bool] = None
-#     owner_name: Optional[str] = None
-#     contact_phone: Optional[str] = None
 from typing import Optional
-from pydantic import BaseModel, Field, model_validator
-
+from pydantic import BaseModel
 
 # --------------------------------------------------
-# 🔍 PROPERTY SEARCH SCHEMA
+# 🔍 PROPERTY SEARCH SCHEMA (NO VALIDATION HERE)
 # --------------------------------------------------
 class PropertySearchRequest(BaseModel):
-    city: Optional[str] = Field(default=None)
-    purpose: Optional[str] = Field(default=None)  # rent | buy
-    budget: Optional[int] = Field(default=None)
-
-    @model_validator(mode="after")
-    def validate_required_fields(self):
-        missing = []
-
-        if not self.city:
-            missing.append("city")
-        if not self.purpose:
-            missing.append("purpose")
-        if self.budget is None:
-            missing.append("budget")
-
-        if missing:
-            raise ValueError(
-                f"Missing required fields: {', '.join(missing)}"
-            )
-
-        return self
+    city: Optional[str] = None
+    purpose: Optional[str] = None
+    budget: Optional[int] = None
 
 
 # --------------------------------------------------
-# ➕ PROPERTY CREATE SCHEMA
+# ➕ PROPERTY CREATE SCHEMA (PARTIAL ALLOWED)
 # --------------------------------------------------
 class PropertyCreateRequest(BaseModel):
     title: Optional[str] = None
     city: Optional[str] = None
     locality: Optional[str] = None
-    purpose: Optional[str] = None  # rent | buy
+    purpose: Optional[str] = None
     price: Optional[int] = None
     bhk: Optional[int] = None
     area_sqft: Optional[int] = None
     is_legal: Optional[bool] = None
     owner_name: Optional[str] = None
-    contact_phone: Optional[str] = None
+    contact_phone: Optional[int] = None
 
 
 # --------------------------------------------------
@@ -236,4 +172,4 @@ class PropertyUpdateRequest(BaseModel):
     area_sqft: Optional[int] = None
     is_legal: Optional[bool] = None
     owner_name: Optional[str] = None
-    contact_phone: Optional[str] = None
+    contact_phone: Optional[int] = None

@@ -54,38 +54,6 @@ def search_properties(
             "errors": [str(e)],
         }
 
-
-
-# --------------------------------------------------
-# ➕ ADD PROPERTY
-# --------------------------------------------------
-# @property_router.post("/", status_code=status.HTTP_201_CREATED)
-# def save_property(
-#     payload: PropertyCreateRequest,
-#     user_id: int = Depends(get_current_user),
-#     db: Session = Depends(get_db),
-# ):
-#     try:
-#         new_property = Property(
-#             **payload.dict(),
-#             owner_user_id=user_id,
-#         )
-
-#         db.add(new_property)
-#         db.commit()
-#         db.refresh(new_property)
-
-#         return {
-#             "success": True,
-#             "property_id": new_property.property_id,
-#         }
-
-#     except Exception:
-#         logger.exception("❌ Failed to save property")
-#         raise HTTPException(
-#             status_code=500,
-#             detail="Failed to save property",
-#         )
 @property_router.post("/", status_code=status.HTTP_201_CREATED)
 def save_property(
     payload: PropertyCreateRequest,
