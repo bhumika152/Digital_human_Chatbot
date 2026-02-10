@@ -160,7 +160,7 @@ class PropertyCreateRequest(BaseModel):
 
 
 # --------------------------------------------------
-# ✏️ PROPERTY UPDATE SCHEMA
+# PROPERTY UPDATE SCHEMA
 # --------------------------------------------------
 class PropertyUpdateRequest(BaseModel):
     title: Optional[str] = None

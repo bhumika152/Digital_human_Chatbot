@@ -26,6 +26,21 @@ logger = logging.getLogger("orchestrator")
 
 ALLOWED_MEMORY_ACTIONS = {"save", "update", "delete", "none"}
 
+PROPERTY_UPDATE_SCHEMA = {
+    "required": ["property_id"],
+    "optional": [
+        "title",
+        "city",
+        "locality",
+        "purpose",
+        "price",
+        "bhk",
+        "area_sqft",
+        "is_legal",
+        "owner_name",
+        "contact_phone",
+    ]
+}
 
 # --------------------------------------------------
 # CORE CHAT ORCHESTRATOR
@@ -213,6 +228,18 @@ User message:
     if not hasattr(context, "pending_payload"):
         context.pending_payload = {}
 
+    if not hasattr(context, "update_context"):
+        context.update_context = {}
+
+    if not hasattr(context, "active_update"):
+        context.active_update = False
+
+    if not hasattr(context, "delete_context"):
+        context.delete_context = {}
+
+    if not hasattr(context, "active_delete"):
+        context.active_delete = False
+
     if router_decision.get("use_tool"):
         try:
             logger.info("🛠️ Tool execution started")
@@ -220,21 +247,27 @@ User message:
             # -----------------------------------
             # 6.1 Run tool agent (LLM → tool JSON)
             # -----------------------------------
-            tool_raw = await Runner.run(
-                tool_agent,
-                augmented_tool_input,
-                context=context,
-                max_turns=1,
-            )
+            if context.active_update or context.active_delete:
+                logger.info("🔒 Skipping tool-agent (update in progress)")
+                tool_name = "property"
+                action = "update"
+                tool_arguments = {"action": "update"}
+                payload = {}
+            else:
+                tool_raw = await Runner.run(
+                    tool_agent,
+                    augmented_tool_input,
+                    context=context,
+                    max_turns=1,
+                )
 
-            tool_payload = safe_json_loads(tool_raw.final_output, default={})
-            logger.info("🛠️ Tool payload: %s", tool_payload)
+                tool_payload = safe_json_loads(tool_raw.final_output, default={})
+                logger.info("🛠️ Tool payload: %s", tool_payload)
 
-            tool_name = tool_payload.get("tool")
-            tool_arguments = tool_payload.get("arguments", {})
-
-            action = tool_arguments.get("action")
-            payload = tool_arguments.get("payload", {})
+                tool_name = tool_payload.get("tool")
+                tool_arguments = tool_payload.get("arguments", {})
+                action = tool_arguments.get("action")
+                payload = tool_arguments.get("payload", {})
 
             # -----------------------------------
             # 6.2 AUTH TOKEN
@@ -326,6 +359,110 @@ User message:
                 # Clear add state after success
                 context.pending_payload = {}
                 context.pending_tool = None
+            
+            # ==================================================
+            # UPDATE FLOW
+            # ==================================================
+            elif tool_name == "property" and action == "update":
+
+                context.active_update = True
+
+                # 🔥 Recover property_id if LLM dropped it
+                if "property_id" not in tool_arguments:
+                    import re
+                    match = re.search(r"\bproperty[_ ]?id\s*(\d+)", user_input, re.I)
+                    if match:
+                        tool_arguments["property_id"] = int(match.group(1))
+
+                # Normalize id alias
+                if "id" in tool_arguments and "property_id" not in tool_arguments:
+                    tool_arguments["property_id"] = tool_arguments.pop("id")
+
+                # Persist property_id
+                if tool_arguments.get("property_id"):
+                    context.update_context["property_id"] = tool_arguments["property_id"]
+
+                # Move update fields into payload
+                for field in PROPERTY_UPDATE_SCHEMA["optional"]:
+                    if field in tool_arguments:
+                        payload[field] = tool_arguments[field]
+
+                context.update_context.update(payload)
+
+                missing_fields = get_missing_fields(
+                    PROPERTY_ACTION_CONTRACT,
+                    "update",
+                    context.update_context,
+                )
+
+                if missing_fields:
+                    yield {
+                        "type": "token",
+                        "value": PROPERTY_ACTION_CONTRACT["update"]["ask_message"],
+                    }
+                    return
+
+                property_id = context.update_context.pop("property_id")
+
+                tool_context = ToolExecutor.execute(
+                    tool_name,
+                    {
+                        "action": "update",
+                        "property_id": property_id,
+                        "payload": context.update_context,
+                        "auth_token": context.auth_token,
+                    },
+                )
+
+                context.update_context = {}
+                context.active_update = False
+
+            # ==================================================
+            # ❌ DELETE FLOW (conversation-based, stateful)
+            # ==================================================
+            elif tool_name == "property" and action == "delete":
+
+                context.active_delete = True
+
+                # Normalize id alias
+                if "id" in tool_arguments and "property_id" not in tool_arguments:
+                    tool_arguments["property_id"] = tool_arguments.pop("id")
+
+                # Recover from text if LLM missed it
+                if "property_id" not in tool_arguments:
+                    import re
+                    match = re.search(r"\b(\d+)\b", user_input)
+                    if match:
+                        tool_arguments["property_id"] = int(match.group(1))
+
+                # Persist property_id
+                if tool_arguments.get("property_id"):
+                    context.delete_context["property_id"] = tool_arguments["property_id"]
+
+                # Check missing field
+                if "property_id" not in context.delete_context:
+                    yield {
+                        "type": "token",
+                        "value": "Please tell me the property_id you want to delete.",
+                    }
+                    return
+
+                property_id = context.delete_context["property_id"]
+
+                # 🔥 EXECUTE DELETE WITH AUTH
+                tool_context = ToolExecutor.execute(
+                    "property",
+                    {
+                        "action": "delete",
+                        "property_id": property_id,
+                        "auth_token": context.auth_token,
+                    },
+                )
+
+                # Reset delete state
+                context.delete_context = {}
+                context.active_delete = False
+
 
             # ==================================================
             # 🚫 OTHER TOOLS (fallback)
@@ -380,6 +517,7 @@ User message:
     emitted = False
 
     try:
+        logger.info("🧠 Running reasoning agent")
         reasoning_stream = Runner.run_streamed(
             reasoning_agent,
             final_messages,     

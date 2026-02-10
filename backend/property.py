@@ -145,7 +145,7 @@ def update_property(
 
 
 # --------------------------------------------------
-# ❌ DELETE PROPERTY
+# DELETE PROPERTY
 # --------------------------------------------------
 @property_router.delete("/{property_id}")
 def delete_property(
