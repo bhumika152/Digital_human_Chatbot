@@ -1,6 +1,6 @@
 from .implementations import (
     weather_tool,
-    browser_search_tool,
+    browser_tool,
     serpapi_search_tool,
     math_tool,
     property_tool,  
@@ -10,7 +10,7 @@ TOOL_REGISTRY = {
     "weather": weather_tool,
     "calculator": math_tool,
     "web_search": serpapi_search_tool,
-    "browser": browser_search_tool,
+    "browser": browser_tool, 
     "property": property_tool,   
 }
 

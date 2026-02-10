@@ -51,6 +51,36 @@ GENERAL ROUTING RULES
 - Use tools ONLY if external data, real-time info, search, or calculation is required
 
 --------------------------------------------------
+FOLLOW-UP CONTEXT RULE 
+--------------------------------------------------
+
+If the user message contains a FOLLOW-UP reference such as:
+- "this"
+- "that"
+- "it"
+- "this course"
+- "this link"
+- "this page"
+- "the above"
+
+AND the conversation context contains a section titled "Last browsed URL",
+
+THEN:
+- use_tool = true
+- tool_name = "browser"
+- tool_arguments MUST include:
+  {
+    "url": "<Last browsed URL>"
+  }
+
+This rule OVERRIDES the default rule
+"Questions about the world that do NOT require external data".
+
+Do NOT assume general knowledge in this case.
+Always re-use the last browsed URL.
+
+
+--------------------------------------------------
 TOOL SELECTION RULES
 --------------------------------------------------
 
