@@ -1,5 +1,5 @@
 from agents import Agent
-from digital_human_sdk.app.intelligence.models.litellm_model import get_model_name
+from app.intelligence.models.litellm_model import get_model_name
 
 def create_agent(
     *,

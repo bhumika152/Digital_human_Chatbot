@@ -225,11 +225,15 @@ async def chat(
             session_id,
             request_id,
         )
+        auth_header = request.headers.get("Authorization")
+        logger.info("🔐 Incoming Authorization: %s", request.headers.get("Authorization"))
+
         dh_client = DigitalHumanClient(os.getenv("DIGITAL_HUMAN_BASE_URL"))
         try:
             async for event in dh_client.stream_chat(
                 user_input=user_text,
                 llm_context=llm_context,
+                auth_token=auth_header,
                 flags = {
                 "user_id": int(user_id),
                 "session_id": str(session.session_id), 
@@ -240,6 +244,7 @@ async def chat(
                 "memory_data": semantic_memory,
                 "kb_data": kb_data,
                 "kb_found": kb_found,
+                
             },
             request_id=request_id,
             ):

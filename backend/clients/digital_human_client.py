@@ -19,9 +19,9 @@ class DigitalHumanClient:
         llm_context,
         flags,
         request_id: str,
+        auth_token: str,
     ):
         payload = {
-            "user_input": user_input,
             "llm_context": llm_context,
             "flags": flags,
         }
@@ -29,6 +29,9 @@ class DigitalHumanClient:
         headers = {
             "X-Request-Id": request_id
         }
+
+        if auth_token:
+            headers["Authorization"] = auth_token  # 🔑 FORWARD TOKEN
 
         start = time.perf_counter()
 
