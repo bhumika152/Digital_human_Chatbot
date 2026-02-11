@@ -12,6 +12,8 @@ from models import KnowledgeBaseEmbedding
 from dependencies.admin_guard import require_admin
 from services.admin_knowledgeBase.kb_ingestion import ingest_policy_pdf
 from sqlalchemy import func
+from uuid import UUID
+
 
 router = APIRouter(prefix="/admin/kb", tags=["admin-kb"])
 
@@ -129,3 +131,39 @@ def list_kb_documents(
         }
         for doc in documents
     ]
+
+@router.delete("/{document_id}")
+def delete_kb_document(
+    document_id: UUID,
+    admin=Depends(require_admin),
+    db: Session = Depends(get_db),
+):
+    """
+    Delete a KB document (ALL chunks by document_id)
+    """
+
+    rows = (
+        db.query(KnowledgeBaseEmbedding)
+        .filter(KnowledgeBaseEmbedding.document_id == document_id)
+        .all()
+    )
+
+    if not rows:
+        raise HTTPException(
+            status_code=404,
+            detail="Document not found"
+        )
+
+    deleted_count = len(rows)
+
+    for row in rows:
+        db.delete(row)
+
+    db.commit()
+
+    return {
+        "message": "Knowledge base document deleted successfully",
+        "document_id": str(document_id),
+        "chunks_deleted": deleted_count,
+        "deleted_by": admin.email
+    }
