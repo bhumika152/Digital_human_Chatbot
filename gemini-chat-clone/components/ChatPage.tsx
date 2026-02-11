@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { User, Message, ChatSession } from "../types";
 import { Sidebar } from "./Sidebar";
@@ -408,11 +409,12 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
     }
  
     // 🔥 First message flow → keep optimistic UI
-    if (sessionSource === "send") {
-      setSessionSource(null);
-      setIsRestoringSession(false);
-      return;
-    }
+    // if (sessionSource === "send") {
+    //   setSessionSource(null);
+    //   setIsRestoringSession(false);
+    //   return;
+    // }
+    
  
     const loadHistory = async () => {
       try {
@@ -423,13 +425,20 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
         );
  
         // setMessages(history);
-        setMessages(() => {
-  loadedIdsRef.current.clear(); // naya session ya fresh load
+//         setMessages(() => {
+//   loadedIdsRef.current.clear(); // naya session ya fresh load
  
-  history.forEach(m => loadedIdsRef.current.add(m.request_id));
+//   history.forEach(m => loadedIdsRef.current.add(m.request_id));
  
+//   return history;
+// });
+setMessages(() => {
+  loadedIdsRef.current = new Set(history.map(m => m.request_id));
   return history;
 });
+
+setOffset(history.length); // correct now because optimistic ones replaced
+
  
         setOffset(history.length);
         setHasMore(history.length === PAGE_SIZE);
@@ -514,6 +523,8 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
         created_at: new Date().toISOString(),
       },
     ]);
+    setOffset(prev => prev + 2);  // 🔥 FIX: sync pagination with UI
+
  
     let fullResponse = "";
  
@@ -668,3 +679,6 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
     </div>
   );
 };
+ 
+ 
+ 
