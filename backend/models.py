@@ -118,6 +118,8 @@ class User(Base):
     email = Column(String, unique=True, nullable=False, index=True)
     password_hash = Column(String, nullable=False)
 
+    role = Column(String(20), nullable=False, default="user")
+
     reset_token = Column(String, nullable=True, index=True)
     reset_token_expiry = Column(DateTime, nullable=True)
     is_active = Column(Boolean, default=True, nullable=False)

@@ -200,12 +200,17 @@ async def chat(
     kb_found = False
  
     try:
+        logger.info("enable_rag: %s", agent_context.enable_rag)
+
         kb_data = KnowledgeBaseService.read(
-            query=router_context,
+            query=user_text,
             limit=5,
             document_types=["FAQ", "POLICY"],
-            industry="fintech",
+            industry="fintech",  
+
         )
+        logger.info("KB RAW RESULT COUNT: %d", len(kb_data))
+        logger.info("KB RAW RESULT: %s", kb_data)
         kb_found = bool(kb_data)
         logger.info(f"📚 KB found: {kb_found}")
     except Exception:

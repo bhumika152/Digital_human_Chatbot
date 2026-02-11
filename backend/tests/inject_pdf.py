@@ -10,7 +10,7 @@ POLICY_DIR = Path("documents/policy_pdfs")
  
 # 🔴 EXACT PDF NAME HERE
 
-TARGET_PDF_NAME = "weather in amritsar.pdf"
+TARGET_PDF_NAME = "transformers.pdf"
  
 def main():
 
