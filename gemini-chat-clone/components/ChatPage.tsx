@@ -409,11 +409,11 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
     }
  
     // 🔥 First message flow → keep optimistic UI
-    // if (sessionSource === "send") {
-    //   setSessionSource(null);
-    //   setIsRestoringSession(false);
-    //   return;
-    // }
+    if (sessionSource === "send") {
+      setSessionSource(null);
+      setIsRestoringSession(false);
+      return;
+    }
     
  
     const loadHistory = async () => {
