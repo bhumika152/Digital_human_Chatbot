@@ -11,6 +11,7 @@ from database import get_db
 from models import KnowledgeBaseEmbedding
 from dependencies.admin_guard import require_admin
 from services.admin_knowledgeBase.kb_ingestion import ingest_policy_pdf
+from sqlalchemy import func
 
 router = APIRouter(prefix="/admin/kb", tags=["admin-kb"])
 
@@ -79,3 +80,52 @@ def upload_kb_document(
         "language": language,
         "uploaded_by": admin.email
     }
+
+@router.get("/documents")
+def list_kb_documents(
+    admin_id: int = Depends(require_admin),
+    db: Session = Depends(get_db),
+):
+    """
+    List all KB documents (grouped by document_id)
+    """
+
+    documents = (
+        db.query(
+            KnowledgeBaseEmbedding.document_id,
+            KnowledgeBaseEmbedding.document_title,
+            KnowledgeBaseEmbedding.document_type,
+            KnowledgeBaseEmbedding.industry,
+            KnowledgeBaseEmbedding.language,
+            KnowledgeBaseEmbedding.version,
+            KnowledgeBaseEmbedding.is_active,
+            func.count(KnowledgeBaseEmbedding.kb_id).label("chunk_count"),
+            func.min(KnowledgeBaseEmbedding.created_at).label("created_at"),
+        )
+        .group_by(
+            KnowledgeBaseEmbedding.document_id,
+            KnowledgeBaseEmbedding.document_title,
+            KnowledgeBaseEmbedding.document_type,
+            KnowledgeBaseEmbedding.industry,
+            KnowledgeBaseEmbedding.language,
+            KnowledgeBaseEmbedding.version,
+            KnowledgeBaseEmbedding.is_active,
+        )
+        .order_by(func.min(KnowledgeBaseEmbedding.created_at).desc())
+        .all()
+    )
+
+    return [
+        {
+            "document_id": str(doc.document_id),
+            "title": doc.document_title,
+            "document_type": doc.document_type,
+            "industry": doc.industry,
+            "language": doc.language,
+            "version": doc.version,
+            "is_active": doc.is_active,
+            "chunks": doc.chunk_count,
+            "created_at": doc.created_at,
+        }
+        for doc in documents
+    ]
