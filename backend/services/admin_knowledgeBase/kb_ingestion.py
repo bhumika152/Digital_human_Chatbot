@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 
 from models import KnowledgeBaseEmbedding
 from services.admin_knowledgeBase.kb_embedding_service import get_kb_embedding
-
+from services.admin_knowledgeBase.kb_retrieval import KBRetriever
 logger = logging.getLogger(__name__)
 
 
@@ -123,6 +123,7 @@ def ingest_policy_pdf(
         db.add(kb_row)
 
     db.commit()
+    KBRetriever.rebuild_index(db)
 
     logger.info(
         "✅ Ingestion complete: %s | chunks=%d",

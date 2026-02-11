@@ -18,3 +18,4 @@ python-dotenv
 sentence-transformers
 scikit-learn
 torch
+faiss-cpu
