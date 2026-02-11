@@ -1,4 +1,4 @@
-
+import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { User, Message, ChatSession } from "../types";
 import { Sidebar } from "./Sidebar";
@@ -363,10 +363,15 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
   /* =========================
      CORE STATE
   ========================== */
+  // const [currentSessionId, setCurrentSessionId] = useState<string | null>(() => {
+  //   const id = localStorage.getItem("active_session_id");
+  //   return id;
+  // });
+  const { sessionId: urlSessionId } = useParams();
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(() => {
-    const id = localStorage.getItem("active_session_id");
-    return id;
-  });
+  return urlSessionId || localStorage.getItem("active_session_id");
+});
+
  
   const [sessionSource, setSessionSource] =
     useState<"sidebar" | "send" | "restore" | null>(() => {
@@ -385,6 +390,9 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [profileUser, setProfileUser] = useState<User | null>(user);
   const [isRestoringSession, setIsRestoringSession] = useState(true);
+  const navigate = useNavigate();
+  
+
  
   /* =========================
      LOAD SIDEBAR SESSIONS
@@ -572,6 +580,8 @@ setOffset(history.length); // correct now because optimistic ones replaced
           setCurrentSessionId(prev => {
             if (!prev) {
               localStorage.setItem("active_session_id", newSessionId);
+              // 🌐 UPDATE URL HERE
+              navigate(`/chat/${newSessionId}`, { replace: true });
               return newSessionId;
             }
             return prev;
@@ -602,6 +612,7 @@ setOffset(history.length); // correct now because optimistic ones replaced
     setOffset(0);
     setHasMore(true);
     localStorage.removeItem("active_session_id");
+    navigate("/", { replace: true }); //  url clean
   };
  
   /* =========================
@@ -646,6 +657,7 @@ setOffset(history.length); // correct now because optimistic ones replaced
           setIsRestoringSession(true);
           setCurrentSessionId(id);
           localStorage.setItem("active_session_id", id);
+          navigate(`/chat/${id}`, { replace: true }); //  url change
         }}
         onNewChat={handleNewChat}
         onDeleteChat={handleDeleteChat}

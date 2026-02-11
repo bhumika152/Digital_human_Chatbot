@@ -35,6 +35,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess, initialMode =
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const navigate = useNavigate();
 
 
   // Sync mode only if initialMode prop changes (e.g. user manually toggles login/signup elsewhere)
@@ -235,22 +236,34 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess, initialMode =
 
         <div className="mt-8 text-center text-sm">
           {(mode === 'forgot-password' || mode === 'reset-password') ? (
+            // <button
+            //   onClick={() => {
+            //     setMode('login');
+            //     setError(null);
+            //     setSuccessMessage(null);
+            //   }}
+            //   className="text-white font-medium hover:underline"
+            // >
+            //   Back to log in
+            // </button>
             <button
-              onClick={() => {
-                setMode('login');
-                setError(null);
-                setSuccessMessage(null);
-              }}
-              className="text-white font-medium hover:underline"
-            >
-              Back to log in
-            </button>
+  onClick={() => {
+    setMode('login');
+    setError(null);
+    setSuccessMessage(null);
+    navigate('/login');
+  }}
+  className="text-white font-medium hover:underline"
+>
+  Back to log in
+</button>
+
           ) : (
             <>
               <span className="text-[#b4b4b4]">
                 {mode === 'login' ? "Don't have an account?" : "Already have an account?"}
               </span>
-              <button
+              {/* <button
                 onClick={() => {
                   setMode(mode === 'login' ? 'signup' : 'login');
                   setError(null);
@@ -259,7 +272,23 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess, initialMode =
                 className="ml-2 text-white font-medium hover:underline"
               >
                 {mode === 'login' ? 'Sign up' : 'Log in'}
-              </button>
+              </button> */}
+
+              
+  <button
+  onClick={() => {
+    const newMode = mode === 'login' ? 'signup' : 'login';
+    setMode(newMode);
+    setError(null);
+    setSuccessMessage(null);
+    navigate(`/${newMode}`);
+  }}
+  className="ml-2 text-white font-medium hover:underline"
+>
+  {mode === 'login' ? 'Sign up' : 'Log in'}
+</button>
+
+
             </>
           )}
         </div>

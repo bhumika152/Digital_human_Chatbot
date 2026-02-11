@@ -3,6 +3,7 @@ import { chatService } from './services/chatService'; //
 // import { Routes, Route, Navigate } from "react-router-dom"; // change
 import { AuthPage } from './components/AuthPage';
 import { ChatPage } from './components/ChatPage';
+import { AdminAuthPage } from "./components/AdminAuthPage";
 import { User, AppView } from './types';
 import { useLocation ,useNavigate} from "react-router-dom";
 
@@ -64,7 +65,24 @@ const App: React.FC = () => {
     initUser();
   }, []);
  
- 
+ // changes 
+ useEffect(() => {
+  if (view === 'loading') return;
+
+  const token = localStorage.getItem("access_token");
+
+  // 🟢 If logged in → always allow home to be chat
+  if (token && location.pathname === "/login") {
+    navigate("/", { replace: true });
+  }
+
+  // 🔴 If not logged in → block chat access
+  if (!token && location.pathname === "/") {
+    navigate("/login", { replace: true });
+  }
+
+}, [view, location.pathname]);
+
   const handleLogin = (data: any) => {
     console.log("Login data received:", data);
    
@@ -91,7 +109,9 @@ const App: React.FC = () => {
     setView('chat');
    
     // window.history.replaceState({}, document.title, window.location.pathname);
-    navigate(location.pathname, { replace: true });
+    //navigate(location.pathname, { replace: true });
+    navigate("/", { replace: true });
+
 
   };
  
@@ -99,20 +119,30 @@ const App: React.FC = () => {
     setCurrentUser(null);
     localStorage.clear(); // Complete wipe to prevent stale 'User' display
     setView('auth');
+    navigate('/login',{replace: true}); // for URL update
   };
 
   if (view === 'loading') {
     return null;
 }
+const getAuthModeFromPath = (): "login" | "signup" => {
+  if (location.pathname.includes("signup")) return "signup";
+  return "login";
+};
 
  
    return (
     <div className="min-h-screen bg-[#0d0d0d] text-[#ececec]">
       {view === 'auth' ? (
+        // <AuthPage
+        //   onAuthSuccess={handleLogin}
+        //   initialMode="login"
+        // />
         <AuthPage
-          onAuthSuccess={handleLogin}
-          initialMode="login"
-        />
+  onAuthSuccess={handleLogin}
+  initialMode={getAuthModeFromPath()}
+/>
+
       ) : (
         <ChatPage user={currentUser} onLogout={handleLogout} />
       )}
@@ -120,6 +150,13 @@ const App: React.FC = () => {
       <ToastContainer position="top-right" autoClose={2500} />
     </div>
   );
+//   return (
+//   <div className="min-h-screen bg-[#0d0d0d] text-[#ececec]">
+//     <AdminAuthPage />
+//     <ToastContainer position="top-right" autoClose={2500} />
+//   </div>
+// );
+
  
  
  
