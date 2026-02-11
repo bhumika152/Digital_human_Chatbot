@@ -26,6 +26,8 @@ async def stream_chat(payload: dict, request: Request):
         flags.get("session_id"),
     )
 
+    auth_header = request.headers.get("Authorization")
+
     context = SimpleNamespace(
         user_id=flags.get("user_id"),
         session_id=flags.get("session_id"),
@@ -37,6 +39,10 @@ async def stream_chat(payload: dict, request: Request):
         kb_data=flags.get("kb_data", []),
         kb_found=flags.get("kb_found", False),
     )
+    context.auth_token = auth_header
+        # 🔑 PROPERTY FLOW STATE (VERY IMPORTANT)
+    context.pending_tool = None            # e.g. "property.add"
+    context.pending_payload = {}           # accumulated fields
 
     async def event_stream():
         event_count = 0
