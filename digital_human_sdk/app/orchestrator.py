@@ -501,6 +501,17 @@ User message:
             "content": f"Tool result:\n{tool_context}"
         })
 
+    if kb_data:
+        final_messages.append({
+            "role": "system",
+            "content": "Relevant knowledge base information:\n\n" +
+                    "\n\n".join(
+                        f"- {chunk.get('content')}"
+                        for chunk in kb_data
+                        if isinstance(chunk, dict) and chunk.get("content")
+                    )
+        })
+
     # Add conversation messages directly (NO JSON)
     final_messages.extend(llm_messages)
 
