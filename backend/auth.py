@@ -13,8 +13,9 @@ from schemas import SignupRequest, LoginRequest, TokenResponse
 from utils import create_access_token, SECRET_KEY, ALGORITHM
 from database import get_db
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-
-# from fastapi.security import OAuth2PasswordRequestForm
+import os
+from fastapi import Body
+ADMIN_SIGNUP_SECRET = os.getenv("ADMIN_SIGNUP_SECRET", "admin-secret")
 
 
 
@@ -87,22 +88,49 @@ def signup_help():
     return {"message": "Use POST /auth/signup"}
 
 # --------------------
+# ADMIN SIGNUP
+# --------------------
+
+@router.post("/admin/signup")
+def admin_signup(
+    data: SignupRequest,
+    admin_secret: str = Body(..., embed=True),
+    db: Session = Depends(get_db),
+):
+    #  protect admin creation
+    if admin_secret != ADMIN_SIGNUP_SECRET:
+        raise HTTPException(status_code=403, detail="Invalid admin secret")
+
+    # no duplicate emails
+    if db.query(User).filter(User.email == data.email).first():
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    #  hash password
+    hashed = bcrypt.hashpw(
+        data.password.encode(),
+        bcrypt.gensalt()
+    ).decode()
+
+    # create admin
+    admin = User(
+        email=data.email,
+        username=data.username,
+        password_hash=hashed,
+        role="admin"
+    )
+
+    db.add(admin)
+    db.commit()
+    db.refresh(admin)
+
+    return {
+        "message": "Admin created successfully",
+        "admin_id": admin.user_id
+    }
+
+# --------------------
 # LOGIN
 # --------------------
-# @router.post("/login", response_model=TokenResponse)
-# def login(data: LoginRequest, db: Session = Depends(get_db)):
-#     user = db.query(User).filter(User.email == data.email).first()
-#     if not user:
-#         raise HTTPException(status_code=401, detail="Invalid credentials")
-
-#     if not bcrypt.checkpw(
-#         data.password.encode(),
-#         user.password_hash.encode()
-#     ):
-#         raise HTTPException(status_code=401, detail="Invalid credentials")
-
-#     token = create_access_token({"user_id": str(user.user_id)})
-#     return {"access_token": token, "token_type": "bearer"}
 @router.post("/login")
 def login(data: LoginRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == data.email).first()
@@ -124,7 +152,7 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
     return {
         "access_token": token,
         "token_type": "bearer",
-        "user": {                       # 🔥 ADD THIS
+        "user": {                       
             "user_id": user.user_id,
             "email": user.email,
             "username": user.username
@@ -135,6 +163,45 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
 @router.get("/login")
 def login_help():
     return {"message": "Use POST /auth/login"}
+
+
+
+
+# --------------------
+# ADMIN LOGIN
+# --------------------
+@router.post("/admin/login")
+def admin_login(data: LoginRequest, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == data.email).first()
+
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
+
+    # 🚫 block non-admins
+    if user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access only")
+
+    if not bcrypt.checkpw(
+        data.password.encode(),
+        user.password_hash.encode()
+    ):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    token = create_access_token({
+        "user_id": str(user.user_id),
+        "role": "admin"
+    })
+
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "admin": {
+            "user_id": user.user_id,
+            "email": user.email,
+            "username": user.username
+        }
+    }
+
 
 # --------------------
 # FORGOT PASSWORD
