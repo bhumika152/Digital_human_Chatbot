@@ -199,25 +199,14 @@ async def chat(
     kb_found = False
  
     try:
-        recent_previous = []
-
-        for m in reversed(llm_context[:-1]):
-            if m["role"] == "user":
-                recent_previous.append(m["content"])
-                if len(recent_previous) == 2:
-                    break
-
-        retrieval_query_parts = list(reversed(recent_previous)) + [user_text]
-        retrieval_query = " ".join(retrieval_query_parts).strip()
-        logger.info("User text+ above 2 user msg: %s", retrieval_query)
         logger.info("enable_rag: %s", agent_context.enable_rag)
 
         kb_data = KnowledgeBaseService.read(
-            query=retrieval_query,
+            query=user_text,
             limit=5,
             document_types=["FAQ", "POLICY"],
-            industry="fintech",
-            
+            industry="fintech",  
+
         )
         logger.info("KB RAW RESULT COUNT: %d", len(kb_data))
         logger.info("KB RAW RESULT: %s", kb_data)
