@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { User, Message, ChatSession } from "../types";
 import { Sidebar } from "./Sidebar";
@@ -6,7 +7,7 @@ import { chatService } from "../services/chatService";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { confirmToast } from "../utils/confirmToast";
-
+ 
 /* ==========================================================
     EDIT PROFILE UI COMPONENT
 ========================================================== */
@@ -374,14 +375,14 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
  
   const [messages, setMessages] = useState<Message[]>([]);
   const loadedIdsRef = React.useRef<Set<string>>(new Set());
-
+ 
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
-  const [showEditProfile, setShowEditProfile] = useState(false); 
+ 
+  const [showEditProfile, setShowEditProfile] = useState(false);
   const [profileUser, setProfileUser] = useState<User | null>(user);
   const [isRestoringSession, setIsRestoringSession] = useState(true);
  
@@ -433,6 +434,7 @@ useEffect(() => {
       setIsRestoringSession(false);
       return;
     }
+    
  
     const loadHistory = async () => {
       try {
@@ -443,14 +445,21 @@ useEffect(() => {
         );
  
         // setMessages(history);
-        setMessages(() => {
-  loadedIdsRef.current.clear(); // naya session ya fresh load
-
-  history.forEach(m => loadedIdsRef.current.add(m.request_id));
-
+//         setMessages(() => {
+//   loadedIdsRef.current.clear(); // naya session ya fresh load
+ 
+//   history.forEach(m => loadedIdsRef.current.add(m.request_id));
+ 
+//   return history;
+// });
+setMessages(() => {
+  loadedIdsRef.current = new Set(history.map(m => m.request_id));
   return history;
 });
 
+setOffset(history.length); // correct now because optimistic ones replaced
+
+ 
         setOffset(history.length);
         setHasMore(history.length === PAGE_SIZE);
         }catch  {
@@ -486,12 +495,12 @@ useEffect(() => {
       // setMessages(prev => [...older, ...prev]);
       setMessages(prev => {
   const uniqueOlder = older.filter(m => !loadedIdsRef.current.has(m.request_id));
-
+ 
   uniqueOlder.forEach(m => loadedIdsRef.current.add(m.request_id));
-
+ 
   return [...uniqueOlder, ...prev];
 });
-
+ 
       setOffset(prev => prev + older.length);
       setHasMore(older.length === PAGE_SIZE);
     } catch {
@@ -527,7 +536,7 @@ useEffect(() => {
     loadedIdsRef.current.add(userMsg.request_id);   // ✅ TRACK USER MSG
     setMessages(prev => [...prev, userMsg]);
     setIsTyping(true);
-    
+   
     const assistantId = `assistant-${Date.now()}`;
     loadedIdsRef.current.add(assistantId);          // ✅ TRACK ASSISTANT MSG
     setMessages(prev => [
@@ -540,6 +549,8 @@ useEffect(() => {
         created_at: new Date().toISOString(),
       },
     ]);
+    setOffset(prev => prev + 2);  // 🔥 FIX: sync pagination with UI
+
  
     let fullResponse = "";
  
@@ -559,7 +570,7 @@ useEffect(() => {
           // );
           setMessages(prev => {
   const exists = prev.some(m => m.request_id === assistantId);
-
+ 
   if (!exists) {
     // If somehow missing, add it back instead of creating duplicate later
     return [
@@ -573,14 +584,14 @@ useEffect(() => {
       }
     ];
   }
-
+ 
   return prev.map(m =>
     m.request_id === assistantId
       ? { ...m, content: fullResponse }
       : m
   );
 });
-
+ 
         },
         newSessionId => {
           setSessionSource("send"); // 🔥 KEY FIX
@@ -673,7 +684,7 @@ useEffect(() => {
         onLogout={onLogout}
         user={profileUser}
         onEditProfile={() => setShowEditProfile(true)}
-
+ 
       />
  
       {showEditProfile ? (
@@ -698,5 +709,6 @@ useEffect(() => {
     </div>
   );
 };
+ 
  
  

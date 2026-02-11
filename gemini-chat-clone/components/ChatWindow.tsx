@@ -1,8 +1,9 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Message } from '../types';
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-
+ 
  
 interface ChatWindowProps {
   chat: { id: string, messages: Message[] } | undefined;
@@ -41,7 +42,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isT
     el.addEventListener("scroll", handleScroll);
     return () => el.removeEventListener("scroll", handleScroll);
   }, []);
-
+ 
   // ✅ Session change hone par direct bottom jump
 useEffect(() => {
   const el = chatScrollRef.current;
@@ -120,7 +121,7 @@ useEffect(() => {
     message.role === "user" ? "justify-end" : "justify-start"
   }`}
 >
-
+ 
       <div
         className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
           message.role === 'user' ? 'bg-indigo-600' : 'bg-emerald-600'
@@ -139,7 +140,7 @@ useEffect(() => {
  
       {/* <div className="flex-1 space-y-1 overflow-hidden"> */}
       <div className="flex flex-col max-w-[80%]">
-
+ 
         <div className="font-bold text-sm uppercase tracking-wide text-[#b4b4b4]">
           {message.role === 'user' ? 'You' : 'Assistant'}
         </div>
@@ -149,7 +150,7 @@ useEffect(() => {
     message.role === "user" ? "ml-auto" : ""
   }`}
 > */}
-
+ 
 <div
   className={`text-base leading-relaxed prose prose-invert ${
     message.role === "user"
@@ -166,10 +167,10 @@ useEffect(() => {
       : "px-4 py-2 rounded-2xl bg-[#1e1e1e] text-white ml-auto"}
   `}
 > */}
-
-
-
-
+ 
+ 
+ 
+ 
   {message.content ? (
     <ReactMarkdown remarkPlugins={[remarkGfm]}>
       {message.content}
@@ -184,7 +185,7 @@ useEffect(() => {
     )
   )}
 </div>
-
+ 
       </div>
     </div>
   ))}
@@ -238,5 +239,6 @@ useEffect(() => {
     </main>
   );
 };
+ 
  
  
