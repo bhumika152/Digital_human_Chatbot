@@ -17,6 +17,12 @@ from fastapi.middleware.cors import CORSMiddleware
 import auth, chat
 from property import property_router
 from database import Base, engine
+# from routers import admin
+from fastapi.staticfiles import StaticFiles
+
+# app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
+# app.include_router(admin.router)
 
 # -------------------------------
 # APP INIT

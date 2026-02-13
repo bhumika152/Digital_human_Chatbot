@@ -53,6 +53,7 @@ def ingest_policy_pdf(
     document_type: str,
     industry: str | None = None,
     language: str = "en",
+    original_filename: str = None,
 ):
     """
     Ingests a policy / FAQ PDF into knowledge_base_embeddings
@@ -61,7 +62,12 @@ def ingest_policy_pdf(
     - rich metadata (never NULL)
     """
 
-    title = file_path.stem.replace("_", " ").title()
+    # title = file_path.stem.replace("_", " ").title()
+    if original_filename:
+        title = original_filename
+    else:
+        title = file_path.name
+
 
     # --------------------------------------------------
     # 1️⃣ DUPLICATE CHECK (IMPORTANT)

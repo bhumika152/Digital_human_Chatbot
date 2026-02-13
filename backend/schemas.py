@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import List,Optional
-
+from pydantic import BaseModel, EmailStr
 
 class SignupRequest(BaseModel):
     email: str
@@ -161,3 +161,16 @@ class PropertyUpdateRequest(BaseModel):
     is_legal: Optional[bool] = None
     owner_name: Optional[str] = None
     contact_phone: Optional[int] = None
+
+    # -----------------------------------
+    # admin schema
+    # -----------------------------------
+
+  
+
+class AdminSignupRequest(BaseModel):
+    username: str      # 👉 Admin Name
+    email: EmailStr
+    password: str
+    admin_secret: str  # 👉 Secret key from frontend
+
