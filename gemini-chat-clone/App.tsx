@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'; // useEffect add
 import { chatService } from './services/chatService'; //
 // import { Routes, Route, Navigate } from "react-router-dom"; // change
+import AdminDashboard from "./components/AdminDashboard";
+
 import { AuthPage } from './components/AuthPage';
 import { ChatPage } from './components/ChatPage';
 import { AdminAuthPage } from "./components/AdminAuthPage";
@@ -9,7 +11,7 @@ import { useLocation ,useNavigate} from "react-router-dom";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
- 
+
  
 /**
  * App component manages the global state: Authentication and App View.
@@ -125,37 +127,76 @@ const App: React.FC = () => {
   if (view === 'loading') {
     return null;
 }
-const getAuthModeFromPath = (): "login" | "signup" => {
-  if (location.pathname.includes("signup")) return "signup";
-  return "login";
-};
 
  
-   return (
-    <div className="min-h-screen bg-[#0d0d0d] text-[#ececec]">
-      {view === 'auth' ? (
-        // <AuthPage
-        //   onAuthSuccess={handleLogin}
-        //   initialMode="login"
-        // />
-        <AuthPage
-  onAuthSuccess={handleLogin}
-  initialMode={getAuthModeFromPath()}
-/>
+//    return (
+//     <div className="min-h-screen bg-[#0d0d0d] text-[#ececec]">
+//       {view === 'auth' ? (
+//         // <AuthPage
+//         //   onAuthSuccess={handleLogin}
+//         //   initialMode="login"
+//         // />
+//         <AuthPage
+//   onAuthSuccess={handleLogin}
+//   initialMode={getAuthModeFromPath()}
+// />
 
-      ) : (
-        <ChatPage user={currentUser} onLogout={handleLogout} />
-      )}
+//       ) : (
+//         <ChatPage user={currentUser} onLogout={handleLogout} />
+//       )}
  
-      <ToastContainer position="top-right" autoClose={2500} />
-    </div>
-  );
+//       <ToastContainer position="top-right" autoClose={2500} />
+//     </div>
+//   );
 //   return (
 //   <div className="min-h-screen bg-[#0d0d0d] text-[#ececec]">
 //     <AdminAuthPage />
 //     <ToastContainer position="top-right" autoClose={2500} />
 //   </div>
 // );
+
+const isAdminRoute =
+  location.pathname === "/admin-login" ;
+
+const isAdminDashboard = location.pathname === "/admin";
+const isAdminLoggedIn = !!localStorage.getItem("admin_token");
+
+return (
+  <div className="min-h-screen bg-[#0d0d0d] text-[#ececec]">
+
+    {/* 🟣 ADMIN DASHBOARD */}
+    {isAdminDashboard ? (
+      isAdminLoggedIn ? (
+        <AdminDashboard />
+      ) : (
+        <AdminAuthPage />
+      )
+    ) : isAdminRoute ? (
+
+      /* 🟣 ADMIN LOGIN / SIGNUP */
+      <AdminAuthPage
+      />
+
+    ) : view === "auth" ? (
+
+      /* 🔵 USER LOGIN / SIGNUP */
+      <AuthPage
+        onAuthSuccess={handleLogin}
+        initialMode="login"
+
+      />
+
+    ) : (
+
+      /* 🟢 USER CHAT */
+      <ChatPage user={currentUser} onLogout={handleLogout} />
+
+    )}
+
+    <ToastContainer position="top-right" autoClose={2500} />
+  </div>
+);
+
 
  
  
