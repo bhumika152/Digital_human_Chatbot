@@ -4,6 +4,10 @@ from fastapi.responses import JSONResponse
 import property
 from logging_config import setup_logging
 from dotenv import load_dotenv
+import voice
+from fastapi.staticfiles import StaticFiles
+
+
 
 
 load_dotenv()
@@ -22,6 +26,8 @@ from database import Base, engine
 # APP INIT
 # -------------------------------
 app = FastAPI()
+app.mount("/temp", StaticFiles(directory="temp"), name="temp")
+
 logger.info("🚀 FastAPI application starting")
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
@@ -86,6 +92,8 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(chat.chat_router)
 app.include_router(chat.user_router)
+app.include_router(voice.router)
+
 
 # ADMIN ROUTERS
 from admin.admin_kb import router as admin_kb_router
