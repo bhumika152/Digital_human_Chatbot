@@ -162,15 +162,8 @@ class PropertyUpdateRequest(BaseModel):
     owner_name: Optional[str] = None
     contact_phone: Optional[int] = None
 
-    # -----------------------------------
-    # admin schema
-    # -----------------------------------
 
   
 
-class AdminSignupRequest(BaseModel):
-    username: str      # 👉 Admin Name
-    email: EmailStr
-    password: str
-    admin_secret: str  # 👉 Secret key from frontend
+
 
