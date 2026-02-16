@@ -206,7 +206,7 @@ async def chat(
             query=user_text,
             limit=5,
             document_types=["FAQ", "POLICY"],
-            industry="fintech",  
+            # industry="fintech",  
 
         )
         logger.info("KB RAW RESULT COUNT: %d", len(kb_data))
