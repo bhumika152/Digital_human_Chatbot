@@ -117,14 +117,15 @@ const stopRecording = () => {
 };
 
 // 📤 Send to Backend
+// 📤 Send voice to backend
 const sendRecording = async () => {
   try {
     const audioBlob = new Blob(audioChunksRef.current, {
-      type: "audio/wav",
+      type: "audio/webm", // browser format
     });
 
     const formData = new FormData();
-    formData.append("file", audioBlob, "voice.wav");
+    formData.append("file", audioBlob, "voice.webm");
 
     const res = await fetch("http://localhost:8000/voice", {
       method: "POST",
@@ -133,14 +134,18 @@ const sendRecording = async () => {
 
     const data = await res.json();
 
-    // Safe text add
+    console.log("VOICE RESPONSE:", data);
+
+    // ✅ Send user text
     if (data.user_text) {
       onSendMessage(data.user_text);
     }
 
-    // Play audio
-    if (data.audio_url) {
-      const audio = new Audio(`http://localhost:8000/${data.audio_url}`);
+    // ✅ Play base64 audio
+    if (data.audio) {
+      const audio = new Audio(
+        "data:audio/wav;base64," + data.audio
+      );
       audio.play();
     }
 
@@ -148,6 +153,7 @@ const sendRecording = async () => {
     console.error("Voice send error:", err);
   }
 };
+
 
   return (
     <main className="flex-1 flex flex-col bg-[#0d0d0d] h-full relative overflow-hidden">
@@ -303,8 +309,8 @@ const sendRecording = async () => {
     onClick={isRecording ? stopRecording : startRecording}
     className={`p-2 rounded-xl transition ${
       isRecording
-        ? "bg-red-600 text-white"
-        : "bg-indigo-600 text-white hover:bg-indigo-500"
+         ? "bg-[#2a2a2a] text-white hover:bg-[#3a3a3a]"
+    : "bg-white text-black"
     }`}
   >
 <img

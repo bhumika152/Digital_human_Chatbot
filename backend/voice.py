@@ -3,7 +3,12 @@ import os
 import json
 import whisper
 import requests
-from pathlib import Path
+import re
+import unicodedata
+import io
+import subprocess
+import numpy as np
+import base64
 
 from fastapi import APIRouter, UploadFile, File
 from fastapi.responses import JSONResponse
@@ -18,19 +23,11 @@ router = APIRouter(prefix="/voice", tags=["voice"])
 
 
 # ==========================================================
-# Paths
-# ==========================================================
-BASE_DIR = Path(__file__).resolve().parent
-TEMP_DIR = BASE_DIR / "temp"
-TEMP_DIR.mkdir(exist_ok=True)
-
-
-# ==========================================================
 # Config
 # ==========================================================
 DIGITAL_HUMAN_BASE_URL = os.getenv(
     "DIGITAL_HUMAN_BASE_URL",
-    "http://127.0.0.1:8001",   # Digital Human service
+    "http://127.0.0.1:8001",
 )
 
 
@@ -40,8 +37,60 @@ DIGITAL_HUMAN_BASE_URL = os.getenv(
 print("🔊 Loading Whisper...")
 stt_model = whisper.load_model("base")
 
-print("🔊 Loading TTS (PoC)...")
+print("🔊 Loading TTS...")
 tts_model = TTS(model_name="tts_models/en/ljspeech/tacotron2-DDC")
+
+
+# ==========================================================
+# TTS Text Cleaner
+# ==========================================================
+def clean_text_for_tts(text: str) -> str:
+
+    text = re.sub(r'[\*\#\>\-\_`~]', ' ', text)
+    text = re.sub(r'\[(.*?)\]\((.*?)\)', r'\1', text)
+    text = re.sub(r'\*{1,2}(.+?)\*{1,2}', r'\1', text)
+    text = re.sub(r'http\S+', '', text)
+
+    text = unicodedata.normalize('NFKD', text)\
+        .encode('ascii', 'ignore')\
+        .decode('ascii')
+
+    text = re.sub(r'[\[\]\(\)\{\}]', ' ', text)
+    text = re.sub(r'[^a-zA-Z0-9.,!?\'" ]+', ' ', text)
+    text = re.sub(r'\s+', ' ', text)
+
+    return text.strip()
+
+
+# ==========================================================
+# Audio Bytes → NumPy (For Whisper)
+# ==========================================================
+def bytes_to_numpy(audio_bytes: bytes) -> np.ndarray:
+
+    cmd = [
+        "ffmpeg",
+        "-i", "pipe:0",
+        "-f", "s16le",
+        "-ac", "1",
+        "-ar", "16000",
+        "pipe:1"
+    ]
+
+    process = subprocess.Popen(
+        cmd,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE
+    )
+
+    out, err = process.communicate(audio_bytes)
+
+    if process.returncode != 0:
+        raise RuntimeError(err.decode())
+
+    audio = np.frombuffer(out, np.int16).astype(np.float32) / 32768.0
+
+    return audio
 
 
 # ==========================================================
@@ -49,24 +98,18 @@ tts_model = TTS(model_name="tts_models/en/ljspeech/tacotron2-DDC")
 # ==========================================================
 @router.post("")
 async def voice_handler(file: UploadFile = File(...)):
+
     try:
-        audio_id = str(uuid.uuid4())
 
-        input_path = TEMP_DIR / f"{audio_id}.wav"
-        output_path = TEMP_DIR / f"{audio_id}_out.wav"
+        # 1️⃣ Read audio
+        audio_bytes = await file.read()
 
-        # --------------------
-        # Save uploaded audio
-        # --------------------
-        with open(input_path, "wb") as f:
-            f.write(await file.read())
+        # 2️⃣ Convert for Whisper
+        audio_np = bytes_to_numpy(audio_bytes)
 
-        print("✅ Saved audio:", input_path)
+        # 3️⃣ STT
+        result = stt_model.transcribe(audio_np)
 
-        # --------------------
-        # Speech → Text (STT)
-        # --------------------
-        result = stt_model.transcribe(str(input_path))
         user_text = result.get("text", "").strip()
 
         if not user_text:
@@ -75,19 +118,14 @@ async def voice_handler(file: UploadFile = File(...)):
                 content={"error": "No speech detected"},
             )
 
-        print("📝 Recognized:", user_text)
+        print("📝 User:", user_text)
 
-        # --------------------
-        # 🧠 Digital Human (STREAMING)
-        # --------------------
+        # 4️⃣ Call Digital Human
         response = requests.post(
             f"{DIGITAL_HUMAN_BASE_URL}/v1/chat/stream",
             json={
                 "llm_context": [
-                    {
-                        "role": "user",
-                        "content": user_text
-                    }
+                    {"role": "user", "content": user_text}
                 ],
                 "flags": {
                     "user_id": "voice_poc",
@@ -102,54 +140,57 @@ async def voice_handler(file: UploadFile = File(...)):
         )
 
         if response.status_code != 200:
-            raise RuntimeError(
-                f"Digital Human failed: {response.status_code} {response.text}"
-            )
+            raise RuntimeError("Digital Human failed")
 
         reply_text = ""
 
         for line in response.iter_lines():
+
             if not line:
                 continue
 
             decoded = line.decode("utf-8").strip()
 
-            # SSE format: "data: {...}"
             if not decoded.startswith("data:"):
                 continue
 
-            try:
-                payload = decoded.removeprefix("data:").strip()
-                data = json.loads(payload)
+            payload = decoded.removeprefix("data:").strip()
+            data = json.loads(payload)
 
-                if data.get("type") == "token":
-                    reply_text += data.get("value", "")
-
-            except Exception:
-                continue
+            if data.get("type") == "token":
+                reply_text += data.get("value", "")
 
         if not reply_text.strip():
-            raise RuntimeError("Empty reply from Digital Human")
+            raise RuntimeError("Empty reply")
 
-        print("🤖 AI Reply:", reply_text)
+        print("🤖 AI:", reply_text)
 
-        # --------------------
-        # 🔊 Text → Speech (PoC / PersonaPlex hook)
-        # --------------------
-        tts_model.tts_to_file(
-            text=reply_text,
-            file_path=str(output_path),
-        )
+        # 5️⃣ Clean text
+        clean_reply = clean_text_for_tts(reply_text)
 
-        print("🔊 Generated:", output_path)
+        # Limit length for speed
+        clean_reply = clean_reply[:400]
 
+        # 6️⃣ TTS
+        wav = tts_model.tts(clean_reply)
+
+        audio_buffer = io.BytesIO()
+        tts_model.synthesizer.save_wav(wav, audio_buffer)
+
+        # 7️⃣ Convert audio → base64
+        audio_base64 = base64.b64encode(
+            audio_buffer.getvalue()
+        ).decode("utf-8")
+
+        # 8️⃣ Send JSON (UI Friendly)
         return {
             "user_text": user_text,
             "reply_text": reply_text,
-            "audio_url": f"temp/{output_path.name}",
+            "audio": audio_base64
         }
 
     except Exception as e:
+
         print("❌ VOICE ERROR:", e)
 
         return JSONResponse(
