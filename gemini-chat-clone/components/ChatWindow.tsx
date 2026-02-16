@@ -298,12 +298,12 @@ const sendRecording = async () => {
           <div className="absolute right-3 bottom-3 flex gap-2">
 
   {/* 🎤 Mic Button */}
-  <button
+  {/* <button
     type="button"
     onClick={isRecording ? stopRecording : startRecording}
     className={`p-2 rounded-xl transition ${
       isRecording
-        ? "bg-red-600 text-white"
+        ? "bg-black ring-2 ring-white"
         : "bg-indigo-600 text-white hover:bg-indigo-500"
     }`}
   >
@@ -316,7 +316,27 @@ const sendRecording = async () => {
   alt="mic"
   className="w-5 h-5"
 />
-  </button>
+  </button> */}
+  <button
+  type="button"
+  onClick={isRecording ? stopRecording : startRecording}
+  className={`p-2 rounded-xl transition ${
+    isRecording
+      ? "bg-black"
+      : "bg-[#2f2f2f] hover:bg-[#3a3a3a]"
+  }`}
+>
+  <img
+    src={
+      isRecording
+        ? "https://img.icons8.com/material-rounded/24/ffffff/microphone.png"
+        : "https://img.icons8.com/material-outlined/24/ffffff/microphone.png"
+    }
+    alt="mic"
+    className="w-5 h-5"
+  />
+</button>
+
 
   {/* 📤 Send Button */}
   <button

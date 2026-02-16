@@ -64,9 +64,36 @@ class KBRetriever:
         cls._vector_index.build(db)
 
     @classmethod
+    def rebuild_index(cls, db: Session):
+
+        print("DEBUG: Rebuilding KB index from DB")
+
+        cls._vector_index = KBVectorIndex()
+        cls._vector_index.build(db)
+
+        if cls._vector_index.index is None:
+            print("DEBUG: Index build failed")
+        else:
+            print("DEBUG: Index built successfully")
+
+
+
+    # @classmethod
+    # def _get_index(cls, db: Session) -> KBVectorIndex:
+    #     if cls._vector_index is None:
+    #         cls.rebuild_index(db)
+    #     return cls._vector_index
+    @classmethod
     def _get_index(cls, db: Session) -> KBVectorIndex:
+
         if cls._vector_index is None:
+            print("DEBUG: Building new KB index")
             cls.rebuild_index(db)
+
+        if cls._vector_index.index is None:
+            print("DEBUG: Index empty, rebuilding")
+            cls.rebuild_index(db)
+
         return cls._vector_index
 
     @classmethod
@@ -101,8 +128,11 @@ class KBRetriever:
             if record.language != language:
                 continue
 
-            if document_types and record.document_type not in document_types:
+            # if document_types and record.document_type not in document_types:
+            #     continue
+            if document_types and record.document_type.lower() not in [dt.lower() for dt in document_types]:
                 continue
+
 
             if industry and record.industry != industry:
                 continue
@@ -120,3 +150,5 @@ class KBRetriever:
         )
 
         return top_records
+
+    

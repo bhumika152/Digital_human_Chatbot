@@ -6,7 +6,8 @@ from dotenv import load_dotenv
 import logging
 import voice
 from fastapi.staticfiles import StaticFiles
-
+from models import KnowledgeBaseEmbedding
+from services.admin_knowledgeBase.kb_retrieval import KBRetriever
 # --------------------------------
 # ENV + LOGGING
 # --------------------------------
@@ -65,6 +66,21 @@ def rebuild_per_user_faiss():
             "✅ FAISS rebuild complete | Loaded %s memory vectors",
             total_loaded
         )
+                # ----------------------------
+        # 🔥 KB FAISS REBUILD (ADD THIS)
+        # ----------------------------
+        logger.info("📚 Rebuilding Knowledge Base FAISS index...")
+        KBRetriever.rebuild_index(db)
+ 
+        kb_count = db.query(KnowledgeBaseEmbedding).filter(
+            KnowledgeBaseEmbedding.is_active == True
+        ).count()
+ 
+        logger.info(
+            "✅ KB FAISS rebuild complete | Loaded %s KB vectors",
+            kb_count
+        )
+ 
 
     except Exception as e:
         logger.exception("❌ FAISS rebuild failed: %s", e)
@@ -130,6 +146,9 @@ app.include_router(chat.chat_router)
 app.include_router(chat.user_router)
 app.include_router(admin_kb_router)
 app.include_router(property_router)
+app.include_router(voice.router)
+
+
 
 
 # --------------------------------
