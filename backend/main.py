@@ -5,7 +5,6 @@ import property
 from logging_config import setup_logging
 from dotenv import load_dotenv
 
-
 load_dotenv()
 setup_logging()
  
@@ -109,6 +108,9 @@ def root():
 # DB INIT
 # -------------------------------
 Base.metadata.create_all(bind=engine)
+
+
+
 
 # Include chat router
 app.include_router(chat.chat_router)
