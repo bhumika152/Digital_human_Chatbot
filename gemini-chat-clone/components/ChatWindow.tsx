@@ -19,6 +19,10 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage, isT
   // scroll system
   const chatScrollRef = useRef<HTMLDivElement>(null);
   const [showScrollDown, setShowScrollDown] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+
  
   useEffect(() => {
     const el = chatScrollRef.current;
@@ -76,7 +80,75 @@ useEffect(() => {
       handleSubmit(e);
     }
   };
- 
+
+
+// 🎤 Start Recording
+const startRecording = async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+    const mediaRecorder = new MediaRecorder(stream);
+    mediaRecorderRef.current = mediaRecorder;
+    audioChunksRef.current = [];
+
+    mediaRecorder.ondataavailable = (e) => {
+      if (e.data.size > 0) {
+        audioChunksRef.current.push(e.data);
+      }
+    };
+
+    mediaRecorder.onstop = sendRecording;
+
+    mediaRecorder.start();
+    setIsRecording(true);
+
+  } catch (err) {
+    console.error("Mic access error:", err);
+    alert("Microphone permission denied!");
+  }
+};
+
+// ⏹ Stop Recording
+const stopRecording = () => {
+  if (mediaRecorderRef.current) {
+    mediaRecorderRef.current.stop();
+    setIsRecording(false);
+  }
+};
+
+// 📤 Send to Backend
+const sendRecording = async () => {
+  try {
+    const audioBlob = new Blob(audioChunksRef.current, {
+      type: "audio/wav",
+    });
+
+    const formData = new FormData();
+    formData.append("file", audioBlob, "voice.wav");
+
+    const res = await fetch("http://localhost:8000/voice", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+
+    // Safe text add
+    if (data.user_text) {
+      onSendMessage(data.user_text);
+    }
+
+    // Play audio
+    if (data.audio_url) {
+      const audio = new Audio(`http://localhost:8000/${data.audio_url}`);
+      audio.play();
+    }
+
+  } catch (err) {
+    console.error("Voice send error:", err);
+  }
+};
+
   return (
     <main className="flex-1 flex flex-col bg-[#0d0d0d] h-full relative overflow-hidden">
         {/* 👇 YE SCROLL CONTAINER HAI */}
@@ -223,17 +295,57 @@ useEffect(() => {
             className="w-full bg-[#171717] text-[#ececec] border border-[#303030] rounded-2xl pl-4 pr-14 py-4 focus:outline-none focus:ring-1 focus:ring-[#676767] resize-none overflow-hidden max-h-48 transition"
             style={{ height: 'auto' }}
           />
-          <button
-            type="submit"
-            disabled={!inputValue.trim() || isTyping}
-            className={`absolute right-3 bottom-3 p-2 rounded-xl transition ${
-              inputValue.trim() && !isTyping ? 'bg-white text-black hover:bg-[#d1d1d1]' : 'text-[#676767] bg-[#2f2f2f]'
-            }`}
-          >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-            </svg>
-          </button>
+          <div className="absolute right-3 bottom-3 flex gap-2">
+
+  {/* 🎤 Mic Button */}
+  <button
+    type="button"
+    onClick={isRecording ? stopRecording : startRecording}
+    className={`p-2 rounded-xl transition ${
+      isRecording
+        ? "bg-red-600 text-white"
+        : "bg-indigo-600 text-white hover:bg-indigo-500"
+    }`}
+  >
+<img
+  src={
+    isRecording
+      ? "https://img.icons8.com/material-rounded/24/microphone.png"
+      : "https://img.icons8.com/material-outlined/24/microphone.png"
+  }
+  alt="mic"
+  className="w-5 h-5"
+/>
+  </button>
+
+  {/* 📤 Send Button */}
+  <button
+    type="submit"
+    disabled={!inputValue.trim() || isTyping}
+    className={`p-2 rounded-xl transition ${
+      inputValue.trim() && !isTyping
+        ? "bg-white text-black hover:bg-[#d1d1d1]"
+        : "text-[#676767] bg-[#2f2f2f]"
+    }`}
+  >
+    <svg
+      className="w-5 h-5"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M5 10l7-7m0 0l7 7m-7-7v18"
+      />
+    </svg>
+  </button>
+
+</div>
+
+           
         </form>
       </div>
     </main>

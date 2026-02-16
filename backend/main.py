@@ -9,6 +9,9 @@ import logging
 # ENV + LOGGING
 # --------------------------------
 from logging_config import setup_logging
+from dotenv import load_dotenv
+
+
 load_dotenv()
 setup_logging()
 
@@ -29,6 +32,8 @@ from services.memory_index_manager import memory_index_manager
 # APP INIT
 # --------------------------------
 app = FastAPI()
+app.mount("/temp", StaticFiles(directory="temp"), name="temp")
+
 logger.info("🚀 FastAPI application starting")
 
 
@@ -124,6 +129,9 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(chat.chat_router)
 app.include_router(chat.user_router)
+
+# ADMIN ROUTERS
+from admin.admin_kb import router as admin_kb_router
 app.include_router(admin_kb_router)
 app.include_router(property_router)
 

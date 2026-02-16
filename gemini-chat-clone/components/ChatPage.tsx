@@ -397,15 +397,35 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onLogout }) => {
   /* =========================
      LOAD SIDEBAR SESSIONS
   ========================== */
-  useEffect(() => {
-    if (!user) return;
- 
-    chatService
-      .getSessions()
-      .then(setSessions)
-      .catch(() => toast.error("Failed to load chats"));
-  }, [user]);
- 
+  
+useEffect(() => {
+  if (!user) return;
+
+  const loadSessions = async () => {
+    try {
+      const data = await chatService.getSessions();
+      setSessions(data);
+
+      // 🔥 Validate restored session
+      const active = localStorage.getItem("active_session_id");
+
+      if (active && !data.some(s => s.session_id === active)) {
+        console.warn("Invalid session removed:", active);
+
+        localStorage.removeItem("active_session_id");
+        setCurrentSessionId(null);
+        setSessionSource(null);
+        setMessages([]);
+      }
+
+    } catch {
+      toast.error("Failed to load chats");
+    }
+  };
+
+  loadSessions();
+}, [user]);
+
   /* =========================
      LOAD CHAT HISTORY
      (SINGLE SOURCE OF TRUTH)
@@ -450,8 +470,14 @@ setOffset(history.length); // correct now because optimistic ones replaced
  
         setOffset(history.length);
         setHasMore(history.length === PAGE_SIZE);
-      } catch {
-        toast.error("Failed to load chat history");
+        }catch  {
+    toast.error("Chat not found");
+
+    localStorage.removeItem("active_session_id");
+    setCurrentSessionId(null);
+    setMessages([]);
+  
+
       } finally {
         setIsRestoringSession(false);
         setSessionSource(null);
@@ -619,25 +645,29 @@ setOffset(history.length); // correct now because optimistic ones replaced
      DELETE CHAT
   ========================== */
   const handleDeleteChat = (sessionId: string) => {
-    confirmToast("Delete this chat?", async () => {
-      try {
-        await chatService.deleteSession(sessionId);
- 
-        setSessions(prev =>
-          prev.filter(s => s.session_id !== sessionId)
-        );
- 
-        if (currentSessionId === sessionId) {
-          handleNewChat();
-        }
- 
-        toast.success("Chat deleted");
-      } catch {
-        toast.error("Delete failed");
+  confirmToast("Delete this chat?", async () => {
+    try {
+      await chatService.deleteSession(sessionId);
+
+      // ✅ Always reload from DB
+      const freshSessions = await chatService.getSessions();
+      setSessions(freshSessions);
+
+      if (currentSessionId === sessionId) {
+        handleNewChat();
       }
-    });
-  };
- 
+
+      localStorage.removeItem("active_session_id");
+
+      toast.success("Chat deleted");
+
+    } catch (err) {
+      console.error(err);
+      toast.error("Delete failed");
+    }
+  });
+};
+
   /* =========================
      RENDER
   ========================== */
