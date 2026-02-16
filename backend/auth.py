@@ -46,6 +46,12 @@ def get_current_user(
 @router.post("/signup")
 def signup(data: SignupRequest, db: Session = Depends(get_db)):
 
+    if len(data.password) > 128:
+        raise HTTPException(
+            status_code=400,
+            detail="Password too long"
+        )
+
     # 1️⃣ Check existing user
     if db.query(User).filter(User.email == data.email).first():
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -168,6 +174,13 @@ def signup_help():
 # --------------------
 @router.post("/login")
 def login(data: LoginRequest, db: Session = Depends(get_db)):
+
+    if len(data.password) > 128:
+        raise HTTPException(
+            status_code=400,
+            detail="Password too long"
+        )
+    
     user = db.query(User).filter(User.email == data.email).first()
     if not user:
         raise HTTPException(status_code=401, detail="User not found")
@@ -176,7 +189,7 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
         data.password.encode(),
         user.password_hash.encode()
     ):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        raise HTTPException(status_code=401, detail="W")
  
     # ✅ update last login
     user.last_login = datetime.now(timezone.utc)
@@ -212,7 +225,7 @@ def admin_login(data: LoginRequest, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=401, detail="User not found")
 
-    # 🚫 block non-admins
+    # block non-admins
     if user.role != "admin":
         raise HTTPException(status_code=403, detail="Admin access only")
 
