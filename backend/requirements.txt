@@ -1,3 +1,8 @@
+numpy==1.24.4
+transformers==4.36.2
+sentence-transformers==2.2.2
+huggingface-hub==0.19.4
+
 fastapi == 0.128.0
 uvicorn == 0.40.0
 sqlalchemy == 2.0.45
@@ -15,7 +20,8 @@ openai
 pytest>=7.0
 typing-extensions>=4.5
 python-dotenv
-sentence-transformers
 scikit-learn
 torch
 faiss-cpu
+openai-whisper
+TTS

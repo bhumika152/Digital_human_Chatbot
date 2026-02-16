@@ -1,43 +1,4 @@
-# # backend/services/knowledge_base/kb_semantic_search.py
 
-# import torch
-# from typing import List
-# from sentence_transformers.util import cos_sim
-# from models import KnowledgeBaseEmbedding
-
-
-# def semantic_search_kb(
-#     records: List[KnowledgeBaseEmbedding],
-#     query_embedding: list[float],
-#     top_k: int = 5,
-#     threshold: float = 0.35,
-# ) -> List[tuple[KnowledgeBaseEmbedding, float]]:
-#     """
-#     Returns top-k KB chunks sorted by similarity score
-#     """
-
-#     if not records:
-#         return []
-
-#     q = torch.tensor(query_embedding)
-
-#     scored_results = []
-
-#     for record in records:
-#         if not record.embedding:
-#             continue
-
-#         emb = torch.tensor(record.embedding)
-#         score = cos_sim(q, emb).item()
-
-#         if score >= threshold:
-#             scored_results.append((record, score))
-
-#     # sort by similarity DESC
-#     scored_results.sort(key=lambda x: x[1], reverse=True)
-
-#     return scored_results[:top_k]
-# backend/services/knowledge_base/kb_retrieval.py
 from typing import List, Tuple
 from sqlalchemy.orm import Session
 
@@ -51,13 +12,17 @@ class KBRetriever:
     """
     Handles:
     - Query embedding
-    - ANN search
-    - Metadata filtering
-    - Reranking
+    - FAISS ANN search
+    - DB record fetch
+    - Safe metadata filtering
+    - Cross-encoder reranking
     """
 
     _vector_index: KBVectorIndex | None = None
 
+    # --------------------------------------------------
+    # BUILD INDEX
+    # --------------------------------------------------
     @classmethod
     def rebuild_index(cls, db: Session):
         cls._vector_index = KBVectorIndex()
@@ -69,6 +34,9 @@ class KBRetriever:
             cls.rebuild_index(db)
         return cls._vector_index
 
+    # --------------------------------------------------
+    # RETRIEVE
+    # --------------------------------------------------
     @classmethod
     def retrieve(
         cls,
@@ -81,38 +49,68 @@ class KBRetriever:
         language: str = "en",
     ) -> List[KnowledgeBaseEmbedding]:
 
+        if not query:
+            return []
+
         # 1️⃣ Embed query
         query_embedding = get_embedding(query)
 
-        # 2️⃣ ANN search (top 20)
+        # 2️⃣ FAISS search (top 20 before rerank)
         index = cls._get_index(db)
 
-        candidates: List[Tuple[KnowledgeBaseEmbedding, float]] = (
-            index.search(query_embedding, top_k=20)
-        )
+        if index.index.ntotal == 0:
+            print("⚠️ KB FAISS index is empty")
+            return []
+
+        candidates = index.search(query_embedding, top_k=20)
 
         if not candidates:
             return []
 
-        # 3️⃣ Metadata filtering
-        filtered = []
-        for record, score in candidates:
+        # 3️⃣ Fetch records from DB using IDs
+        records: List[Tuple[KnowledgeBaseEmbedding, float]] = []
 
-            if record.language != language:
+        for kb_id, score in candidates:
+            if kb_id == -1:
                 continue
 
-            if document_types and record.document_type not in document_types:
-                continue
+            record = db.get(KnowledgeBaseEmbedding, int(kb_id))
+            if record:
+                records.append((record, float(score)))
 
-            if industry and record.industry != industry:
-                continue
+        if not records:
+            return []
+
+        # 4️⃣ Safe metadata filtering
+        filtered: List[Tuple[KnowledgeBaseEmbedding, float]] = []
+
+        for record, score in records:
+
+            # Language filter (case-insensitive)
+            if language and record.language:
+                if record.language.lower() != language.lower():
+                    continue
+
+            # Document type filter (case-insensitive)
+            if document_types:
+                if not record.document_type:
+                    continue
+                if record.document_type.lower() not in [
+                    dt.lower() for dt in document_types
+                ]:
+                    continue
+
+            # Industry filter (allow NULL in DB)
+            if industry:
+                if record.industry and record.industry.lower() != industry.lower():
+                    continue
 
             filtered.append((record, score))
 
         if not filtered:
             return []
 
-        # 4️⃣ Rerank
+        # 5️⃣ Cross-encoder reranking
         top_records = rerank(
             query=query,
             candidates=filtered,

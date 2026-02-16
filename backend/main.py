@@ -26,6 +26,8 @@ from admin.admin_kb import router as admin_kb_router
 from database import Base, engine, SessionLocal
 from models import MemoryStore
 from services.memory_index_manager import memory_index_manager
+from services.admin_knowledgeBase.kb_retrieval import KBRetriever
+from models import KnowledgeBaseEmbedding
 
 # --------------------------------
 # APP INIT
@@ -65,6 +67,20 @@ def rebuild_per_user_faiss():
             "✅ FAISS rebuild complete | Loaded %s memory vectors",
             total_loaded
         )
+        # ----------------------------
+        # 🔥 KB INDEX REBUILD
+        # ----------------------------
+        logger.info("📚 Rebuilding Knowledge Base FAISS index...")
+        KBRetriever.rebuild_index(db)
+
+        if KBRetriever._vector_index and KBRetriever._vector_index.index:
+            logger.info(
+                "✅ KB FAISS rebuild complete | Loaded %s KB vectors",
+                KBRetriever._vector_index.index.ntotal
+            )
+        else:
+            logger.warning("⚠️ KB FAISS index is empty!")
+       
 
     except Exception as e:
         logger.exception("❌ FAISS rebuild failed: %s", e)
