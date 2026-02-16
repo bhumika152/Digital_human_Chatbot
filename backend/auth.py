@@ -14,8 +14,10 @@ from utils import create_access_token, SECRET_KEY, ALGORITHM
 from database import get_db
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import os
-from fastapi import Body
-ADMIN_SIGNUP_SECRET = os.getenv("ADMIN_SIGNUP_SECRET", "admin-secret")
+# from fastapi import Body
+# from schemas import AdminSignupRequest
+
+# ADMIN_SIGNUP_SECRET = os.getenv("ADMIN_SIGNUP_SECRET", "admin-secret")
 
 
 
@@ -91,42 +93,75 @@ def signup_help():
 # ADMIN SIGNUP
 # --------------------
 
-@router.post("/admin/signup")
-def admin_signup(
-    data: SignupRequest,
-    admin_secret: str = Body(..., embed=True),
-    db: Session = Depends(get_db),
-):
-    
-    if admin_secret != ADMIN_SIGNUP_SECRET:
-        raise HTTPException(status_code=403, detail="Invalid admin secret")
+# @router.post("/admin/signup")
+# def admin_signup(
+#     data: SignupRequest,
+#     admin_secret: str = Body(..., embed=True),
+#     db: Session = Depends(get_db),
+# ):
+#     #  protect admin creation
+#     if admin_secret != ADMIN_SIGNUP_SECRET:
+#         raise HTTPException(status_code=403, detail="Invalid admin secret")
 
-    
-    if db.query(User).filter(User.email == data.email).first():
-        raise HTTPException(status_code=400, detail="Email already registered")
+#     # no duplicate emails
+#     if db.query(User).filter(User.email == data.email).first():
+#         raise HTTPException(status_code=400, detail="Email already registered")
 
-    
-    hashed = bcrypt.hashpw(
-        data.password.encode(),
-        bcrypt.gensalt()
-    ).decode()
+#     #  hash password
+#     hashed = bcrypt.hashpw(
+#         data.password.encode(),
+#         bcrypt.gensalt()
+#     ).decode()
 
-    
-    admin = User(
-        email=data.email,
-        username=data.username,
-        password_hash=hashed,
-        role="admin"
-    )
+#     # create admin
+#     admin = User(
+#         email=data.email,
+#         username=data.username,
+#         password_hash=hashed,
+#         role="admin"
+#     )
 
-    db.add(admin)
-    db.commit()
-    db.refresh(admin)
+#     db.add(admin)
+#     db.commit()
+#     db.refresh(admin)
 
-    return {
-        "message": "Admin created successfully",
-        "admin_id": admin.user_id
-    }
+#     return {
+#         "message": "Admin created successfully",
+#         "admin_id": admin.user_id
+#     }
+
+# @router.post("/admin/signup")
+# def admin_signup(data: AdminSignupRequest, db: Session = Depends(get_db)):
+
+#     # 🔐 Secret key check
+#     if data.admin_secret != ADMIN_SIGNUP_SECRET:
+#         raise HTTPException(status_code=403, detail="Invalid admin secret")
+
+#     # 📧 Prevent duplicate email
+#     if db.query(User).filter(User.email == data.email).first():
+#         raise HTTPException(status_code=400, detail="Email already registered")
+
+#     # 🔑 Hash password
+#     hashed = bcrypt.hashpw(data.password.encode(), bcrypt.gensalt()).decode()
+
+#     # 👑 Create admin
+#     admin = User(
+#         email=data.email,
+#         username=data.username,
+#         password_hash=hashed,
+#         role="admin"
+#     )
+
+#     db.add(admin)
+#     db.commit()
+#     db.refresh(admin)
+
+#     return {
+#         "message": "Admin created successfully",
+#         "admin_id": admin.user_id,
+#         "admin_name": admin.username
+#     }
+
 
 # --------------------
 # LOGIN
@@ -201,6 +236,38 @@ def admin_login(data: LoginRequest, db: Session = Depends(get_db)):
             "username": user.username
         }
     }
+# --------------------
+# ADMIN ME
+# --------------------
+@router.get("/admin/me")
+def get_admin_me(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    db: Session = Depends(get_db)
+):
+    try:
+        token = credentials.credentials
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+
+        # 🔐 Role check
+        if payload.get("role") != "admin":
+            raise HTTPException(status_code=403, detail="Admin access only")
+
+        user_id = int(payload["user_id"])
+
+        admin = db.query(User).filter(User.user_id == user_id).first()
+
+        if not admin:
+            raise HTTPException(status_code=404, detail="Admin not found")
+
+        return {
+            "user_id": admin.user_id,
+            "email": admin.email,
+            "username": admin.username,
+            "role": admin.role
+        }
+
+    except (JWTError, KeyError, ValueError):
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
 
 
 # --------------------

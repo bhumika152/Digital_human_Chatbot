@@ -48,6 +48,7 @@ def upload_kb_document(
     # -----------------------
     # SAVE FILE TEMPORARILY
     # -----------------------
+    original_filename = file.filename
     temp_filename = f"{uuid.uuid4()}_{file.filename}"
     file_path = UPLOAD_DIR / temp_filename
 
@@ -64,6 +65,7 @@ def upload_kb_document(
             document_type=document_type,
             industry=industry,
             language=language,
+            original_filename=original_filename
         )
     except Exception as e:
         raise HTTPException(
@@ -113,7 +115,7 @@ def list_kb_documents(
             KnowledgeBaseEmbedding.version,
             KnowledgeBaseEmbedding.is_active,
         )
-        .order_by(func.min(KnowledgeBaseEmbedding.created_at).desc())
+        .order_by(func.min(KnowledgeBaseEmbedding.created_at).asc())
         .all()
     )
 
