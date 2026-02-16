@@ -69,7 +69,7 @@ _ _ p y c a c h e _ _ /
  
 backend/temp/
  
- 
+backend/generate_hash.py
  
 Ignoring files - GitHub Docs
 You can configure Git to ignore files you don't want to check in to GitHub.
