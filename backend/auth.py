@@ -97,21 +97,21 @@ def admin_signup(
     admin_secret: str = Body(..., embed=True),
     db: Session = Depends(get_db),
 ):
-    #  protect admin creation
+    
     if admin_secret != ADMIN_SIGNUP_SECRET:
         raise HTTPException(status_code=403, detail="Invalid admin secret")
 
-    # no duplicate emails
+    
     if db.query(User).filter(User.email == data.email).first():
         raise HTTPException(status_code=400, detail="Email already registered")
 
-    #  hash password
+    
     hashed = bcrypt.hashpw(
         data.password.encode(),
         bcrypt.gensalt()
     ).decode()
 
-    # create admin
+    
     admin = User(
         email=data.email,
         username=data.username,
@@ -177,7 +177,7 @@ def admin_login(data: LoginRequest, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=401, detail="User not found")
 
-    # 🚫 block non-admins
+    # block non-admins
     if user.role != "admin":
         raise HTTPException(status_code=403, detail="Admin access only")
 
