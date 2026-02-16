@@ -130,6 +130,9 @@ app.include_router(chat.chat_router)
 app.include_router(chat.user_router)
 app.include_router(admin_kb_router)
 app.include_router(property_router)
+app.include_router(voice.router)
+
+
 
 
 # --------------------------------
