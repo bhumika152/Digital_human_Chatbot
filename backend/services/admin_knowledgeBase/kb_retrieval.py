@@ -26,8 +26,15 @@ class KBRetriever:
  
     @classmethod
     def _get_index(cls, db: Session) -> KBVectorIndex:
+
         if cls._vector_index is None:
+            print("DEBUG: Building new KB index")
             cls.rebuild_index(db)
+
+        if cls._vector_index.index is None:
+            print("DEBUG: Index empty, rebuilding")
+            cls.rebuild_index(db)
+
         return cls._vector_index
  
     @classmethod
@@ -81,3 +88,5 @@ class KBRetriever:
         )
  
         return top_records
+
+    

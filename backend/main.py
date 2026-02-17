@@ -6,7 +6,8 @@ from dotenv import load_dotenv
 import logging
 import voice
 from fastapi.staticfiles import StaticFiles
-
+from models import KnowledgeBaseEmbedding
+from services.admin_knowledgeBase.kb_retrieval import KBRetriever
 # --------------------------------
 # ENV + LOGGING
 # --------------------------------

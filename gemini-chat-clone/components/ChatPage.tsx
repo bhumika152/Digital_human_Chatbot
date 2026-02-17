@@ -659,11 +659,19 @@ setOffset(history.length); // correct now because optimistic ones replaced
 
       localStorage.removeItem("active_session_id");
 
-      toast.success("Chat deleted");
+      // toast.success("Chat deleted");
+      toast.success("Chat deleted", {
+  toastId: "chat-delete"
+});
+
 
     } catch (err) {
       console.error(err);
-      toast.error("Delete failed");
+      // toast.error("Delete failed");
+      toast.error("Delete failed", {
+  toastId: "chat-delete-error"
+});
+
     }
   });
 };
@@ -673,7 +681,7 @@ setOffset(history.length); // correct now because optimistic ones replaced
   ========================== */
   return (
     <div className="flex h-screen overflow-hidden">
-      <ToastContainer />
+      {/* <ToastContainer /> */}
  
       <Sidebar
         chats={sessions.map(s => ({

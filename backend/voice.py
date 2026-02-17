@@ -181,14 +181,12 @@ async def voice_handler(file: UploadFile = File(...)):
         audio_base64 = base64.b64encode(
             audio_buffer.getvalue()
         ).decode("utf-8")
-
         # 8️⃣ Send JSON (UI Friendly)
         return {
             "user_text": user_text,
             "reply_text": reply_text,
             "audio": audio_base64
         }
-
     except Exception as e:
 
         print("❌ VOICE ERROR:", e)

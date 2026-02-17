@@ -193,7 +193,18 @@ return (
 
     )}
 
-    <ToastContainer position="top-right" autoClose={2500} />
+    {/* <ToastContainer position="top-right" autoClose={2500} /> */}
+    <ToastContainer
+  position="top-right"
+  autoClose={1000}
+  closeOnClick
+  pauseOnHover
+  draggable
+  limit={1}
+  newestOnTop
+/>
+
+
   </div>
 );
 
