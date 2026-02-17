@@ -172,12 +172,14 @@ User message:
         and enable_memory
     ):
         try:
+            logger.info("🧠 Memory Agent called")
             mem_raw = await Runner.run(
                 memory_agent,
                 router_input,
                 context=context,
                 max_turns=1,
             )
+            logger.info("🧠 Memory output: %s", mem_raw)
 
             memory_action = safe_json_loads(mem_raw.final_output, default={})
             action_type = memory_action.get("action")

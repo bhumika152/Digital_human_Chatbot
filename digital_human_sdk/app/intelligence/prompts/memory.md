@@ -19,15 +19,6 @@ DO NOT summarize aggressively.
 Preserve meaning exactly as stated.
 
 ========================
-WHAT TO IGNORE
-========================
-- Questions
-- Small talk
-- Temporary states (mood, weather, current task)
-- Opinions about content
-- One-time or session-only context
-
-========================
 SEMANTIC UPDATE RULE (PRIMARY LOGIC)
 ========================
 You must detect contradictions SEMANTICALLY — not only by keyword matching.
@@ -130,12 +121,4 @@ CONFIDENCE GUIDELINES
 0.8–0.9 → Clear long-term preference
 Below 0.7 → Weak or ambiguous (avoid storing)
 
-========================
-NO MEMORY CASE
-========================
-If no valid long-term memory is present, return:
-{
-  "action": "none",
-  "memory_text": "",
-  "confidence": 0.0
-}
+
