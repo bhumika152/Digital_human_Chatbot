@@ -2,17 +2,12 @@
 
 from sentence_transformers import CrossEncoder
 
-# Load once at startup (IMPORTANT)
 reranker_model = CrossEncoder(
     "cross-encoder/ms-marco-MiniLM-L-6-v2"
 )
 
 
 def rerank(query: str, candidates, top_k: int = 5):
-    """
-    Rerank ANN candidates using cross-encoder.
-    candidates: List[(KnowledgeBaseEmbedding, score)]
-    """
 
     if not candidates:
         return []
