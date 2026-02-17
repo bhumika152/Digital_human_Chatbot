@@ -24,7 +24,7 @@ except ImportError:
 
 logger = logging.getLogger("orchestrator")
 
-ALLOWED_MEMORY_ACTIONS = {"save", "update", "delete", "none"}
+ALLOWED_MEMORY_ACTIONS = {"save", "update", "delete"}
 
 PROPERTY_UPDATE_SCHEMA = {
     "required": ["property_id"],
@@ -475,6 +475,9 @@ User message:
 
                 if hasattr(tool_context, "model_dump"):
                     tool_context = tool_context.model_dump()
+                
+                logger.info("✅ Tool executed successfully: %s", tool_context)
+
 
         except Exception:
             logger.exception("❌ Tool execution failed")

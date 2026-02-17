@@ -307,13 +307,88 @@ class MemoryService:
             db.close()
 
 
-# =====================================================
-# WRITE OR UPDATE MEMORY
-# =====================================================
+# # =====================================================
+# # WRITE OR UPDATE MEMORY
+# # =====================================================
+# def write_or_update_memory(
+#     *,
+#     db: Session,
+#     user_id: int,
+#     memory_text: str,
+#     confidence_score: Optional[float] = None,
+#     ttl_days: int = 30,
+# ) -> Optional[MemoryStore]:
+
+#     if not memory_text:
+#         return None
+
+#     embedding = get_embedding(memory_text)
+#     expires_at = datetime.now(timezone.utc) + timedelta(days=ttl_days)
+
+#     # -------------------------------------
+#     # First try semantic match via FAISS
+#     # -------------------------------------
+#     results = memory_index_manager.search(
+#         user_id=user_id,
+#         query_embedding=embedding,
+#         top_k=1,
+#     )
+
+#     if results:
+#         memory_id, score = results[0]
+    
+#     if score > 0.80:
+#         existing = (
+#             db.query(MemoryStore)
+#             .filter(
+#                 MemoryStore.memory_id == memory_id,
+#                 MemoryStore.user_id == user_id,
+#                 MemoryStore.is_active.is_(True),
+#             )
+#             .first()
+#         )
+
+#         if existing:
+#             # 🔁 Update existing
+#             existing.memory_content = memory_text
+#             existing.embedding = embedding
+#             existing.confidence_score = confidence_score
+#             existing.expires_at = expires_at
+
+#             # Update FAISS
+#             memory_index_manager.remove(user_id, memory_id)
+#             memory_index_manager.add(user_id, memory_id, embedding)
+
+#             return existing
+
+#     # -------------------------------------
+#     # Create new memory
+#     # -------------------------------------
+#     memory = MemoryStore(
+#         user_id=user_id,
+#         memory_content=memory_text,
+#         embedding=embedding,
+#         confidence_score=confidence_score,
+#         expires_at=expires_at,
+#         is_active=True,
+#     )
+
+#     db.add(memory)
+#     db.flush()  # get memory_id before commit
+
+#     # Add to FAISS
+#     memory_index_manager.add(
+#         user_id=user_id,
+#         memory_id=memory.memory_id,
+#         embedding=embedding,
+#     )
+
+#     return memory
 def write_or_update_memory(
     *,
     db: Session,
     user_id: int,
+    action: str,
     memory_text: str,
     confidence_score: Optional[float] = None,
     ttl_days: int = 30,
@@ -325,64 +400,61 @@ def write_or_update_memory(
     embedding = get_embedding(memory_text)
     expires_at = datetime.now(timezone.utc) + timedelta(days=ttl_days)
 
-    # -------------------------------------
-    # First try semantic match via FAISS
-    # -------------------------------------
-    results = memory_index_manager.search(
-        user_id=user_id,
-        query_embedding=embedding,
-        top_k=1,
-    )
+    # ==========================================
+    # SAVE (Always new)
+    # ==========================================
+    if action == "save":
 
-    if results:
-        memory_id, score = results[0]
-
-        existing = (
-            db.query(MemoryStore)
-            .filter(
-                MemoryStore.memory_id == memory_id,
-                MemoryStore.user_id == user_id,
-                MemoryStore.is_active.is_(True),
-            )
-            .first()
+        memory = MemoryStore(
+            user_id=user_id,
+            memory_content=memory_text,
+            embedding=embedding,
+            confidence_score=confidence_score,
+            expires_at=expires_at,
+            is_active=True,
         )
 
+        db.add(memory)
+        db.flush()
+
+        memory_index_manager.add(
+            user_id=user_id,
+            memory_id=memory.memory_id,
+            embedding=embedding,
+        )
+
+        return memory
+
+    # ==========================================
+    # UPDATE (Find best match via FAISS)
+    # ==========================================
+    if action == "update":
+
+        results = memory_index_manager.search(
+            user_id=user_id,
+            query_embedding=embedding,
+            top_k=1,
+        )
+
+        if not results:
+            return None
+
+        memory_id, _ = results[0]
+
+        existing = db.get(MemoryStore, memory_id)
+
         if existing:
-            # 🔁 Update existing
             existing.memory_content = memory_text
             existing.embedding = embedding
             existing.confidence_score = confidence_score
             existing.expires_at = expires_at
 
-            # Update FAISS
             memory_index_manager.remove(user_id, memory_id)
             memory_index_manager.add(user_id, memory_id, embedding)
 
             return existing
 
-    # -------------------------------------
-    # Create new memory
-    # -------------------------------------
-    memory = MemoryStore(
-        user_id=user_id,
-        memory_content=memory_text,
-        embedding=embedding,
-        confidence_score=confidence_score,
-        expires_at=expires_at,
-        is_active=True,
-    )
-
-    db.add(memory)
-    db.flush()  # get memory_id before commit
-
-    # Add to FAISS
-    memory_index_manager.add(
-        user_id=user_id,
-        memory_id=memory.memory_id,
-        embedding=embedding,
-    )
-
-    return memory
+    return None
 
 
 # =====================================================

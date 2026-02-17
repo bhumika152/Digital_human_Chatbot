@@ -46,6 +46,7 @@ def apply_memory_action(db, user_id: int, action: dict) -> bool:
                 user_id=user_id,
                 memory_text=content,
                 confidence_score=confidence,
+                action=action_type,
             )
 
         elif action_type == "delete":
