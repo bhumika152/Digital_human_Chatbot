@@ -24,7 +24,7 @@ except ImportError:
 
 logger = logging.getLogger("orchestrator")
 
-ALLOWED_MEMORY_ACTIONS = {"save", "update", "delete", "none"}
+ALLOWED_MEMORY_ACTIONS = {"save", "update", "delete"}
 
 PROPERTY_UPDATE_SCHEMA = {
     "required": ["property_id"],
@@ -172,12 +172,14 @@ User message:
         and enable_memory
     ):
         try:
+            logger.info("🧠 Memory Agent called")
             mem_raw = await Runner.run(
                 memory_agent,
                 router_input,
                 context=context,
                 max_turns=1,
             )
+            logger.info("🧠 Memory output: %s", mem_raw)
 
             memory_action = safe_json_loads(mem_raw.final_output, default={})
             action_type = memory_action.get("action")
@@ -475,6 +477,9 @@ User message:
 
                 if hasattr(tool_context, "model_dump"):
                     tool_context = tool_context.model_dump()
+                
+                logger.info("✅ Tool executed successfully: %s", tool_context)
+
 
         except Exception:
             logger.exception("❌ Tool execution failed")
